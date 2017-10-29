@@ -1,7 +1,7 @@
 This is the README for Milestone 9: Source Control due October 29.
 
 DELIVERABLES
-1.  pull from the shared repo,
+1.  pull from the shared repo (or clone, of course!)
 2.  build,
 3.  run application locally (laptop or emulator)
 4.  commit to shared repo,
@@ -19,6 +19,8 @@ DELIVERABLES
       sudo ./Main Sim_2.ltl
 
 3. Make change to this file and commit the change
+  Right here:
+    Caleb (TheIndexZero) was here.
 
 4. push the change
 
