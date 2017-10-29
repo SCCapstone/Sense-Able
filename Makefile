@@ -8,9 +8,9 @@
 
 include ./Definitions.mif
 
-Options = $(OptionsBase) -I../../Includes
-Solution = ../../Release/
-Output = Release/
+Options = $(OptionsBase) -I./Includes
+Solution = Release/
+Output = Output/
 Module := $(Solution)LeddarCDemo
 QT5PATH = /usr/lib/x86_64-linux-gnu
 
@@ -20,7 +20,7 @@ Base := $(Base:%=$(Output)%.o)
 Tout := $(Base)
 
 $(Module) : $(Output) $(Tout)
-	gcc Main.c -o Main -L$(Module) -pthread -L../../Includes -L../../Release -L$(QT5PATH)$(Tout) -lLeddarC -lLeddar -lLeddarTech -lQt5SerialPort -lstdc++ -Wl,-rpath=../../Release
+	gcc Main.c -o Main -L$(Module) -pthread -LIncludes -LRelease -L$(QT5PATH)$(Tout) -lLeddarC -lLeddar -lLeddarTech -lQt5SerialPort -lstdc++ -Wl,-rpath=Release
 
 $(Output)%.o : %.c Makefile ./Definitions.mif
 	$(Compiler) $< -o$@ $(Options)
