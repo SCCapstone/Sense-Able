@@ -1,36 +1,29 @@
-# Makefile for Milestone 3
-# 
-# Was written by LeddarTech Inc.
-# Modified by Caleb Kisby
-# 
+# Makefile for Linux version of Leddar SDK.
+# Copyrigth 2015 LeddarTech Inc.
 
-#####################################################################
+#********************************************************
 # IMPORTANT
 # Specify the QT5PATH variable to your QT5 lib path.
-#####################################################################
+#********************************************************
 
 include ./Definitions.mif
 
-GPP = g++ -03 -Wall -std=c++11
+Options = $(OptionsBase) -I../../Includes
+Solution = ../../Release/
+Output = Release/
+Module := $(Solution)LeddarCDemo
+QT5PATH = /usr/lib/x86_64-linux-gnu
 
-CppFiles = main.cpp 
-
-Options = $(OptionsBase) -IIncludes
-Solution = ./Release/
-Output = ./M3Release/
-Module := $(Solution)/LeddarCDemo
-QT5PATH = /usr/lib/i386-linux-gnu/
-
-Base := main
+Base := Main
 Base := $(Base:%=$(Output)%.o)
 
 Tout := $(Base)
 
 $(Module) : $(Output) $(Tout)
-	g++ $(CppFiles) -o Milestone3 -L$(Module) -pthread -LIncludes -LRelease -L$(QT5PATH)$(Tout) -lLeddarC -lLeddar -lLeddarTech -lQt5SerialPort -lstdc++ -Wl,-rpath=Release
+	gcc Main.c -o Main -L$(Module) -pthread -L../../Includes -L../../Release -L$(QT5PATH)$(Tout) -lLeddarC -lLeddar -lLeddarTech -lQt5SerialPort -lstdc++ -Wl,-rpath=../../Release
 
-$(Output)%.o : %.cpp Makefile ./Definitions.mif
-	g++ $< -o$@ $(Options)
+$(Output)%.o : %.c Makefile ./Definitions.mif
+	$(Compiler) $< -o$@ $(Options)
 
 $(Output) :
 	mkdir -p $(Output)
