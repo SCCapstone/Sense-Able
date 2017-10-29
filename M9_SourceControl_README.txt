@@ -21,6 +21,7 @@ DELIVERABLES
 3. Make change to this file and commit the change
   Right here:
     Caleb (TheIndexZero) was here.
+    Sorry, I accidentally committed under austinas because I am using his computer at the moment...
 
 4. push the change
 
