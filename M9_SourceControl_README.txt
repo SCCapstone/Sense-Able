@@ -25,7 +25,8 @@ DELIVERABLES
     I made the same mistake again.  I had to change the email under which I was pushing.
 4. push the change
 
-5. 
+5. But before you push, merge your branch into master in order to resolve
+   merge conflicts.
 
 6.
 
