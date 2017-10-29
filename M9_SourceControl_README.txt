@@ -22,7 +22,7 @@ DELIVERABLES
   Right here:
     Caleb (TheIndexZero) was here.
     Sorry, I accidentally committed under austinas because I am using his computer at the moment...
-
+    I made the same mistake again.  I had to change the email under which I was pushing.
 4. push the change
 
 5. 
