@@ -30,6 +30,7 @@ git branch branch_name
 git checkout branch_name		# Switch to branch
 git add -A .
 git commit -a -m "message"
+git push origin branch_name
 git checkout master			# Switch to master
 git merge branch_name
 
