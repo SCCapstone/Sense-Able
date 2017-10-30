@@ -25,14 +25,8 @@ DELIVERABLES
     I made the same mistake again.  I had to change the email under which I was pushing.
 4. push the change
 
-5. Do practice branching and merging for the milestone.  That is,
-git branch branch_name
-git checkout branch_name		# Switch to branch
-git add -A .
-git commit -a -m "message"
-git push origin branch_name
-git checkout master			# Switch to master
-git merge branch_name
+5. But before you push, merge your branch into master in order to resolve
+   merge conflicts.
 
 6.
 
