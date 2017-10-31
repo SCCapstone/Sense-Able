@@ -22,10 +22,4 @@ DELIVERABLES
 
 4. push the change
 
-5. 
-
-6.
-
-7.
-
---Jonathan
+--Jonathan I've added some changese
