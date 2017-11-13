@@ -29,3 +29,6 @@ $(Output) :
 	mkdir -p $(Output)
 
 -include $(Tout:.o=.d)
+
+clean:
+	\rm *.o *~ Main
