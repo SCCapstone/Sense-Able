@@ -31,7 +31,7 @@ public:
     void DataCallback(void *aHandle);
     void ReplayData(void);
     void ReplayMenu(void);
-    void MainMenu(void);
+    void MainMenu();
 
     LeddarHandle gHandle;
 

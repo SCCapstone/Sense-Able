@@ -182,6 +182,8 @@ void LeddarStream::ReplayData( void )
                 LeddarRemoveCallback( this->gHandle, reinterpret_cast<LdCallback>(&LeddarStream::DataCallback), this->gHandle );
                 return;
         }
+
+        QCoreApplication::processEvents();
     }
 }
 
@@ -196,8 +198,8 @@ void LeddarStream::ReplayMenu( void )
     LeddarChar lName[256];
 
     // Ask for file name and try to load record before display menu.
-    printf( "\nEnter file name: " );
-    scanf( "%255s", lName );
+    cout << "\nEnter file name: " << endl;
+    cin >> lName;
 
     if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
     {
@@ -250,15 +252,14 @@ void LeddarStream::ReplayMenu( void )
 /// \brief   Display and responds to the main menu.
 // *****************************************************************************
 
-void LeddarStream::MainMenu( void )
+void LeddarStream::MainMenu()
 {
-cout << "Main menu" << "\n";
+cout << "Main menu" << endl;
     for(;;)
     {
-        cout << "Main menu for loop \n";
+        cout << "Main menu for loop" << endl;
     	ReplayMenu(); 
         QCoreApplication::processEvents();
-        //nanosleep(1000,NULL);
     }
 }
 
@@ -276,12 +277,12 @@ int LeddarStream::leddarmain() {
 
     this->gHandle = LeddarCreate();
 
-    cout << "After this->gHandle";
+    cout << "After LeddarCreate" << endl;
     MainMenu();
 
-    cout << "TEST TEXT" << '\n';
+    cout << "After MainMenu" << endl;
 
-    LeddarDestroy( this->gHandle );
+    LeddarDestroy(this->gHandle);
     emit this->finished();
 
     return 0;
