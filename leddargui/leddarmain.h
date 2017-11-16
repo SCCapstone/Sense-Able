@@ -11,12 +11,36 @@
 #define MAIN_H
 
 #include <iostream>
+#include <QObject>
+#include <QString>
 using namespace std;
 
 #include "LeddarC.h"
 #include "LeddarProperties.h"
+class LeddarStream;
 
-int leddarmain();
+class LeddarStream : public QObject {
+    Q_OBJECT
+
+public:
+    LeddarStream();
+    ~LeddarStream();
+
+    void CheckError(int aCode);
+    char WaitKey(void);
+    void DataCallback(void *aHandle);
+    void ReplayData(void);
+    void ReplayMenu(void);
+    void MainMenu(void);
+
+    LeddarHandle gHandle;
+
+public slots:
+    int leddarmain();
+
+signals:
+    void finished();
+};
 
 #endif // MAIN_H
 

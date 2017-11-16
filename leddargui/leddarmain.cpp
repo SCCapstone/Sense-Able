@@ -29,8 +29,8 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "LeddarC.h"
-#include "LeddarProperties.h"
+#include "leddarmain.h"
+
 #include <QCoreApplication>
 #include <QThread>
 #include <QObject>
@@ -38,8 +38,8 @@
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
 
 // Global variable to avoid passing to each function.
-static LeddarHandle gHandle=NULL;
-QThread thread;
+//static LeddarHandle this->gHandle=NULL;
+//QThread thread;
 
 // *****************************************************************************
 // Function: CheckError
@@ -50,8 +50,16 @@ QThread thread;
 /// \param   aCode  The result code to verify.
 // *****************************************************************************
 
-static void
-CheckError( int aCode )
+LeddarStream::LeddarStream() {
+
+    this->gHandle = NULL;
+}
+
+LeddarStream::~LeddarStream() {
+    return;
+}
+
+void LeddarStream::CheckError( int aCode )
 {
     if ( aCode != LD_SUCCESS )
     {        
@@ -84,8 +92,7 @@ CheckError( int aCode )
 ///          uppercase for letters).
 // *****************************************************************************
 
-static char
-WaitKey( void )
+char LeddarStream::WaitKey( void )
 {
     // LeddarGetKey is blocking so we need to wait for a key to be pressed
     // before calling it.
@@ -111,8 +118,7 @@ WaitKey( void )
 ///          function from the callback list).
 // *****************************************************************************
 
-static void
-DataCallback( void *aHandle )
+void LeddarStream::DataCallback( void *aHandle )
 {
     LdDetection lDetections[50];
     unsigned int i, j, lCount = LeddarGetDetectionCount( aHandle );
@@ -125,9 +131,9 @@ DataCallback( void *aHandle )
     LeddarGetDetections( aHandle, lDetections, ARRAY_LEN( lDetections ) );
 
     // When replaying a record, display the current index
-    if ( LeddarGetRecordSize( gHandle ) != 0 )
+    if ( LeddarGetRecordSize( this->gHandle ) != 0 )
     {
-        printf( "%6d ", LeddarGetCurrentRecordIndex( gHandle ) );
+        printf( "%6d ", LeddarGetCurrentRecordIndex( this->gHandle ) );
     }
 
     for( i=0, j=0; (i<lCount) && (j<12); ++i )
@@ -146,13 +152,14 @@ DataCallback( void *aHandle )
 ///          displayed by the callback).
 // *****************************************************************************
 
-static void
-ReplayData( void )
+void LeddarStream::ReplayData( void )
 {
     puts( "\nF to go forward, B to go backward, R to return to beginning, Q to quit" );
 
-    CheckError( LeddarStartDataTransfer( gHandle, LDDL_DETECTIONS ) );
-    LeddarSetCallback( gHandle, DataCallback, gHandle );
+    CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
+
+    //void (LeddarStream::*DataCallback)(void) = &LeddarStream::DataCallback;
+    LeddarSetCallback( this->gHandle, reinterpret_cast<LdCallback>(&LeddarStream::DataCallback), this->gHandle );
 
     for(;;)
     {
@@ -161,18 +168,18 @@ ReplayData( void )
         switch( lChoice )
         {
             case 'R':
-                LeddarMoveRecordTo( gHandle, 0 );
+                LeddarMoveRecordTo( this->gHandle, 0 );
                 break;
             case 'B':
-                CheckError( LeddarStepBackward( gHandle ) );
+                CheckError( LeddarStepBackward( this->gHandle ) );
                 break;
             case 'F':
-                CheckError( LeddarStepForward( gHandle ) );
+                CheckError( LeddarStepForward( this->gHandle ) );
                 break;
             case 'Q':
             case  27: // Escape
-                LeddarStopDataTransfer( gHandle );
-                LeddarRemoveCallback( gHandle, DataCallback, gHandle );
+                LeddarStopDataTransfer( this->gHandle );
+                LeddarRemoveCallback( this->gHandle, reinterpret_cast<LdCallback>(&LeddarStream::DataCallback), this->gHandle );
                 return;
         }
     }
@@ -184,8 +191,7 @@ ReplayData( void )
 /// \brief   Main menu when a replay a record file.
 // *****************************************************************************
 
-static void
-ReplayMenu( void )
+void LeddarStream::ReplayMenu( void )
 {
     LeddarChar lName[256];
 
@@ -193,7 +199,7 @@ ReplayMenu( void )
     printf( "\nEnter file name: " );
     scanf( "%255s", lName );
 
-    if ( LeddarLoadRecord( gHandle, lName ) == LD_SUCCESS )
+    if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
     {
         puts( "\nPlease wait while the record is loading..." );
 
@@ -201,13 +207,13 @@ ReplayMenu( void )
         // take a while before the replay is 100% ready. Note that you
         // can still use the replay but it will not report the complete
         // size until it is finished loading.
-        while( LeddarGetRecordLoading( gHandle ) )
+        while( LeddarGetRecordLoading( this->gHandle ) )
         {
             LeddarSleep( 0.5 );
         }
 
         printf( "Finished loading record of %d frames.\n", 
-                LeddarGetRecordSize( gHandle ) );
+                LeddarGetRecordSize( this->gHandle ) );
 
         for(;;)
         {
@@ -226,7 +232,7 @@ ReplayMenu( void )
                     break;
                 case '2':
                 case  27:
-                    LeddarDisconnect( gHandle );
+                    LeddarDisconnect( this->gHandle );
                     return;
             }
             QCoreApplication::processEvents();
@@ -244,8 +250,7 @@ ReplayMenu( void )
 /// \brief   Display and responds to the main menu.
 // *****************************************************************************
 
-static void
-MainMenu( void )
+void LeddarStream::MainMenu( void )
 {
 cout << "Main menu" << "\n";
     for(;;)
@@ -263,22 +268,21 @@ cout << "Main menu" << "\n";
 /// \brief   Standard C entry point!
 // *****************************************************************************
 
-int
-leddarmain( int argc, char *argv[] )
+int LeddarStream::leddarmain() {
 //leddarmain()
-{
-    puts( "****************************************************" );
-    puts( "* Welcome to the LeddarC Simulation Replay Program *" );
-    puts( "****************************************************" );
+    cout << "****************************************************" << endl;
+    cout << "* Welcome to the LeddarC Simulation Replay Program *" << endl;
+    cout << "****************************************************" << endl;
 
-    gHandle = LeddarCreateWithConsole( argc, argv );
+    this->gHandle = LeddarCreateWithConsole( 0, NULL );
 
-    cout << "After ghandle";
+    cout << "After this->gHandle";
     MainMenu();
 
     cout << "TEST TEXT" << '\n';
 
-    LeddarDestroy( gHandle );
+    LeddarDestroy( this->gHandle );
+    emit this->finished();
 
     return 0;
 }

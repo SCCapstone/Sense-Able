@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QThread>
+#include "leddarmain.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,13 +26,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-};
+    QThread* leddarThread;
+    LeddarStream* stream;
 
-class Worker : public QObject {
-    Q_OBJECT
-
-public slots:
-    void runLeddarMain();
 };
 
 #endif // MAINWINDOW_H

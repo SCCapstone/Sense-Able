@@ -1,23 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "leddarmain.h"
-#include "leddarmain.cpp"
 #include <QCoreApplication>
-#include <QThread>
 #include <QObject>
 
 //static QThread MainWindow::myThread;
-
-void Worker::runLeddarMain() {
-    leddarmain(0, nullptr);
-}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QThread* thread = new QThread();
+    this->leddarThread = new QThread();
+    this->stream = new LeddarStream;
     //QThread thread;
 }
 
@@ -28,11 +22,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_readDataButton_clicked()
 {
-    QThread myThread;
-    Worker *worker = new Worker;
-    worker->moveToThread(&myThread);
-    connect(&myThread, SIGNAL(started()), worker, SLOT(runLeddarMain()));
-    myThread.start();
+    this->stream->moveToThread(leddarThread);
+    connect(leddarThread, SIGNAL(started()), stream, SLOT(leddarmain()));
+    connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
+    leddarThread->start();
 
     //QThread thread;
     ui->textBrowser->setText("Read in data here probably");
