@@ -274,7 +274,7 @@ int LeddarStream::leddarmain() {
     cout << "* Welcome to the LeddarC Simulation Replay Program *" << endl;
     cout << "****************************************************" << endl;
 
-    this->gHandle = LeddarCreateWithConsole( 0, NULL );
+    this->gHandle = LeddarCreate();
 
     cout << "After this->gHandle";
     MainMenu();
