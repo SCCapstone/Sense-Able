@@ -34,6 +34,7 @@
 #include <QCoreApplication>
 #include <QThread>
 #include <QObject>
+#include <functional>
 
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
 
@@ -118,30 +119,41 @@ char LeddarStream::WaitKey( void )
 ///          function from the callback list).
 // *****************************************************************************
 
-void LeddarStream::DataCallback( void *aHandle )
+void LeddarStream::DataCallback(void* aHandle )
 {
+cout << "Function DataCallback" << endl;
     LdDetection lDetections[50];
-    unsigned int i, j, lCount = LeddarGetDetectionCount( aHandle );
-
+    unsigned int i, j, lCount = LeddarGetDetectionCount( &aHandle );
+cout << "TEST" << endl;
     if ( lCount > ARRAY_LEN( lDetections ) )
     {
         lCount = ARRAY_LEN( lDetections );
     }
 
-    LeddarGetDetections( aHandle, lDetections, ARRAY_LEN( lDetections ) );
-
+    //CheckError(LeddarGetDetections( &aHandle, lDetections, ARRAY_LEN( lDetections ) ));
+cout << "TEST" << endl;
     // When replaying a record, display the current index
-    if ( LeddarGetRecordSize( this->gHandle ) != 0 )
-    {
-        printf( "%6d ", LeddarGetCurrentRecordIndex( this->gHandle ) );
-    }
 
+/**********************************************************************
+ *  TODO
+ *  For some reason, these Leddar functions inevitably crash the
+ *  program.
+ *
+ *     if ( LeddarGetRecordSize( &aHandle ) != 0 )
+ *  {
+ *      cout << LeddarGetCurrentRecordIndex( &aHandle ) << endl;
+ *  }
+**********************************************************************/
+cout << "TEST" << endl;
+    // Output the detected points to the console.
     for( i=0, j=0; (i<lCount) && (j<12); ++i )
     {
-        printf( "%5.2f ", lDetections[i].mDistance );
+        cout << lDetections[i].mDistance << " ";
         ++j;
+//        QCoreApplication::processEvents();
     }
-    puts( "" );
+    cout << endl;
+cout << "Function DataCallback finished" << endl;
 
 }
 
@@ -154,37 +166,32 @@ void LeddarStream::DataCallback( void *aHandle )
 
 void LeddarStream::ReplayData( void )
 {
-    puts( "\nF to go forward, B to go backward, R to return to beginning, Q to quit" );
+cout << "Function ReplayData" << endl;
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
 
     //void (LeddarStream::*DataCallback)(void) = &LeddarStream::DataCallback;
-    LeddarSetCallback( this->gHandle, reinterpret_cast<LdCallback>(&LeddarStream::DataCallback), this->gHandle );
+    //auto bindDataCallBack = std::bind(&LeddarStream::DataCallback, this, 95, std::placeholders::_1);
+    LeddarSetCallback(this->gHandle, LeddarStream::DataCallback, &this->gHandle);
 
-    for(;;)
+    for(int i = 0; i <= 100; i++)
     {
-        char lChoice = WaitKey();
-
-        switch( lChoice )
-        {
-            case 'R':
-                LeddarMoveRecordTo( this->gHandle, 0 );
-                break;
-            case 'B':
-                CheckError( LeddarStepBackward( this->gHandle ) );
-                break;
-            case 'F':
-                CheckError( LeddarStepForward( this->gHandle ) );
-                break;
-            case 'Q':
-            case  27: // Escape
-                LeddarStopDataTransfer( this->gHandle );
-                LeddarRemoveCallback( this->gHandle, reinterpret_cast<LdCallback>(&LeddarStream::DataCallback), this->gHandle );
-                return;
-        }
-
+cout << "Step forward" << endl;
+/* TODO
+ *
+ * LeddarStepForward does not seem to be updating this->gHandle
+ * (Or perhaps LeddarSetCallback calls DataCallback with the same argument this->gHandle
+ * rather than a pointer for gHandle)
+ *
+ * */
+        LeddarStepForward( this->gHandle );
         QCoreApplication::processEvents();
+cout << "Step forward finished" << endl;
     }
+
+    LeddarStopDataTransfer( this->gHandle );
+    LeddarRemoveCallback( this->gHandle, LeddarStream::DataCallback, &this->gHandle );
+    return;
 }
 
 // *****************************************************************************
@@ -195,11 +202,12 @@ void LeddarStream::ReplayData( void )
 
 void LeddarStream::ReplayMenu( void )
 {
-    LeddarChar lName[256];
+cout << "Function ReplayMenu" << endl;
+    string inputString = "LeddarData/WALL.ltl";
+    char* lName = new char[inputString.size() + 1];
+    std::copy(inputString.begin(), inputString.end(), lName);
+    lName[inputString.size()] = '\0';
 
-    // Ask for file name and try to load record before display menu.
-    cout << "\nEnter file name: " << endl;
-    cin >> lName;
 
     if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
     {
@@ -214,31 +222,8 @@ void LeddarStream::ReplayMenu( void )
             LeddarSleep( 0.5 );
         }
 
-        printf( "Finished loading record of %d frames.\n", 
-                LeddarGetRecordSize( this->gHandle ) );
-
-        for(;;)
-        {
-            char lChoice;
-
-            puts( "\nReplay Menu" );
-            puts( "  1. Read Data" );
-            puts( "  2. Go Back to File Input" );
-
-            lChoice = WaitKey();
-
-            switch( lChoice )
-            {
-                case '1':
-                    ReplayData();
-                    break;
-                case '2':
-                case  27:
-                    LeddarDisconnect( this->gHandle );
-                    return;
-            }
-            QCoreApplication::processEvents();
-        }
+        ReplayData();
+        LeddarDisconnect(this->gHandle);
     }
     else
     {
@@ -255,12 +240,8 @@ void LeddarStream::ReplayMenu( void )
 void LeddarStream::MainMenu()
 {
 cout << "Main menu" << endl;
-    for(;;)
-    {
-        cout << "Main menu for loop" << endl;
-    	ReplayMenu(); 
-        QCoreApplication::processEvents();
-    }
+    cout << "Main menu" << endl;
+    ReplayMenu();
 }
 
 // *****************************************************************************
