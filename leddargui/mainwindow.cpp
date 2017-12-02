@@ -25,6 +25,10 @@ void MainWindow::on_readDataButton_clicked()
     this->stream->moveToThread(leddarThread);
     connect(leddarThread, SIGNAL(started()), stream, SLOT(leddarmain()));
     connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
+//    connect(stream, SIGNAL(sendDataPoints()), this, SLOT(catchDataPoints()));
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
+                    SLOT(catchDataPoints(int,vector<float>)),
+                    Qt::BlockingQueuedConnection);
     leddarThread->start();
 
     //QThread thread;
@@ -46,4 +50,7 @@ void MainWindow::on_readDataButton_clicked(bool checked)
     }
 }
 
-
+void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
+    ui->textBrowser->setText("TEST");
+    ui->textBrowser->setText(QString::number(index));
+}

@@ -118,8 +118,8 @@ char LeddarStream::WaitKey( void )
 /// \return  Non zero to be called again (responding 0 would remove this
 ///          function from the callback list).
 // *****************************************************************************
-
-void LeddarStream::DataCallback(void* aHandle )
+/*
+void LeddarStream::DataCallback(void* aHandle)
 {
 cout << "Function DataCallback" << endl;
     int currentRecordIndex;
@@ -151,10 +151,10 @@ cout << "Function DataCallback" << endl;
     }
     cout << endl;
 
-    emit openFileDialog(currentRecordIndex, dataPoints);
+    //emit this->sendDataPoints(currentRecordIndex, dataPoints);
 cout << "Function DataCallback finished" << endl;
 
-}
+}*/
 
 // *****************************************************************************
 // Function: ReadLiveData
@@ -171,17 +171,54 @@ cout << "Function ReplayData" << endl;
 
     //void (LeddarStream::*DataCallback)(void) = &LeddarStream::DataCallback;
     //auto bindDataCallBack = std::bind(&LeddarStream::DataCallback, this, 95, std::placeholders::_1);
-    LeddarSetCallback(this->gHandle, LeddarStream::DataCallback, this->gHandle);
+//    LeddarSetCallback(this->gHandle, LeddarStream::DataCallback, this->gHandle);
 
     while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE)
     {
-cout << "Step forward" << endl;
+/***************************************************************************************************************/
+/***************************************************************************************************************/
+
+        int currentRecordIndex;
+        vector<float> dataPoints;
+
+        LdDetection lDetections[50];
+        unsigned int i, j, lCount = LeddarGetDetectionCount( this->gHandle );
+        if ( lCount > ARRAY_LEN( lDetections ) )
+        {
+            lCount = ARRAY_LEN( lDetections );
+        }
+
+        CheckError(LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ) ));
+
+        // When replaying a record, display the current index
+
+        if ( LeddarGetRecordSize( this->gHandle ) != 0 )
+        {
+            currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
+            cout << currentRecordIndex << endl;
+        }
+
+        // Output the detected points to the console.
+        for( i=0, j=0; (i<lCount) && (j<12); ++i )
+        {
+            cout << lDetections[i].mDistance << " ";
+            dataPoints.push_back(lDetections[i].mDistance);
+            ++j;
+    //        QCoreApplication::processEvents();
+        }
+        cout << endl;
+
+        emit this->sendDataPoints(currentRecordIndex, dataPoints);
+        //emit testSignal("1 2 3 4 5");
+
+
+/***************************************************************************************************************/
+/***************************************************************************************************************/
         QCoreApplication::processEvents();
-cout << "Step forward finished" << endl;
     }
 
     LeddarStopDataTransfer(this->gHandle);
-    LeddarRemoveCallback( this->gHandle, LeddarStream::DataCallback, this->gHandle );
+//    LeddarRemoveCallback( this->gHandle, LeddarStream::DataCallback, this->gHandle );
     return;
 }
 
