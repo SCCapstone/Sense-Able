@@ -30,18 +30,15 @@ public:
     char WaitKey(void);
     /*static void DataCallback(void *aHandle);*/
     void ReplayData(void);
-    void ReplayMenu(void);
-    void MainMenu();
 
     LeddarHandle gHandle;
 
 public slots:
-    int leddarmain();
+    void StartReplay(void);
 
 signals:
     void finished();
     void sendDataPoints(int index, vector<float> dataPoints);
-    void testSignal(QString s);
 };
 
 #endif // MAIN_H

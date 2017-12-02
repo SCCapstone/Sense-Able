@@ -23,19 +23,18 @@ MainWindow::~MainWindow()
 void MainWindow::on_readDataButton_clicked()
 {
     this->stream->moveToThread(leddarThread);
-    connect(leddarThread, SIGNAL(started()), stream, SLOT(leddarmain()));
+    connect(leddarThread, SIGNAL(started()), stream, SLOT(StartReplay()));
     connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
 //    connect(stream, SIGNAL(sendDataPoints()), this, SLOT(catchDataPoints()));
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
                     SLOT(catchDataPoints(int,vector<float>)),
                     Qt::BlockingQueuedConnection);
     leddarThread->start();
+}
 
-    //QThread thread;
-    ui->textBrowser->setText("Read in data here probably");
-    //MainWindow::moveToThread(thread);
-    //MainWindow::connect(&thread, SIGNAL(started()), this, SLOT(leddarmain()));
-    //thread.start();
+void MainWindow::on_streamButton_clicked()
+{
+
 }
 
 void MainWindow::on_resetButton_clicked()
@@ -51,6 +50,26 @@ void MainWindow::on_readDataButton_clicked(bool checked)
 }
 
 void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
-    ui->textBrowser->setText("TEST");
-    ui->textBrowser->setText(QString::number(index));
+    QLabel* labels[] = {ui->label_1, ui->label_2,  ui->label_3,
+                       ui->label_4,  ui->label_5,  ui->label_6,
+                       ui->label_7,  ui->label_8,  ui->label_9,
+                       ui->label_10, ui->label_11, ui->label_12};
+
+    // Update the labels with the values of the data points.
+    for (int i = 0; i <= 11; i++) {
+        (labels[i])->setText(QString::number(dataPoints.at(i)));
+    }
+
+    // Output the data points to the text browser.
+    ui->textBrowser->append(QString::number(index));
+
+    for (int i = 0; i < dataPoints.size(); i++) {
+        ui->textBrowser->append(QString::number(dataPoints.at(i)));
+    }
+
+    ui->textBrowser->append("\n");
+
+    // Delay a little for the presentation of this program.
+    QThread::msleep(100);
+
 }

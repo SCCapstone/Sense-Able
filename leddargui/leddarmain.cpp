@@ -106,57 +106,6 @@ char LeddarStream::WaitKey( void )
 }
 
 // *****************************************************************************
-// Function: DataCallback
-//
-/// \brief   This is the function that is called when a new set of data is
-///          available. Here we simply display the first 12 detections.
-///
-/// \param   aHandle  This is the user data parameter that was passed to
-///                   LeddarAddCallback. Here by design we know its the handle.
-/// \param   aLevels  A bitmask of the data levels received in that frame.
-///
-/// \return  Non zero to be called again (responding 0 would remove this
-///          function from the callback list).
-// *****************************************************************************
-/*
-void LeddarStream::DataCallback(void* aHandle)
-{
-cout << "Function DataCallback" << endl;
-    int currentRecordIndex;
-    vector<float> dataPoints;
-    LdDetection lDetections[50];
-    unsigned int i, j, lCount = LeddarGetDetectionCount( aHandle );
-    if ( lCount > ARRAY_LEN( lDetections ) )
-    {
-        lCount = ARRAY_LEN( lDetections );
-    }
-
-    CheckError(LeddarGetDetections( aHandle, lDetections, ARRAY_LEN( lDetections ) ));
-
-    // When replaying a record, display the current index
-
-    if ( LeddarGetRecordSize( aHandle ) != 0 )
-    {
-        currentRecordIndex = LeddarGetCurrentRecordIndex(aHandle);
-        cout << currentRecordIndex << endl;
-    }
-
-    // Output the detected points to the console.
-    for( i=0, j=0; (i<lCount) && (j<12); ++i )
-    {
-        cout << lDetections[i].mDistance << " ";
-        dataPoints.push_back(lDetections[i].mDistance);
-        ++j;
-//        QCoreApplication::processEvents();
-    }
-    cout << endl;
-
-    //emit this->sendDataPoints(currentRecordIndex, dataPoints);
-cout << "Function DataCallback finished" << endl;
-
-}*/
-
-// *****************************************************************************
 // Function: ReadLiveData
 //
 /// \brief   Start data transfer until a key is pressed and stop it (data is
@@ -166,23 +115,16 @@ cout << "Function DataCallback finished" << endl;
 void LeddarStream::ReplayData( void )
 {
 cout << "Function ReplayData" << endl;
+    int currentRecordIndex;
+    vector<float> dataPoints;
+    unsigned int i, j, lCount;
+    LdDetection lDetections[50];
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
 
-    //void (LeddarStream::*DataCallback)(void) = &LeddarStream::DataCallback;
-    //auto bindDataCallBack = std::bind(&LeddarStream::DataCallback, this, 95, std::placeholders::_1);
-//    LeddarSetCallback(this->gHandle, LeddarStream::DataCallback, this->gHandle);
-
     while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE)
     {
-/***************************************************************************************************************/
-/***************************************************************************************************************/
-
-        int currentRecordIndex;
-        vector<float> dataPoints;
-
-        LdDetection lDetections[50];
-        unsigned int i, j, lCount = LeddarGetDetectionCount( this->gHandle );
+        lCount = LeddarGetDetectionCount( this->gHandle );
         if ( lCount > ARRAY_LEN( lDetections ) )
         {
             lCount = ARRAY_LEN( lDetections );
@@ -204,21 +146,16 @@ cout << "Function ReplayData" << endl;
             cout << lDetections[i].mDistance << " ";
             dataPoints.push_back(lDetections[i].mDistance);
             ++j;
-    //        QCoreApplication::processEvents();
         }
         cout << endl;
 
+        // Signal the detected points to the GUI.
         emit this->sendDataPoints(currentRecordIndex, dataPoints);
-        //emit testSignal("1 2 3 4 5");
-
-
-/***************************************************************************************************************/
-/***************************************************************************************************************/
+        dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
     }
 
     LeddarStopDataTransfer(this->gHandle);
-//    LeddarRemoveCallback( this->gHandle, LeddarStream::DataCallback, this->gHandle );
     return;
 }
 
@@ -228,18 +165,21 @@ cout << "Function ReplayData" << endl;
 /// \brief   Main menu when a replay a record file.
 // *****************************************************************************
 
-void LeddarStream::ReplayMenu( void )
+void LeddarStream::StartReplay( void )
 {
-cout << "Function ReplayMenu" << endl;
+    // Initialize the Leddar Handle.
+    this->gHandle = LeddarCreate();
+
+    // TODO
+    // We currently use a hard-coded filename.
     string inputString = "LeddarData/WALL.ltl";
     char* lName = new char[inputString.size() + 1];
     std::copy(inputString.begin(), inputString.end(), lName);
     lName[inputString.size()] = '\0';
 
+    // Load the file record.
     if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
     {
-        puts( "\nPlease wait while the record is loading..." );
-
         // For a big file, especially if it is on a network drive, it may
         // take a while before the replay is 100% ready. Note that you
         // can still use the replay but it will not report the complete
@@ -254,47 +194,13 @@ cout << "Function ReplayMenu" << endl;
     }
     else
     {
-        puts( "\nFailed to load file!" );
+        cout << "Failed to load file!" << endl;
     }
-}
 
-// *****************************************************************************
-// Function: MainMenu
-//
-/// \brief   Display and responds to the main menu.
-// *****************************************************************************
 
-void LeddarStream::MainMenu()
-{
-cout << "Main menu" << endl;
-    cout << "Main menu" << endl;
-    ReplayMenu();
-}
-
-// *****************************************************************************
-// Function: main
-//
-/// \brief   Standard C entry point!
-// *****************************************************************************
-
-int LeddarStream::leddarmain() {
-//leddarmain()
-    cout << "****************************************************" << endl;
-    cout << "* Welcome to the LeddarC Simulation Replay Program *" << endl;
-    cout << "****************************************************" << endl;
-
-    this->gHandle = LeddarCreate();
-//    *(this->gHandle) = LeddarCreate();
-
-    cout << "After LeddarCreate" << endl;
-    MainMenu();
-
-    cout << "After MainMenu" << endl;
-
+    // Destroy the handle, and signal that we are done.
     LeddarDestroy(this->gHandle);
     emit this->finished();
-
-    return 0;
 }
 
 // End of file Main.c

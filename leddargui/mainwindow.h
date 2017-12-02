@@ -26,6 +26,8 @@ private slots:
 
     void catchDataPoints(int index, vector<float> dataPoints);
 
+    void on_streamButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QThread* leddarThread;
