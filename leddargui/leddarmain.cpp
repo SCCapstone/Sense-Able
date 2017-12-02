@@ -53,7 +53,7 @@
 
 LeddarStream::LeddarStream() {
 
-    this->gHandle = NULL;
+    this->gHandle = new LeddarHandle();
 }
 
 LeddarStream::~LeddarStream() {
@@ -123,28 +123,21 @@ void LeddarStream::DataCallback(void* aHandle )
 {
 cout << "Function DataCallback" << endl;
     LdDetection lDetections[50];
-    unsigned int i, j, lCount = LeddarGetDetectionCount( &aHandle );
-cout << "TEST" << endl;
+    unsigned int i, j, lCount = LeddarGetDetectionCount( aHandle );
     if ( lCount > ARRAY_LEN( lDetections ) )
     {
         lCount = ARRAY_LEN( lDetections );
     }
 
-    //CheckError(LeddarGetDetections( &aHandle, lDetections, ARRAY_LEN( lDetections ) ));
-cout << "TEST" << endl;
+    CheckError(LeddarGetDetections( aHandle, lDetections, ARRAY_LEN( lDetections ) ));
+
     // When replaying a record, display the current index
 
-/**********************************************************************
- *  TODO
- *  For some reason, these Leddar functions inevitably crash the
- *  program.
- *
- *     if ( LeddarGetRecordSize( &aHandle ) != 0 )
- *  {
- *      cout << LeddarGetCurrentRecordIndex( &aHandle ) << endl;
- *  }
-**********************************************************************/
-cout << "TEST" << endl;
+    if ( LeddarGetRecordSize( aHandle ) != 0 )
+    {
+        cout << LeddarGetCurrentRecordIndex( aHandle ) << endl;
+    }
+
     // Output the detected points to the console.
     for( i=0, j=0; (i<lCount) && (j<12); ++i )
     {
@@ -172,25 +165,18 @@ cout << "Function ReplayData" << endl;
 
     //void (LeddarStream::*DataCallback)(void) = &LeddarStream::DataCallback;
     //auto bindDataCallBack = std::bind(&LeddarStream::DataCallback, this, 95, std::placeholders::_1);
-    LeddarSetCallback(this->gHandle, LeddarStream::DataCallback, &this->gHandle);
+    LeddarSetCallback(this->gHandle, LeddarStream::DataCallback, this->gHandle);
 
-    for(int i = 0; i <= 100; i++)
+    while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE)
     {
 cout << "Step forward" << endl;
-/* TODO
- *
- * LeddarStepForward does not seem to be updating this->gHandle
- * (Or perhaps LeddarSetCallback calls DataCallback with the same argument this->gHandle
- * rather than a pointer for gHandle)
- *
- * */
-        LeddarStepForward( this->gHandle );
+        emit openFileDialog("1 2 3 4 5");
         QCoreApplication::processEvents();
 cout << "Step forward finished" << endl;
     }
 
-    LeddarStopDataTransfer( this->gHandle );
-    LeddarRemoveCallback( this->gHandle, LeddarStream::DataCallback, &this->gHandle );
+    LeddarStopDataTransfer(this->gHandle);
+    LeddarRemoveCallback( this->gHandle, LeddarStream::DataCallback, this->gHandle );
     return;
 }
 
@@ -207,7 +193,6 @@ cout << "Function ReplayMenu" << endl;
     char* lName = new char[inputString.size() + 1];
     std::copy(inputString.begin(), inputString.end(), lName);
     lName[inputString.size()] = '\0';
-
 
     if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
     {
@@ -257,6 +242,7 @@ int LeddarStream::leddarmain() {
     cout << "****************************************************" << endl;
 
     this->gHandle = LeddarCreate();
+//    *(this->gHandle) = LeddarCreate();
 
     cout << "After LeddarCreate" << endl;
     MainMenu();

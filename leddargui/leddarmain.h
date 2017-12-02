@@ -26,9 +26,9 @@ public:
     LeddarStream();
     ~LeddarStream();
 
-    void CheckError(int aCode);
+    static void CheckError(int aCode);
     char WaitKey(void);
-    void DataCallback(void *aHandle);
+    static void DataCallback(void *aHandle);
     void ReplayData(void);
     void ReplayMenu(void);
     void MainMenu();
@@ -40,6 +40,7 @@ public slots:
 
 signals:
     void finished();
+    void openFileDialog(QString info);
 };
 
 #endif // MAIN_H
