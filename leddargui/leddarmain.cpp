@@ -25,8 +25,6 @@
 //
 // *****************************************************************************
 
-//test 12-2-17
-
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -124,6 +122,8 @@ char LeddarStream::WaitKey( void )
 void LeddarStream::DataCallback(void* aHandle )
 {
 cout << "Function DataCallback" << endl;
+    int currentRecordIndex;
+    vector<float> dataPoints;
     LdDetection lDetections[50];
     unsigned int i, j, lCount = LeddarGetDetectionCount( aHandle );
     if ( lCount > ARRAY_LEN( lDetections ) )
@@ -137,17 +137,21 @@ cout << "Function DataCallback" << endl;
 
     if ( LeddarGetRecordSize( aHandle ) != 0 )
     {
-        cout << LeddarGetCurrentRecordIndex( aHandle ) << endl;
+        currentRecordIndex = LeddarGetCurrentRecordIndex(aHandle);
+        cout << currentRecordIndex << endl;
     }
 
     // Output the detected points to the console.
     for( i=0, j=0; (i<lCount) && (j<12); ++i )
     {
         cout << lDetections[i].mDistance << " ";
+        dataPoints.push_back(lDetections[i].mDistance);
         ++j;
 //        QCoreApplication::processEvents();
     }
     cout << endl;
+
+    emit openFileDialog(currentRecordIndex, dataPoints);
 cout << "Function DataCallback finished" << endl;
 
 }
@@ -172,7 +176,6 @@ cout << "Function ReplayData" << endl;
     while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE)
     {
 cout << "Step forward" << endl;
-        emit openFileDialog("1 2 3 4 5");
         QCoreApplication::processEvents();
 cout << "Step forward finished" << endl;
     }
