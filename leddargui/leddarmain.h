@@ -30,11 +30,16 @@ public:
     char WaitKey(void);
     /*static void DataCallback(void *aHandle);*/
     void ReplayData(void);
+    //void DataCallback( void *aHandle );
+    void ReadLiveData( void );
+    void ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize );
+    char* FindAddressByIndex( unsigned int aIndex, char* aAddresses );
 
     LeddarHandle gHandle;
 
 public slots:
     void StartReplay(void);
+    void StartStream();
 
 signals:
     void finished();

@@ -25,7 +25,6 @@ void MainWindow::on_readDataButton_clicked()
     this->stream->moveToThread(leddarThread);
     connect(leddarThread, SIGNAL(started()), stream, SLOT(StartReplay()));
     connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
-//    connect(stream, SIGNAL(sendDataPoints()), this, SLOT(catchDataPoints()));
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
                     SLOT(catchDataPoints(int,vector<float>)),
                     Qt::BlockingQueuedConnection);
@@ -34,7 +33,13 @@ void MainWindow::on_readDataButton_clicked()
 
 void MainWindow::on_streamButton_clicked()
 {
-
+    this->stream->moveToThread(leddarThread);
+    connect(leddarThread, SIGNAL(started()), stream, SLOT(StartStream()));
+    connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
+                    SLOT(catchDataPoints(int,vector<float>)),
+                    Qt::BlockingQueuedConnection);
+    leddarThread->start();
 }
 
 void MainWindow::on_resetButton_clicked()

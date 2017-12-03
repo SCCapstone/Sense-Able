@@ -203,4 +203,205 @@ void LeddarStream::StartReplay( void )
     emit this->finished();
 }
 
+// *****************************************************************************
+// Function: ReadLiveData
+//
+/// \brief   Start data transfer until a key is pressed and stop it (data is
+///          displayed by the callback).
+// *****************************************************************************
+
+
+// TODO Problem: We are not able to intercept the data and funnel it as it is
+//      being read.  Read the manual to get a function to get what is currently
+//      being read on 'gHandle'.
+
+void LeddarStream::ReadLiveData( void )
+{
+    int currentRecordIndex;
+    vector<float> dataPoints;
+    unsigned int i, j, lCount;
+    LdDetection lDetections[50];
+
+    LeddarChar recordingFileName[255];
+    puts( "\nPress a key to start reading data and press a key again to stop." );
+    WaitKey();
+
+//    CheckError(LeddarStartRecording(gHandle, recordingFileName));
+    CheckError( LeddarStartDataTransfer( gHandle, LDDL_DETECTIONS ) );
+//    LeddarSetCallback( gHandle, DataCallback, gHandle );
+
+// Datacallback stuff **************************************************************************
+    lCount = LeddarGetDetectionCount( this->gHandle );
+    if ( lCount > ARRAY_LEN( lDetections ) )
+    {
+        lCount = ARRAY_LEN( lDetections );
+    }
+
+    CheckError(LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ) ));
+
+    // When replaying a record, display the current index
+
+    if ( LeddarGetRecordSize( this->gHandle ) != 0 )
+    {
+        currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
+        cout << currentRecordIndex << endl;
+    }
+
+    // Output the detected points to the console.
+    for( i=0, j=0; (i<lCount) && (j<12); ++i )
+    {
+        cout << lDetections[i].mDistance << " ";
+        dataPoints.push_back(lDetections[i].mDistance);
+        ++j;
+    }
+    cout << endl;
+cout << dataPoints.size() << endl;
+WaitKey();
+    // Signal the detected points to the GUI.
+    emit this->sendDataPoints(currentRecordIndex, dataPoints);
+WaitKey();
+    dataPoints.erase(dataPoints.begin(), dataPoints.end());
+    QCoreApplication::processEvents();
+    WaitKey();
+// Datacallback done **************************************************************************
+
+    LeddarStopDataTransfer( gHandle );
+//    LeddarRemoveCallback( gHandle, DataCallback, gHandle );
+//    LeddarStopRecording(gHandle);
+}
+
+// *****************************************************************************
+// Function: ListSensors
+//
+/// \brief   List the address of all sensors available.
+// *****************************************************************************
+
+void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize )
+{
+    char         lConnectionType[256];
+    unsigned int lIndex = 0;
+
+    if ( aConnectyionType == NULL )
+    {
+        printf("\nEnter the connection type (USB or SERIAL): ");
+        scanf("%255s", lConnectionType );
+    }
+    else
+    {
+        strcpy( lConnectionType, aConnectyionType );
+    }
+
+    strcpy( aAddresses, aConnectyionType );
+
+    CheckError( LeddarListSensors( aAddresses, &aSize ) );
+
+    printf( "\nFound %d sensors of type %s\n", aSize, lConnectionType );
+
+    int lConnectionFoundIndex = 0;
+    while( strlen( aAddresses+lIndex ) > 0 )
+    {
+        if ( lConnectionFoundIndex % 2 == 0 )
+        {
+            if ( strcmp( aConnectyionType, "USB" ) != 0 )
+            {
+                printf( "%d : %s", lConnectionFoundIndex/2, aAddresses + lIndex );
+            }
+            else
+            {
+                printf( "%d : ", lConnectionFoundIndex/2 );
+            }
+        }
+        else
+        {
+            if ( strcmp( aConnectyionType, "USB" ) != 0 )
+            {
+                printf( "\t[ %s ]\n", aAddresses + lIndex );
+            }
+            else
+            {
+                printf( "[ %s ]\n", aAddresses + lIndex );
+            }
+        }
+
+        lConnectionFoundIndex++;
+        lIndex += strlen( aAddresses+lIndex ) + 1;
+    }
+}
+
+// *****************************************************************************
+// Function: FindAddressByIndex
+//
+/// \brief   Get the address found by the index displayed in the function ListSensors
+//
+//  \param  aIndex of the sensor to find
+//  \param  aAddresses List of addresses.
+//
+//  \return Address of the sensor, NULL if there is no address found for this index.
+//
+// *****************************************************************************
+
+char* LeddarStream::FindAddressByIndex( unsigned int aIndex, char* aAddresses )
+{
+    unsigned int lCurrentIndex = 0;
+    unsigned int lConnectionFoundIndex = 0;
+
+    while( strlen( aAddresses+lCurrentIndex ) > 0 )
+    {
+        if ( ( lConnectionFoundIndex / 2 ) == aIndex )
+        {
+            return aAddresses + lCurrentIndex;
+        }
+
+        lConnectionFoundIndex++;
+        lCurrentIndex += strlen( aAddresses+lCurrentIndex ) + 1;
+    }
+
+    return NULL;
+}
+
+// *****************************************************************************
+// Function: ConnectMenu
+//
+/// \brief   Main menu when a live connection is made.
+///
+/// \param   aTrySingleUsb  If true we will try to connect to a single USB
+///                         sensor by sending an empty string as the address.
+///                         This works only if there is 1 and only 1 USB sensor
+///                         plugged to the PC.
+// *****************************************************************************
+
+void LeddarStream::StartStream()
+{
+    char lAddresses[256];
+    char* lAddress = NULL;
+    char lConnectionType[10];
+
+    // Initialize the Leddar Handle.
+    this->gHandle = LeddarCreate();
+
+    strcpy( lConnectionType, "USB" );
+    ListSensors( lConnectionType, lAddresses, 255 );
+    lAddress = FindAddressByIndex( 0, lAddresses );
+    if ( lAddress == NULL ) {
+        return;
+    }
+
+    if ( LeddarConnect( gHandle, lConnectionType, lAddress ) == LD_SUCCESS )
+    {
+        while( LeddarGetConnected( gHandle ) == LD_SUCCESS )
+        {
+            ReadLiveData();
+        }
+    }
+    else
+    {
+        cout << "Connection Failed!" << endl;
+    }
+
+    // Disconnect, destroy the handle, and signal that we are done.
+    LeddarDisconnect( gHandle );
+    LeddarDestroy(this->gHandle);
+    emit this->finished();
+}
+
 // End of file Main.c
