@@ -1,3 +1,0 @@
-/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/build/CMakeFiles/edit_cache.dir
-/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/build/CMakeFiles/rebuild_cache.dir
-/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/build/CMakeFiles/HogTrainer.dir
