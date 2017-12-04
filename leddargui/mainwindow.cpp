@@ -3,6 +3,10 @@
 #include <QCoreApplication>
 #include <QObject>
 
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/videoio.hpp>
+
 //static QThread MainWindow::myThread;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -12,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
+    this->captureThread = new QThread();
+    this->capture = new CaptureThread();
     //QThread thread;
 }
 
@@ -33,6 +39,13 @@ void MainWindow::on_readDataButton_clicked()
 
 void MainWindow::on_streamButton_clicked()
 {
+
+    //Start webcam stream
+    this->capture->moveToThread(captureThread);
+    connect(captureThread, SIGNAL(started()), capture, SLOT(startCapture()));
+    connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
+    captureThread->start();
+
     this->stream->moveToThread(leddarThread);
     connect(leddarThread, SIGNAL(started()), stream, SLOT(StartStream()));
     connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
@@ -77,4 +90,10 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
     // Delay a little for the presentation of this program.
     QThread::msleep(100);
 
+}
+
+void MainWindow::frameCaptured(cv::Mat* frame)
+{
+    //Convert Mat to QImage and display to widget
+    ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
 }
