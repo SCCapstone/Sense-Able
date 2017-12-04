@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,13 +31,15 @@ LIBS += -L$$PWD/Release/ -lLeddar -lLeddarC -lLeddarTech
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    leddarmain.cpp
+    leddarmain.cpp \
+    usernotifier.cpp
 
 HEADERS += \
         mainwindow.h \
     LeddarProperties.h \
     leddarmain.h \
-    LeddarC.h
+    LeddarC.h \
+    usernotifier.h
 
 FORMS += \
         mainwindow.ui
