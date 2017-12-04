@@ -32,14 +32,16 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     leddarmain.cpp \
-    usernotifier.cpp
+    usernotifier.cpp \
+    objdetect.cpp
 
 HEADERS += \
         mainwindow.h \
     LeddarProperties.h \
     leddarmain.h \
     LeddarC.h \
-    usernotifier.h
+    usernotifier.h \
+    objdetect.h
 
 FORMS += \
         mainwindow.ui
