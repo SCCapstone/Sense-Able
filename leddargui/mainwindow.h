@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QThread>
 #include "leddarmain.h"
+#include "capturethread.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,11 +29,14 @@ private slots:
 
     void on_streamButton_clicked();
 
+    void frameCaptured(cv::Mat* frame);
+
 private:
     Ui::MainWindow *ui;
     QThread* leddarThread;
     LeddarStream* stream;
-
+    QThread* captureThread;
+    CaptureThread* capture;
 };
 
 #endif // MAINWINDOW_H
