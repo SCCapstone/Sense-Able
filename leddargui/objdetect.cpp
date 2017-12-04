@@ -8,7 +8,14 @@
 
 // static float standard_deviation(std::vector<float> xs, std::vector<float> ys);
 // static int detect_wall(std::vector<float> v);
-
+//ObjectDetector::ObectDetector()
+//{
+//    return;
+//}
+//ObjectDetector::~OjectDetector()
+//{
+//    return;
+//}
 /*
 * Takes a vector of floats and determines wether a wall or hallway is present
 * -1 -> Wall not detected
@@ -21,7 +28,7 @@
 * a = My - b(Mx)
 * b = r (sdy/sdx)
 */
-int LeddarObjectDetect::detect_wall(std::vector<float> v, float measure_error, float flat_error) {
+int ObjectDetector::detect_wall(std::vector<float> v, float measure_error, float flat_error) {
 
   // Calculate Equation for line of best fit
   int n;
@@ -112,24 +119,3 @@ int LeddarObjectDetect::detect_wall(std::vector<float> v, float measure_error, f
   // No Wall
   return -1;
 }
-
-// int main(int argc, char const *argv[])
-// { 
-
-//   // TODO:: TESTING
-//   // TODO:: COMMENT CODE
-
-
-
-//   std::vector<float> vec;
-
-//   for (int i=0; i<16; i++) {
-//     vec.push_back(16); 
-//   }
-//   LeddarObjectDetect lod;
-//   int wall = lod.detect_wall(vec, .1, .1);
-//   std::cout << (wall) << std::endl;
-
-
-//   return 0;
-// }
