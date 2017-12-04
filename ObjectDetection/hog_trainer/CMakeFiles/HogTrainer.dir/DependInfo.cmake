@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/train_HOG.cpp" "/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/build/CMakeFiles/HogTrainer.dir/train_HOG.cpp.o"
+  "/home/elrondhubbard/School/Sense-Able/Sense-Able/ObjectDetection/hog_trainer/train_HOG.cpp" "/home/elrondhubbard/School/Sense-Able/Sense-Able/ObjectDetection/hog_trainer/CMakeFiles/HogTrainer.dir/train_HOG.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

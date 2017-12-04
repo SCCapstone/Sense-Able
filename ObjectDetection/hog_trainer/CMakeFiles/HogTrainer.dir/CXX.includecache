@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/train_HOG.cpp
+/home/elrondhubbard/School/Sense-Able/Sense-Able/ObjectDetection/hog_trainer/train_HOG.cpp
 opencv2/imgproc.hpp
-/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/opencv2/imgproc.hpp
+/home/elrondhubbard/School/Sense-Able/Sense-Able/ObjectDetection/hog_trainer/opencv2/imgproc.hpp
 opencv2/highgui.hpp
-/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/opencv2/highgui.hpp
+/home/elrondhubbard/School/Sense-Able/Sense-Able/ObjectDetection/hog_trainer/opencv2/highgui.hpp
 opencv2/ml.hpp
-/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/opencv2/ml.hpp
+/home/elrondhubbard/School/Sense-Able/Sense-Able/ObjectDetection/hog_trainer/opencv2/ml.hpp
 opencv2/objdetect.hpp
-/home/elrondhubbard/Documents/ObjectDetection/hog_trainer/opencv2/objdetect.hpp
+/home/elrondhubbard/School/Sense-Able/Sense-Able/ObjectDetection/hog_trainer/opencv2/objdetect.hpp
 iostream
 -
 time.h

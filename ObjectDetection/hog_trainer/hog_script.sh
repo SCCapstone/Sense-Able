@@ -16,9 +16,9 @@
 
 echo Hello, World.
 
-pd="/home/elrondhubbard/Documents/ObjectDetection/data/resized/stairs/bounded_images/"
-nd="/home/elrondhubbard/Documents/ObjectDetection/data/resized/stairs/samp_negative/"
-td="/home/elrondhubbard/Documents/ObjectDetection/data/resized/stairs/test/"
+pd="../data/resized/stairs/bounded_images/"
+nd="../data/resized/stairs/samp_negative/"
+td="../data/resized/stairs/test/"
 dw="224"
 dh="224"
 d=true
@@ -32,4 +32,4 @@ echo $td
 echo $dw
 echo $dh
 
-build/HogTrainer -pd=$pd -nd=$nd -td=$td -dw=$dw -dh=$dh -v=$v -fn=$fn
+./HogTrainer -pd=$pd -nd=$nd -td=$td -dw=$dw -dh=$dh -v=$v -fn=$fn
