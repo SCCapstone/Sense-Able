@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QCoreApplication>
 #include <QObject>
+#include <QtWidgets>
 
 //static QThread MainWindow::myThread;
 
@@ -22,8 +23,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_readDataButton_clicked()
 {
+    // TODO: PASS THIS FILENAME TO THE LEDDAR THREAD
+    QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
+                                                    "../LeddarData", tr("Leddar files (*.ltl)"));
+    qInfo() << filename;
+    // Given a filename, find the matching recording if there exists one
     this->stream->moveToThread(leddarThread);
-    connect(leddarThread, SIGNAL(started()), stream, SLOT(StartReplay()));
+    connect(leddarThread, SIGNAL(started()), stream, SLOT(StartReplay(filename)));
     connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
                     SLOT(catchDataPoints(int,vector<float>)),
@@ -68,7 +74,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
     // Output the data points to the text browser.
     ui->textBrowser->append(QString::number(index));
 
-    for (int i = 0; i < dataPoints.size(); i++) {
+    for (unsigned int i = 0; i < dataPoints.size(); i++) {
         ui->textBrowser->append(QString::number(dataPoints.at(i)));
     }
 

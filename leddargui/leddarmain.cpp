@@ -35,6 +35,7 @@
 #include <QThread>
 #include <QObject>
 #include <functional>
+#include <QFileDialog>
 
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
 
@@ -165,14 +166,14 @@ cout << "Function ReplayData" << endl;
 /// \brief   Main menu when a replay a record file.
 // *****************************************************************************
 
-void LeddarStream::StartReplay( void )
+void LeddarStream::StartReplay( QString filename )
 {
     // Initialize the Leddar Handle.
     this->gHandle = LeddarCreate();
 
-    // TODO
+    // TODO changing
     // We currently use a hard-coded filename.
-    string inputString = "LeddarData/WALL.ltl";
+    string inputString = filename.toUtf8().constData();
     char* lName = new char[inputString.size() + 1];
     std::copy(inputString.begin(), inputString.end(), lName);
     lName[inputString.size()] = '\0';
