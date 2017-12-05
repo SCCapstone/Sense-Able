@@ -53,6 +53,17 @@ void MainWindow::on_readDataButton_clicked()
                     SLOT(catchDataPoints(int,vector<float>)),
                     Qt::BlockingQueuedConnection);
     leddarThread->start();
+
+    this->objdetector->moveToThread(objdetectThread);
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
+                    objdetector,
+                    SLOT(processDataPoints(int, vector<float>)),
+                    Qt::QueuedConnection);
+    connect(objdetector, SIGNAL(finished()), objdetectThread, SLOT(quit()));
+    connect(objdetector, SIGNAL(sendObjectDetected(string)),
+                         SLOT(catchObjectDetected(string)),
+                         Qt::QueuedConnection);
+    objdetectThread->start();
 }
 
 void MainWindow::on_streamButton_clicked()

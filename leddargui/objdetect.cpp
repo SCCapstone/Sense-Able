@@ -25,6 +25,7 @@ cout << "LeddarStream->objectDetector signal /slot works!" << endl;
 
 void objectDetector::detectObject(vector<float> distances)
 {
+cout << "Entering objectDetector" << endl;
     UserNotifier notifier = UserNotifier();
     int detectCode;
 
