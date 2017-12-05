@@ -30,7 +30,7 @@ cout << "Entering objectDetector" << endl;
     UserNotifier notifier = UserNotifier();
     int detectCode;
 
-    detectCode = detect_wall(yaxis_projection(distances), 0.1, 0.2);
+    detectCode = detect_wall((distances), 0.1, 0.2);
 
     if (detectCode == 1) {
         emit sendObjectDetected("Flat Wall");
@@ -169,7 +169,7 @@ vector<float> objectDetector::yaxis_projection(vector<float> distances){
     // The angle between segments is 2.8 degrees
     float theta = 90 - (2.8 * .5 * int(distances.size()) );
 
-    for (int i=int(distances.size()); i>-1; i-- )
+    for (int i=int(distances.size())-1; i>-1; i-- )
     {
         float y = distances.at(i) * sin(theta);
         projected.insert(projected.begin(), y);
