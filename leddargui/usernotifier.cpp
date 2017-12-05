@@ -4,7 +4,7 @@ using namespace std;
 #include <QSound>
 
 UserNotifier::UserNotifier() {
-    soundFiles.push_back("wall_notification.wav");
+    soundFiles.push_back("Sounds/blaster-firing.wav");
     soundFiles.push_back("hall_notification.wav");
     soundFiles.push_back("");
     soundFiles.push_back("");
