@@ -14,6 +14,7 @@ public:
     CaptureThread();
     ~CaptureThread();
     void run();
+    int imagedetect(cv::HOGDescriptor, cv::Mat);
 
 public slots:
     void startCapture();
