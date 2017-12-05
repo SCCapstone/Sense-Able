@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QThread>
+#include <QSignalMapper>
 #include "leddarmain.h"
 #include "capturethread.h"
 //#include "OLDobjdetect.h"
@@ -29,18 +30,22 @@ private slots:
 
     void catchDataPoints(int index, vector<float> dataPoints);
 
+    void catchObjectDetected(string objectName);
+
     void on_streamButton_clicked();
 
     void frameCaptured(cv::Mat* frame);
 
 private:
     Ui::MainWindow *ui;
-    QThread* leddarThread;
     LeddarStream* stream;
-    QThread* captureThread;
+    QThread* leddarThread;
     CaptureThread* capture;
-    QThread* objdetectThread;
+    QThread* captureThread;
     objectDetector* objdetector;
+    QThread* objdetectThread;
+
+    QSignalMapper* signalMapper;
 };
 
 #endif // MAINWINDOW_H

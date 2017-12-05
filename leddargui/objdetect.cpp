@@ -8,7 +8,7 @@ objectDetector::objectDetector()
 {
 
 }
-
+/*
 void objectDetector::objDetect(int i)
 {
     //this is a slot
@@ -17,9 +17,33 @@ void objectDetector::objDetect(int i)
     int j = i;
     emit(objNotify(j));
 }
-void objectDetector::DetectObject(vector<float> distances, float sig_dist)
+*/
+void objectDetector::processDataPoints(int index, vector<float> dataPoints) {
+cout << "LeddarStream->objectDetector signal /slot works!" << endl;
+    detectObject(dataPoints);
+}
+
+void objectDetector::detectObject(vector<float> distances)
 {
-    //also a slot
+    int detectCode;
+
+    detectCode = detect_wall(distances, 0.1, 0.2);
+
+    if (detectCode == 1) {
+        emit sendObjectDetected("Flat Wall");
+    } else if (detectCode == 2) {
+        emit sendObjectDetected("Left Slant");
+    } else if (detectCode == 3) {
+        emit sendObjectDetected("Right Slant");
+    } else if (detectCode == 4) {
+        emit sendObjectDetected("Hallway");
+    } else if (detectCode == -1) {
+        emit sendObjectDetected("NONE");
+    } else {
+        cout << "ERROR: detectCode has an invalid value." << endl;
+    }
+
+    return;
 }
 
 // static float standard_deviation(std::vector<float> xs, std::vector<float> ys);

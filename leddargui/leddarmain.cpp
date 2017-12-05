@@ -54,6 +54,7 @@
 LeddarStream::LeddarStream() {
 
     this->gHandle = new LeddarHandle();
+    qRegisterMetaType<vector<float> >("vector<float>");
 }
 
 LeddarStream::~LeddarStream() {
@@ -165,17 +166,19 @@ cout << "Function ReplayData" << endl;
 /// \brief   Main menu when a replay a record file.
 // *****************************************************************************
 
-void LeddarStream::StartReplay( void )
+void LeddarStream::StartReplay(QString fileName)
 {
     // Initialize the Leddar Handle.
     this->gHandle = LeddarCreate();
 
     // TODO
     // We currently use a hard-coded filename.
-    string inputString = "LeddarData/WALL.ltl";
-    char* lName = new char[inputString.size() + 1];
-    std::copy(inputString.begin(), inputString.end(), lName);
-    lName[inputString.size()] = '\0';
+    //string inputString = "LeddarData/WALL.ltl";
+    //char* lName = new char[inputString.size() + 1];
+    //std::copy(inputString.begin(), inputString.end(), lName);
+    //lName[inputString.size()] = '\0';
+
+    char* lName = const_cast<char*>(fileName.toUtf8().constData());
 
     // Load the file record.
     if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )

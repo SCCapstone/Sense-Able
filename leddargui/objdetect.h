@@ -15,15 +15,16 @@ class objectDetector : public QObject
         Q_OBJECT
 public:
     objectDetector();
+
+    void detectObject(vector<float> distances);
     int detect_wall(vector<float> v, float measure_error, float flat_error);
 
 public slots:
-
-    void DetectObject(vector<float> distances, float sig_dist);
-    void objDetect(int i);
+    void processDataPoints(int index, vector<float> dataPoints);
+    //void objDetect(int i);
 
 signals:
-    void objNotify(int o);
+    void sendObjectDetected(string objectName);
     void finished();
 };
 
