@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <math.h>
 #include <iostream>
 #include "objdetect.h"
 
@@ -29,7 +30,7 @@ cout << "Entering objectDetector" << endl;
     UserNotifier notifier = UserNotifier();
     int detectCode;
 
-    detectCode = detect_wall(distances, 0.1, 0.2);
+    detectCode = detect_wall(yaxis_projection(distances), 0.1, 0.2);
 
     if (detectCode == 1) {
         emit sendObjectDetected("Flat Wall");
@@ -157,4 +158,25 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
   }
   // No Wall
   return -1;
+}
+/* Function projects onto the y-axis
+ *
+ *
+*/
+vector<float> objectDetector::yaxis_projection(vector<float> distances){
+    vector<float> projected;
+    // Theta is the angle between the x-axis and the right most segment.
+    // The angle between segments is 2.8 degrees
+    float theta = 90 - (2.8 * .5 * int(distances.size()) );
+
+    for (int i=int(distances.size()); i>-1; i-- )
+    {
+        float y = distances.at(i) * sin(theta);
+        projected.insert(projected.begin(), y);
+
+        // Increment theta for the next segment
+        theta += 2.8;
+    }
+
+    return projected;
 }

@@ -18,6 +18,7 @@ public:
 
     void detectObject(vector<float> distances);
     int detect_wall(vector<float> v, float measure_error, float flat_error);
+    vector<float> yaxis_projection(vector<float> distances);
 
 public slots:
     void processDataPoints(int index, vector<float> dataPoints);
