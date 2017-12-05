@@ -5,13 +5,13 @@ using namespace std;
 
 UserNotifier::UserNotifier() {
     soundFiles.push_back("Sounds/blaster-firing.wav");
-    soundFiles.push_back("hall_notification.wav");
+    soundFiles.push_back("Sounds/hall_notification.wav");
+   /* soundFiles.push_back("");
     soundFiles.push_back("");
     soundFiles.push_back("");
     soundFiles.push_back("");
     soundFiles.push_back("");
-    soundFiles.push_back("");
-    soundFiles.push_back("");
+    soundFiles.push_back("");*/
 }
 
 UserNotifier::~UserNotifier() {
@@ -19,6 +19,8 @@ UserNotifier::~UserNotifier() {
 }
 
 void UserNotifier::playSound(int index) {
-    QSound::play(QString::fromStdString(soundFiles.at(index)));
+    if(index < soundFiles.size() - 1) {
+        QSound::play(QString::fromStdString(soundFiles.at(index)));
+    }
     return;
 }

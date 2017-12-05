@@ -29,17 +29,15 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
 //    cv::Size padding = Size(8,8);
 
     hog.detectMultiScale( frame, detections, foundWeights, hitThreshold, winStride);
-    for ( size_t j = 0; j < detections.size(); j++ )
-    {
-//        cout << "Height " << detections[j].height << endl;
-//        cout << "Width " << detections[j].width << endl;
-//        cout << "X " << detections[j].x << endl;
-//        cout << "Y " << detections[j].y << endl;
-//        cout << "weight " << foundWeights[j] << endl;
-        cv::Scalar color = cv::Scalar( 0, foundWeights[j] * foundWeights[j] * 200, 0 );
-        cv::rectangle( frame, detections[j], color, 2);
+    int max = 0;
+    for (size_t i = 0; i < foundWeights.size(); i++) {
+        if ( foundWeights.at(i) > foundWeights.at(max) ) {
+            max = i;
+        }
     }
-//    cv::rectangle( frame, cv::Point(100,100), cv::Point(200,200), cv::Scalar(0,0,0), 2);
+    cv::Scalar color = cv::Scalar( 0, foundWeights[max] * foundWeights[max] * 200, 0 );
+    cv::rectangle( frame, detections[max], color, 2);
+
     return 0;
 }
 void CaptureThread::run()
