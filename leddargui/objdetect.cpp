@@ -29,11 +29,13 @@ void objectDetector::detectObject(vector<float> distances)
 cout << "Entering objectDetector" << endl;
     UserNotifier notifier = UserNotifier();
     int detectCode;
+    float measure_err = .75;
+    float flat_err = 100;
 
-    detectCode = detect_wall(distances, 0.1, 0.2);
+    detectCode = detect_wall(yaxis_projection(distances), measure_err, flat_err);
 
     if (detectCode == 1) {
-        emit sendObjectDetected("Flat Wall");
+        emit sendObjectDetected("Wall");
         notifier.playSound(0);
     } else if (detectCode == 2) {
         emit sendObjectDetected("Left Slant");
@@ -98,12 +100,15 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
   sdy = std::sqrt(ssy/n);
   sdx = std::sqrt(ssx/n);
 
-  std::cout << sdy << std::endl;
-  std::cout << sdx << std::endl;
+//  std::cout << "sdy" << sdy << std::endl;
+//  std::cout << "sdx" << sdx << std::endl;
 
   // Calculate R - sum(xy)/ swrt(sum(x^2) * sum(y^2))
 
-  float sumxy, sumxx, sumyy, r, a, b;
+  float r, a, b;
+  float sumxy = 0;
+  float sumxx = 0;
+  float sumyy = 0;
 
   for (unsigned int i=0; i<v.size(); i++) {
     sumxy += int(i) * v.at(i);
@@ -113,20 +118,19 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
 
   r = sumxy / sqrt(sumxx*sumyy);
 
+  // Calculate slope and intercept
   b = r * (sdy/sdx);
-  a = my - b*mx;
-  std::cout << b << " " << a << std::endl;
-  std::cout << "MEANX, MEANY " << mx << " " << my << std::endl;
-  // std::cout << << std::endl;
-  // std::cout << << std::endl;
-  // std::cout << << std::endl;
-  // std::cout << << std::endl;
+  a = (v.at( n/2 - 1) + v.at( n/2 )) / 2;
+//  std::cout << "SLope " << b << "  Intercept: " << a << std::endl;
+//  std::cout << "MEANX, MEANY " << mx << " " << my << std::endl;
+
   // If any of the segments exceed tolerated measurement error -
   // A wall is not considered to exist across the field of vision
   bool wall = true;
   for ( unsigned int i=0; i<v.size(); i++ ){
-    if ( std::abs( (b*int(i)+a) - v.at(i) ) > measure_error )  {
-      // std::cout << (b*int(i)+a) - v.at(i) << std::endl;
+    float errori = std::abs( (b*int(i) + a) - v.at(i) );
+    if ( errori > measure_error )  {
+//       std::cout << "error" << (b*int(i)+a) - v.at(i) << std::endl;
       wall = false;
     }
   }
@@ -170,15 +174,18 @@ vector<float> objectDetector::yaxis_projection(vector<float> distances){
     vector<float> projected;
     // Theta is the angle between the x-axis and the right most segment.
     // The angle between segments is 2.8 degrees
-    float theta = 90 - (2.8 * .5 * int(distances.size()) );
+    float theta = 90 + (2.8 * .5 * int(distances.size()) );
 
-    for (int i=int(distances.size())-1; i>-1; i-- )
+    for ( int i=0; i<int(distances.size()); i++)
     {
-        float y = distances.at(i) * sin(theta);
+        float theta_radians = theta*M_PI/180;
+        float y = distances.at(i) * sin(theta_radians);
         projected.insert(projected.begin(), y);
+//        std::cout << "THETA: " << theta << " SIN THETA: " << sin(theta_radians) << std::endl;
+//        std::cout << "Value: " << distances.at(i) << " Projection: " << y << std::endl;
 
         // Increment theta for the next segment
-        theta += 2.8;
+        theta -= 2.8;
     }
 
     return projected;
