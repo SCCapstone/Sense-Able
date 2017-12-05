@@ -9,7 +9,7 @@ void objectDetector::objDetect(int i)
 {
     //this is a slot
 
-    //signal passes integer i
+    //signal passes integer j
     int j = i;
     emit(objNotify(j));
 }

@@ -35,7 +35,6 @@ SOURCES += \
     leddarmain.cpp \
     usernotifier.cpp \
     capturethread.cpp \
-    OLDobjdetect.cpp \
     objdetect.cpp
 
 HEADERS += \
@@ -45,7 +44,6 @@ HEADERS += \
     LeddarC.h \
     usernotifier.h \
     capturethread.h \
-    OLDobjdetect.h \
     objdetect.h
 
 FORMS += \
