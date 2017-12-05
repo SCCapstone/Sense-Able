@@ -17,7 +17,7 @@ public:
     int imagedetect(cv::HOGDescriptor, cv::Mat);
 
 public slots:
-    void startCapture();
+    void onStartCapture();
 
 signals:
     void newFrame(cv::Mat*);
