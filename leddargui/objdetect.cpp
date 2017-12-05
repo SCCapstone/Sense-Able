@@ -1,3 +1,7 @@
+#include <vector>
+#include <string>
+#include <cmath>
+#include <iostream>
 #include "objdetect.h"
 
 objectDetector::objectDetector()
@@ -17,6 +21,9 @@ void objectDetector::DetectObject(vector<float> distances, float sig_dist)
 {
     //also a slot
 }
+
+// static float standard_deviation(std::vector<float> xs, std::vector<float> ys);
+// static int detect_wall(std::vector<float> v);
 
 /*
 * Takes a vector of floats and determines wether a wall or hallway is present
