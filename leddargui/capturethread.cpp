@@ -6,6 +6,9 @@
 
 #include "capturethread.h"
 
+/*
+ * Constructor for the capture thread. Opens the webcam
+ */
 CaptureThread::CaptureThread()
 {
     //0: opens webcam
@@ -15,6 +18,12 @@ CaptureThread::~CaptureThread()
 {
     return;
 }
+/*
+ * This fuction takes an image and a image detector, detects which objects are present
+ * and paints bounding boxes over the objects. An integer representing what object is
+ * also returned.
+ * Hog is a preloaded, pretrained HOG based image detector.
+ */
 int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
 
     if ( frame.empty() ){
@@ -26,7 +35,6 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
 
     double hitThreshold = 0; // Default value
     cv::Size winStride = cv::Size(48,48);
-//    cv::Size padding = Size(8,8);
 
     hog.detectMultiScale( frame, detections, foundWeights, hitThreshold, winStride);
     int max = 0;
@@ -40,6 +48,10 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
 
     return 0;
 }
+
+/*
+ * TODO: KATHRYN
+ */
 void CaptureThread::run()
 {
     timr = new QTimer(this);
@@ -48,6 +60,11 @@ void CaptureThread::run()
     timr -> start(10);
 }
 
+/*
+ * TODO: KATHRYN
+ * Loads a hardcoded image detector and passes every frame of the the camera feed to
+ * CaptureThread::imagedetect(). Sends the results to the QT Gui
+ */
 void CaptureThread::startCapture()
 {
     cv::HOGDescriptor hog;

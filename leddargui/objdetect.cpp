@@ -5,6 +5,9 @@
 #include <iostream>
 #include "objdetect.h"
 
+/*
+ * TODO: Caleb : Comment
+ */
 objectDetector::objectDetector()
 {
     qRegisterMetaType<string>("string");
@@ -24,6 +27,10 @@ cout << "LeddarStream->objectDetector signal /slot works!" << endl;
     detectObject(dataPoints);
 }
 
+/*
+ * Takes a vector of distances and detects objects. If an object is found, a sound
+ * notification is issued and the name of the object is sent to the GUI.
+ */
 void objectDetector::detectObject(vector<float> distances)
 {
 cout << "Entering objectDetector" << endl;
@@ -54,9 +61,6 @@ cout << "Entering objectDetector" << endl;
 
     return;
 }
-
-// static float standard_deviation(std::vector<float> xs, std::vector<float> ys);
-// static int detect_wall(std::vector<float> v);
 
 /*
 * Takes a vector of floats and determines wether a wall or hallway is present
@@ -166,9 +170,8 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
   // No Wall
   return -1;
 }
-/* Function projects onto the y-axis
- *
- *
+/*
+ *  Projects each distance in a vector onto the y-axis and returns the projections in a vecctor
 */
 vector<float> objectDetector::yaxis_projection(vector<float> distances){
     vector<float> projected;
