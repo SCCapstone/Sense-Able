@@ -30,7 +30,7 @@ cout << "Entering objectDetector" << endl;
     UserNotifier notifier = UserNotifier();
     int detectCode;
 
-    detectCode = detect_wall((distances), 0.1, 0.2);
+    detectCode = detect_wall(distances, 0.1, 0.2);
 
     if (detectCode == 1) {
         emit sendObjectDetected("Flat Wall");
@@ -71,8 +71,13 @@ cout << "Entering objectDetector" << endl;
 int objectDetector::detect_wall(std::vector<float> v, float measure_error, float flat_error) {
 
   // Calculate Equation for line of best fit
-  int n;
-  float sumx, sumy, mx, my, sdx, sdy;
+  int n = 0;
+  float sumx = 0;
+  float sumy = 0;
+  float ssy = 0;
+  float ssx = 0;
+  float mx, my, sdx, sdy;
+
 
   // Calculate Mean
   for (unsigned int i=0; i<v.size(); i++) {
@@ -85,8 +90,6 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
   my = sumy / n;
 
   // Calculate Standard Deviation for X's and Y's
-  float ssy, ssx;
-
   for (unsigned int i=0; i<v.size(); i++) {
     ssy += std::pow(v.at(i) - my, 2);
     ssx += std::pow(int(i) - mx, 2);
