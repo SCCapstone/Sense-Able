@@ -34,6 +34,12 @@ private slots:
 
     void frameCaptured(cv::Mat* frame);
 
+signals:
+    void startCapture();
+    void startThreadStream();
+    void startThreadRead(QString);
+    void startObjectDetect();
+
 private:
     Ui::MainWindow *ui;
     LeddarStream* stream;

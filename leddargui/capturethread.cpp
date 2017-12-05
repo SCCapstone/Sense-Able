@@ -12,7 +12,7 @@
 CaptureThread::CaptureThread()
 {
     //0: opens webcam
-    this->cap.open(0);
+    //this->cap.open(0);
 }
 CaptureThread::~CaptureThread()
 {
@@ -65,10 +65,11 @@ void CaptureThread::run()
  * Loads a hardcoded image detector and passes every frame of the the camera feed to
  * CaptureThread::imagedetect(). Sends the results to the QT Gui
  */
-void CaptureThread::startCapture()
+void CaptureThread::onStartCapture()
 {
     cv::HOGDescriptor hog;
     hog.load("my_detector.yml");
+    this->cap.open(0);
 
     while(true){
         if(cap.isOpened()){
@@ -80,4 +81,6 @@ void CaptureThread::startCapture()
             std::cout<<"camera not detected";
         }
     }
+
+    emit this->finished();
 }

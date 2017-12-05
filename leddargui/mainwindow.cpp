@@ -25,7 +25,39 @@ MainWindow::MainWindow(QWidget *parent) :
     this->objdetector = new objectDetector();
 
     this->signalMapper = new QSignalMapper(this);
-    //QThread thread;
+
+    // Connect the threads, signals, and slots together.
+    this->capture->moveToThread(captureThread);
+    //connect(captureThread, SIGNAL(started()), capture, SLOT(startCapture()));
+    connect(this, SIGNAL(startCapture()), capture, SLOT(onStartCapture())); /***************************************/
+    connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
+
+    this->stream->moveToThread(leddarThread);
+    //connect(leddarThread, SIGNAL(started()), stream, SLOT(StartStream()));
+    connect(this, SIGNAL(startThreadStream()), stream, SLOT(StartStream())); /**********************************/
+    connect(this, SIGNAL(startThreadRead(QString)), stream, SLOT(StartReplay(QString))); /**********************/
+    connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
+                    SLOT(catchDataPoints(int,vector<float>)),
+                    Qt::QueuedConnection);
+
+    this->objdetector->moveToThread(objdetectThread);
+    //connect(objdetectThread, SIGNAL(started()), objdetector, SLOT(detectObject()));
+    //connect(this, SIGNAL(startObjectDetect()), objdetector, SLOT(detectObject())); /***************************/
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
+                    objdetector,
+                    SLOT(processDataPoints(int, vector<float>)),
+                    Qt::QueuedConnection);
+    connect(objdetector, SIGNAL(finished()), objdetectThread, SLOT(quit()));
+    connect(objdetector, SIGNAL(sendObjectDetected(string)),
+                         SLOT(catchObjectDetected(string)),
+                         Qt::QueuedConnection);
+
+    // Start the threads.
+    captureThread->start();
+    leddarThread->start();
+    objdetectThread->start();
+
 }
 
 MainWindow::~MainWindow()
@@ -35,7 +67,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_readDataButton_clicked()
 {
-    // TODO: PASS THIS FILENAME TO THE LEDDAR THREAD
+    QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
+                                                    "../LeddarData", tr("Leddar files (*.ltl)"));
+    qInfo() << filename;
+    // Given a filename, find the matching recording if there exists one
+
+    emit startThreadRead(filename);
+    emit startObjectDetect();
+
+/*    // TODO: PASS THIS FILENAME TO THE LEDDAR THREAD
     QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
                                                     "../LeddarData", tr("Leddar files (*.ltl)"));
     qInfo() << filename;
@@ -63,36 +103,14 @@ void MainWindow::on_readDataButton_clicked()
     connect(objdetector, SIGNAL(sendObjectDetected(string)),
                          SLOT(catchObjectDetected(string)),
                          Qt::QueuedConnection);
-    objdetectThread->start();
+    objdetectThread->start();*/
 }
 
 void MainWindow::on_streamButton_clicked()
 {
-    //Start webcam stream
-    this->capture->moveToThread(captureThread);
-    connect(captureThread, SIGNAL(started()), capture, SLOT(startCapture()));
-    connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
-    captureThread->start();
-
-    this->stream->moveToThread(leddarThread);
-    connect(leddarThread, SIGNAL(started()), stream, SLOT(StartStream()));
-    connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
-    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
-                    SLOT(catchDataPoints(int,vector<float>)),
-                    Qt::QueuedConnection);
-    leddarThread->start();
-
-    this->objdetector->moveToThread(objdetectThread);
-    //connect(objdetectThread, SIGNAL(started()), objdetector, SLOT(detectObject()));
-    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
-                    objdetector,
-                    SLOT(processDataPoints(int, vector<float>)),
-                    Qt::QueuedConnection);
-    connect(objdetector, SIGNAL(finished()), objdetectThread, SLOT(quit()));
-    connect(objdetector, SIGNAL(sendObjectDetected(string)),
-                         SLOT(catchObjectDetected(string)),
-                         Qt::QueuedConnection);
-    objdetectThread->start();
+    emit startCapture();
+    emit startThreadStream();
+    emit startObjectDetect();
 }
 
 void MainWindow::on_readDataButton_clicked(bool checked)
