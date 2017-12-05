@@ -35,7 +35,6 @@
 #include <QThread>
 #include <QObject>
 #include <functional>
-#include <QFileDialog>
 
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
 
@@ -166,14 +165,14 @@ cout << "Function ReplayData" << endl;
 /// \brief   Main menu when a replay a record file.
 // *****************************************************************************
 
-void LeddarStream::StartReplay( QString filename )
+void LeddarStream::StartReplay( void )
 {
     // Initialize the Leddar Handle.
     this->gHandle = LeddarCreate();
 
-    // TODO changing
+    // TODO
     // We currently use a hard-coded filename.
-    string inputString = filename.toUtf8().constData();
+    string inputString = "LeddarData/WALL.ltl";
     char* lName = new char[inputString.size() + 1];
     std::copy(inputString.begin(), inputString.end(), lName);
     lName[inputString.size()] = '\0';
@@ -218,57 +217,54 @@ void LeddarStream::StartReplay( QString filename )
 
 void LeddarStream::ReadLiveData( void )
 {
+cout << "Start ReadLiveData" << endl;
     int currentRecordIndex;
     vector<float> dataPoints;
     unsigned int i, j, lCount;
     LdDetection lDetections[50];
 
     LeddarChar recordingFileName[255];
-    puts( "\nPress a key to start reading data and press a key again to stop." );
-    WaitKey();
 
-//    CheckError(LeddarStartRecording(gHandle, recordingFileName));
     CheckError( LeddarStartDataTransfer( gHandle, LDDL_DETECTIONS ) );
-//    LeddarSetCallback( gHandle, DataCallback, gHandle );
 
 // Datacallback stuff **************************************************************************
-    lCount = LeddarGetDetectionCount( this->gHandle );
-    if ( lCount > ARRAY_LEN( lDetections ) )
-    {
-        lCount = ARRAY_LEN( lDetections );
-    }
+    while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS) {
+cout << "Getting next data points" << endl;
+        lCount = LeddarGetDetectionCount( this->gHandle );
+cout << lCount << endl;
+        if ( lCount > ARRAY_LEN( lDetections ) )
+        {
+            lCount = ARRAY_LEN( lDetections );
+        }
 
-    CheckError(LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ) ));
+        LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ));
 
-    // When replaying a record, display the current index
+        // When replaying a record, display the current index
 
-    if ( LeddarGetRecordSize( this->gHandle ) != 0 )
-    {
-        currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
-        cout << currentRecordIndex << endl;
-    }
+        if ( LeddarGetRecordSize( this->gHandle ) != 0 )
+        {
+            currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
+            cout << currentRecordIndex << endl;
+        }
 
-    // Output the detected points to the console.
-    for( i=0, j=0; (i<lCount) && (j<12); ++i )
-    {
-        cout << lDetections[i].mDistance << " ";
-        dataPoints.push_back(lDetections[i].mDistance);
-        ++j;
-    }
-    cout << endl;
+        // Output the detected points to the console.
+        for( i=0, j=0; (i<lCount) && (j<12); ++i )
+        {
+            cout << lDetections[i].mDistance << " ";
+            dataPoints.push_back(lDetections[i].mDistance);
+            ++j;
+        }
+        cout << endl;
 cout << dataPoints.size() << endl;
-WaitKey();
-    // Signal the detected points to the GUI.
-    emit this->sendDataPoints(currentRecordIndex, dataPoints);
-WaitKey();
-    dataPoints.erase(dataPoints.begin(), dataPoints.end());
-    QCoreApplication::processEvents();
-    WaitKey();
+        // Signal the detected points to the GUI.
+        emit this->sendDataPoints(currentRecordIndex, dataPoints);
+
+        dataPoints.erase(dataPoints.begin(), dataPoints.end());
+        QCoreApplication::processEvents();
+    }
 // Datacallback done **************************************************************************
 
-    LeddarStopDataTransfer( gHandle );
-//    LeddarRemoveCallback( gHandle, DataCallback, gHandle );
-//    LeddarStopRecording(gHandle);
+    LeddarStopDataTransfer( this->gHandle );
 }
 
 // *****************************************************************************
