@@ -78,13 +78,10 @@ void MainWindow::on_streamButton_clicked()
                     SLOT(processDataPoints(int, vector<float>)),
                     Qt::QueuedConnection);
     connect(objdetector, SIGNAL(finished()), objdetectThread, SLOT(quit()));
-    connect(objdetector, SIGNAL(sendObjectDetected(string)), this, SLOT(catchObjectDetected(string)));
+    connect(objdetector, SIGNAL(sendObjectDetected(string)),
+                         SLOT(catchObjectDetected(string)),
+                         Qt::QueuedConnection);
     objdetectThread->start();
-}
-
-void MainWindow::on_resetButton_clicked()
-{
-    ui->textBrowser->setText("");
 }
 
 void MainWindow::on_readDataButton_clicked(bool checked)
@@ -105,22 +102,13 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
         (labels[i])->setText(QString::number(dataPoints.at(i)));
     }
 
-    // Output the data points to the text browser.
-    ui->textBrowser->append(QString::number(index));
-
-    for (unsigned int i = 0; i < dataPoints.size(); i++) {
-        ui->textBrowser->append(QString::number(dataPoints.at(i)));
-    }
-
-    ui->textBrowser->append("\n");
-
     // Delay a little for the presentation of this program.
     QThread::msleep(100);
 
 }
 
 void MainWindow::catchObjectDetected(string objectName) {
-    cout << "DETECTED: " << objectName << endl;
+    ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));
 }
 
 void MainWindow::frameCaptured(cv::Mat* frame)

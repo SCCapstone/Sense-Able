@@ -6,7 +6,7 @@
 
 objectDetector::objectDetector()
 {
-
+    qRegisterMetaType<string>("string");
 }
 /*
 void objectDetector::objDetect(int i)
@@ -25,18 +25,23 @@ cout << "LeddarStream->objectDetector signal /slot works!" << endl;
 
 void objectDetector::detectObject(vector<float> distances)
 {
+    UserNotifier notifier = UserNotifier();
     int detectCode;
 
     detectCode = detect_wall(distances, 0.1, 0.2);
 
     if (detectCode == 1) {
         emit sendObjectDetected("Flat Wall");
+        notifier.playSound(0);
     } else if (detectCode == 2) {
         emit sendObjectDetected("Left Slant");
+        notifier.playSound(1);
     } else if (detectCode == 3) {
         emit sendObjectDetected("Right Slant");
+        notifier.playSound(2);
     } else if (detectCode == 4) {
         emit sendObjectDetected("Hallway");
+        notifier.playSound(3);
     } else if (detectCode == -1) {
         emit sendObjectDetected("NONE");
     } else {
