@@ -38,7 +38,8 @@ public:
     LeddarHandle gHandle;
 
 public slots:
-    void StartReplay(QString filename);
+//    void StartReplay(QString filename);
+    void StartReplay();
     void StartStream();
 
 signals:

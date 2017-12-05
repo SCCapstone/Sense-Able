@@ -5,7 +5,7 @@
 #include <QThread>
 #include "leddarmain.h"
 #include "capturethread.h"
-#include "OLDobjdetect.h"
+//#include "OLDobjdetect.h"
 #include "objdetect.h"
 
 namespace Ui {
