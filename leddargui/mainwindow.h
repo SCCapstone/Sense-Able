@@ -5,6 +5,7 @@
 #include <QThread>
 #include "leddarmain.h"
 #include "capturethread.h"
+#include "OLDobjdetect.h"
 #include "objdetect.h"
 
 namespace Ui {
@@ -38,8 +39,8 @@ private:
     LeddarStream* stream;
     QThread* captureThread;
     CaptureThread* capture;
-//    QThread* objdetectThread;
-//    ObjectDetector* objdetector;
+    QThread* objdetectThread;
+    objectDetector* objdetector;
 };
 
 #endif // MAINWINDOW_H

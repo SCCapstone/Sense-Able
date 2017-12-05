@@ -1,21 +1,23 @@
-#include <vector>
-#include <string>
-#include <cmath>
-#include <iostream>
-
 #include "objdetect.h"
 
+objectDetector::objectDetector()
+{
 
-// static float standard_deviation(std::vector<float> xs, std::vector<float> ys);
-// static int detect_wall(std::vector<float> v);
-//ObjectDetector::ObectDetector()
-//{
-//    return;
-//}
-//ObjectDetector::~OjectDetector()
-//{
-//    return;
-//}
+}
+
+void objectDetector::objDetect(int i)
+{
+    //this is a slot
+
+    //signal passes integer i
+    int j = i;
+    emit(objNotify(j));
+}
+void objectDetector::DetectObject(vector<float> distances, float sig_dist)
+{
+    //also a slot
+}
+
 /*
 * Takes a vector of floats and determines wether a wall or hallway is present
 * -1 -> Wall not detected
@@ -24,11 +26,11 @@
 *  3 -> Right slant (\) wall detected
 *  4 -> Hallway (/\) detected
 *
-* y = a + bx 
+* y = a + bx
 * a = My - b(Mx)
 * b = r (sdy/sdx)
 */
-int ObjectDetector::detect_wall(std::vector<float> v, float measure_error, float flat_error) {
+int objectDetector::detect_wall(std::vector<float> v, float measure_error, float flat_error) {
 
   // Calculate Equation for line of best fit
   int n;
@@ -78,27 +80,27 @@ int ObjectDetector::detect_wall(std::vector<float> v, float measure_error, float
   // std::cout << << std::endl;
   // std::cout << << std::endl;
   // std::cout << << std::endl;
-  // If any of the segments exceed tolerated measurement error - 
+  // If any of the segments exceed tolerated measurement error -
   // A wall is not considered to exist across the field of vision
   bool wall = true;
   for ( unsigned int i=0; i<v.size(); i++ ){
     if ( std::abs( (b*int(i)+a) - v.at(i) ) > measure_error )  {
       // std::cout << (b*int(i)+a) - v.at(i) << std::endl;
-      wall = false; 
+      wall = false;
     }
   }
 
   // If a wall exists, check if flat, left slant, or right slant
   if (wall) {
     // flat wall
-    if (std::abs(b) < flat_error) { 
+    if (std::abs(b) < flat_error) {
       return 1;
     }
     //left slant (/)
     else if (b > 0) {
       return 2;
     }
-    //right slant (\) 
+    //right slant (\)
     else { // b < 0
       return 3;
     }

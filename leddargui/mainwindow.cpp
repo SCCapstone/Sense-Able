@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->captureThread = new QThread();
     this->capture = new CaptureThread();
 
-//    this->objdetectThread = new QThread();
-//    this->objdetector = new ObjectDetector();
+    this->objdetectThread = new QThread();
+    this->objdetector = new objectDetector();
     //QThread thread;
 }
 
