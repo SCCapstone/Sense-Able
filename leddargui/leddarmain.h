@@ -40,11 +40,22 @@ public:
 public slots:
 //    void StartReplay(QString filename);
     void StartReplay(QString fileName);
+    void StopReplay();
     void StartStream();
+    void StopStream();
+
+private slots:
+    void doReplay(QString fileName);
+    void doStream();
 
 signals:
     void finished();
     void sendDataPoints(int index, vector<float> dataPoints);
+    void running();
+    void stopped();
+
+private:
+    bool isrunning, isstopped;
 };
 
 #endif // MAIN_H

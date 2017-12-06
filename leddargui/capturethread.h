@@ -17,16 +17,24 @@ public:
     int imagedetect(cv::HOGDescriptor, cv::Mat);
 
 public slots:
-    void onStartCapture();
+    void StartCapture();
+    void StopCapture();
+
+private slots:
+    void doCapture();
 
 signals:
     void newFrame(cv::Mat*);
-    void finished();
+    void running();
+    void stopped();
+//    void finished();
 
 private:
     QTimer* timr;
     cv::VideoCapture cap;
     cv::Mat frame;
+
+    bool isrunning, isstopped;
 
 };
 

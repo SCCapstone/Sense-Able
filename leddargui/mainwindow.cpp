@@ -28,28 +28,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Connect the threads, signals, and slots together.
     this->capture->moveToThread(captureThread);
-    //connect(captureThread, SIGNAL(started()), capture, SLOT(startCapture()));
-    connect(this, SIGNAL(startCapture()), capture, SLOT(onStartCapture())); /***************************************/
+    connect(this, SIGNAL(startCapture()), capture, SLOT(StartCapture())); /***************************************/
+    connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
 
     this->stream->moveToThread(leddarThread);
-    //connect(leddarThread, SIGNAL(started()), stream, SLOT(StartStream()));
-    connect(this, SIGNAL(startThreadStream()), stream, SLOT(StartStream())); /**********************************/
-    connect(this, SIGNAL(startThreadRead(QString)), stream, SLOT(StartReplay(QString))); /**********************/
-    connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
+    connect(this, SIGNAL(startStream()), stream, SLOT(StartStream())); /**********************************/
+    connect(this, SIGNAL(stopStream()), stream, SLOT(StopStream()));
+    connect(this, SIGNAL(startRead(QString)), stream, SLOT(StartReplay(QString))); /**********************/
+    connect(this, SIGNAL(stopRead()), stream, SLOT(StopReplay()));
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
                     SLOT(catchDataPoints(int,vector<float>)),
                     Qt::QueuedConnection);
 
     this->objdetector->moveToThread(objdetectThread);
-    //connect(objdetectThread, SIGNAL(started()), objdetector, SLOT(detectObject()));
-    //connect(this, SIGNAL(startObjectDetect()), objdetector, SLOT(detectObject())); /***************************/
+    //connect(this, SIGNAL(startDetect()), objdetector, SLOT(StartDetect()); /***************************/
+    connect(this, SIGNAL(stopDetect()), objdetector, SLOT(StopDetect()));
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
                     objdetector,
-                    SLOT(processDataPoints(int, vector<float>)),
+                    SLOT(StartDetect(int, vector<float>)),
                     Qt::QueuedConnection);
-    connect(objdetector, SIGNAL(finished()), objdetectThread, SLOT(quit()));
     connect(objdetector, SIGNAL(sendObjectDetected(string)),
+                         this,
                          SLOT(catchObjectDetected(string)),
                          Qt::QueuedConnection);
 
@@ -68,12 +68,11 @@ MainWindow::~MainWindow()
 void MainWindow::on_readDataButton_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
-                                                    "../LeddarData", tr("Leddar files (*.ltl)"));
-    qInfo() << filename;
+                                                    "./LeddarData", tr("Leddar files (*.ltl)"));
     // Given a filename, find the matching recording if there exists one
 
-    emit startThreadRead(filename);
-    emit startObjectDetect();
+    emit startRead(filename);
+    emit startDetect();
 
 /*    // TODO: PASS THIS FILENAME TO THE LEDDAR THREAD
     QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
@@ -109,8 +108,8 @@ void MainWindow::on_readDataButton_clicked()
 void MainWindow::on_streamButton_clicked()
 {
     emit startCapture();
-    emit startThreadStream();
-    emit startObjectDetect();
+    emit startStream();
+    emit startDetect();
 }
 
 void MainWindow::on_readDataButton_clicked(bool checked)
@@ -132,7 +131,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
     }
 
     // Delay a little for the presentation of this program.
-    QThread::msleep(100);
+//    QThread::msleep(100);
 
 }
 
@@ -144,4 +143,12 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 {
     //Convert Mat to QImage and display to widget
     ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
+}
+
+void MainWindow::on_cancelButton_clicked()
+{
+    emit stopCapture();
+    emit stopStream();
+    emit stopRead();
+    emit stopDetect();
 }

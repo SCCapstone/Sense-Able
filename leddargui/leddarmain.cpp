@@ -55,6 +55,8 @@ LeddarStream::LeddarStream() {
 
     this->gHandle = new LeddarHandle();
     qRegisterMetaType<vector<float> >("vector<float>");
+    isstopped = false;
+    isrunning = false;
 }
 
 LeddarStream::~LeddarStream() {
@@ -123,7 +125,7 @@ cout << "Function ReplayData" << endl;
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
 
-    while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE)
+    while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE && isrunning && !isstopped)
     {
         lCount = LeddarGetDetectionCount( this->gHandle );
         if ( lCount > ARRAY_LEN( lDetections ) )
@@ -151,7 +153,9 @@ cout << "Function ReplayData" << endl;
         cout << endl;
 
         // Signal the detected points to the GUI.
-        emit this->sendDataPoints(currentRecordIndex, dataPoints);
+        if (dataPoints.size() != 0) {
+            emit this->sendDataPoints(currentRecordIndex, dataPoints);
+        }
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
     }
@@ -166,8 +170,12 @@ cout << "Function ReplayData" << endl;
 /// \brief   Main menu when a replay a record file.
 // *****************************************************************************
 
-void LeddarStream::StartReplay(QString fileName)
+void LeddarStream::doReplay(QString fileName)
 {
+    if (!isrunning || isstopped) return;
+
+    cout << fileName.toUtf8().constData() << endl;
+
     // Initialize the Leddar Handle.
     this->gHandle = LeddarCreate();
 
@@ -203,7 +211,9 @@ void LeddarStream::StartReplay(QString fileName)
 
     // Destroy the handle, and signal that we are done.
     LeddarDestroy(this->gHandle);
-    emit this->finished();
+//    QMetaObject::invokeMethod(this, "doReplay", Qt::QueuedConnection);
+    StopReplay();
+//    emit this->finished();
 }
 
 // *****************************************************************************
@@ -231,7 +241,7 @@ cout << "Start ReadLiveData" << endl;
     CheckError( LeddarStartDataTransfer( gHandle, LDDL_DETECTIONS ) );
 
 // Datacallback stuff **************************************************************************
-    while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS) {
+    while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS && isrunning && !isstopped) {
 cout << "Getting next data points" << endl;
         lCount = LeddarGetDetectionCount( this->gHandle );
 cout << lCount << endl;
@@ -370,11 +380,13 @@ char* LeddarStream::FindAddressByIndex( unsigned int aIndex, char* aAddresses )
 ///                         plugged to the PC.
 // *****************************************************************************
 
-void LeddarStream::StartStream()
+void LeddarStream::doStream()
 {
     char lAddresses[256];
     char* lAddress = NULL;
     char lConnectionType[10];
+
+    if (!isrunning || isstopped) return;
 
     // Initialize the Leddar Handle.
     this->gHandle = LeddarCreate();
@@ -388,7 +400,7 @@ void LeddarStream::StartStream()
 
     if ( LeddarConnect( gHandle, lConnectionType, lAddress ) == LD_SUCCESS )
     {
-        while( LeddarGetConnected( gHandle ) == LD_SUCCESS )
+        while( LeddarGetConnected( gHandle ) == LD_SUCCESS && isrunning && !isstopped)
         {
             ReadLiveData();
         }
@@ -401,7 +413,35 @@ void LeddarStream::StartStream()
     // Disconnect, destroy the handle, and signal that we are done.
     LeddarDisconnect( gHandle );
     LeddarDestroy(this->gHandle);
-    emit this->finished();
+
+    QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
+//    emit this->finished();
+}
+
+void LeddarStream::StartReplay(QString filename) {
+    isstopped = false;
+    isrunning = true;
+    emit running();
+    doReplay(filename);
+}
+
+void LeddarStream::StopReplay() {
+    isstopped = true;
+    isrunning = false;
+    emit stopped();
+}
+
+void LeddarStream::StartStream() {
+    isstopped = false;
+    isrunning = true;
+    emit running();
+    doStream();
+}
+
+void LeddarStream::StopStream() {
+    isstopped = true;
+    isrunning = false;
+    emit stopped();
 }
 
 // End of file Main.c

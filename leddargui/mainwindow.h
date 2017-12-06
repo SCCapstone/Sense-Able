@@ -34,11 +34,17 @@ private slots:
 
     void frameCaptured(cv::Mat* frame);
 
+    void on_cancelButton_clicked();
+
 signals:
     void startCapture();
-    void startThreadStream();
-    void startThreadRead(QString);
-    void startObjectDetect();
+    void stopCapture();
+    void startStream();
+    void stopStream();
+    void startRead(QString);
+    void stopRead();
+    void startDetect();
+    void stopDetect();
 
 private:
     Ui::MainWindow *ui;

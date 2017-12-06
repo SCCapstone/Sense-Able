@@ -21,12 +21,21 @@ public:
     vector<float> yaxis_projection(vector<float> distances);
 
 public slots:
-    void processDataPoints(int index, vector<float> dataPoints);
+    void StartDetect(int index, vector<float> distances);
+    void StopDetect();
     //void objDetect(int i);
+
+private slots:
+    void doDetect(vector<float> dataPoints);
 
 signals:
     void sendObjectDetected(string objectName);
     void finished();
+    void running();
+    void stopped();
+
+private:
+    bool isrunning, isstopped;
 };
 
 #endif // OBJECTDETECT_H

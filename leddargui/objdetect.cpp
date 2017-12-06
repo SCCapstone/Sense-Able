@@ -8,6 +8,8 @@
 objectDetector::objectDetector()
 {
     qRegisterMetaType<string>("string");
+    isstopped = false;
+    isrunning = false;
 }
 /*
 void objectDetector::objDetect(int i)
@@ -19,18 +21,16 @@ void objectDetector::objDetect(int i)
     emit(objNotify(j));
 }
 */
-void objectDetector::processDataPoints(int index, vector<float> dataPoints) {
-cout << "LeddarStream->objectDetector signal /slot works!" << endl;
-    detectObject(dataPoints);
-}
 
-void objectDetector::detectObject(vector<float> distances)
+void objectDetector::doDetect(vector<float> distances)
 {
-cout << "Entering objectDetector" << endl;
+cout << "Entering doDetect" << endl;
     UserNotifier notifier = UserNotifier();
     int detectCode;
     float measure_err = .75;
     float flat_err = 100;
+
+    if (!isrunning || isstopped) return;
 
     detectCode = detect_wall(yaxis_projection(distances), measure_err, flat_err);
 
@@ -52,7 +52,8 @@ cout << "Entering objectDetector" << endl;
         cout << "ERROR: detectCode has an invalid value." << endl;
     }
 
-    return;
+    StopDetect();
+cout << "Exiting doDetect" << endl;
 }
 
 // static float standard_deviation(std::vector<float> xs, std::vector<float> ys);
@@ -189,4 +190,17 @@ vector<float> objectDetector::yaxis_projection(vector<float> distances){
     }
 
     return projected;
+}
+
+void objectDetector::StartDetect(int index, vector<float> dataPoints) {
+    isstopped = false;
+    isrunning = true;
+    emit running();
+    doDetect(dataPoints);
+}
+
+void objectDetector::StopDetect() {
+    isstopped = true;
+    isrunning = false;
+    emit stopped();
 }

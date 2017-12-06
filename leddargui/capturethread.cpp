@@ -3,13 +3,17 @@
 //#include <opencv2/highgui.hpp>
 //#include <opencv2/videoio.hpp>
 //#include <QTimer>
+#include <QCoreApplication>
 
 #include "capturethread.h"
 
 CaptureThread::CaptureThread()
 {
+
     //0: opens webcam
-    //this->cap.open(0);
+    this->cap.open(0);
+    isstopped = false;
+    isrunning = false;
 }
 CaptureThread::~CaptureThread()
 {
@@ -48,13 +52,14 @@ void CaptureThread::run()
     timr -> start(10);
 }
 
-void CaptureThread::onStartCapture()
+void CaptureThread::doCapture()
 {
+    if (!isrunning || isstopped) return;
+
     cv::HOGDescriptor hog;
     hog.load("my_detector.yml");
-    this->cap.open(0);
 
-    while(true){
+    while(isrunning && !isstopped){
         if(cap.isOpened()){
             cap >> frame;
             int a = imagedetect(hog, frame);
@@ -63,7 +68,22 @@ void CaptureThread::onStartCapture()
         else{
             std::cout<<"camera not detected";
         }
+        QCoreApplication::processEvents();
     }
 
-    emit this->finished();
+    QMetaObject::invokeMethod(this, "doCapture", Qt::QueuedConnection);
+//    emit this->finished();
+}
+
+void CaptureThread::StartCapture() {
+    isstopped = false;
+    isrunning = true;
+    emit running();
+    doCapture();
+}
+
+void CaptureThread::StopCapture() {
+    isstopped = true;
+    isrunning = false;
+    emit stopped();
 }
