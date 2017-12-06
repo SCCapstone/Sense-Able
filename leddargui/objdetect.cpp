@@ -5,6 +5,9 @@
 #include <iostream>
 #include "objdetect.h"
 
+/*
+ * TODO: Caleb : Comment
+ */
 objectDetector::objectDetector()
 {
     qRegisterMetaType<string>("string");
@@ -22,6 +25,10 @@ void objectDetector::objDetect(int i)
 }
 */
 
+/*
+ * Takes a vector of distances and detects objects. If an object is found, a sound
+ * notification is issued and the name of the object is sent to the GUI.
+ */
 void objectDetector::doDetect(vector<float> distances)
 {
 cout << "Entering doDetect" << endl;
@@ -29,14 +36,24 @@ cout << "Entering doDetect" << endl;
     int detectCode;
     float measure_err = .75;
     float flat_err = 100;
+    sig_dist = 2;
 
     if (!isrunning || isstopped) return;
 
     detectCode = detect_wall(yaxis_projection(distances), measure_err, flat_err);
 
+    float closest_point = 0;
+    for (int i = 0; i < distances.size(); i++) {
+        if (distances.at(i) > closest_point) {
+            closest_point = distances.at(i);
+        }
+    }
+
     if (detectCode == 1) {
         emit sendObjectDetected("Wall");
-        notifier.playSound(0);
+        if ( closest_point - .5 < sig_dist ) {
+            notifier.playSound(0);
+        }
     } else if (detectCode == 2) {
         emit sendObjectDetected("Left Slant");
         notifier.playSound(1);
@@ -56,9 +73,6 @@ cout << "Entering doDetect" << endl;
 cout << "Exiting doDetect" << endl;
 }
 
-// static float standard_deviation(std::vector<float> xs, std::vector<float> ys);
-// static int detect_wall(std::vector<float> v);
-
 /*
 * Takes a vector of floats and determines wether a wall or hallway is present
 * -1 -> Wall not detected
@@ -71,33 +85,30 @@ cout << "Exiting doDetect" << endl;
 * a = My - b(Mx)
 * b = r (sdy/sdx)
 */
-int objectDetector::detect_wall(std::vector<float> v, float measure_error, float flat_error) {
+int objectDetector::detect_wall(std::vector<float> distances, float measure_error, float flat_error) {
 
-  // Calculate Equation for line of best fit
-  int n = 0;
-  float sumx = 0;
-  float sumy = 0;
-  float ssy = 0;
-  float ssx = 0;
-  float mx, my, sdx, sdy;
+  int n = 0;    // Size of distances
+  float sumx = 0; // sum of x
+  float sumy = 0; // sum of y
+  float ssy = 0; // Sum of squared difference of x - ux
+  float ssx = 0; // sum of squared differnce of y - uy
+  float mx, my, sdx, sdy; // mean x/y, standard deviation x/y
 
 
   // Calculate Mean
-  for (unsigned int i=0; i<v.size(); i++) {
+  for (unsigned int i = 0; i < distances.size(); i++) {
     sumx += int(i);
-    sumy += v.at(i);
+    sumy += distances.at(i);
     n += 1;
   }
-
   mx = sumx / n;
   my = sumy / n;
 
   // Calculate Standard Deviation for X's and Y's
-  for (unsigned int i=0; i<v.size(); i++) {
-    ssy += std::pow(v.at(i) - my, 2);
+  for (unsigned int i = 0; i < distances.size(); i++) {
+    ssy += std::pow(distances.at(i) - my, 2);
     ssx += std::pow(int(i) - mx, 2);
   }
-
   sdy = std::sqrt(ssy/n);
   sdx = std::sqrt(ssx/n);
 
@@ -105,33 +116,34 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
 //  std::cout << "sdx" << sdx << std::endl;
 
   // Calculate R - sum(xy)/ swrt(sum(x^2) * sum(y^2))
+  // Calculate Covariance
+  float r, intercept, slope; // R value
+  float sumxy = 0; // sum of all x*y
+  float sumxx = 0; // sum of all x*x
+  float sumyy = 0; // sum of all y*y
 
-  float r, a, b;
-  float sumxy = 0;
-  float sumxx = 0;
-  float sumyy = 0;
 
-  for (unsigned int i=0; i<v.size(); i++) {
-    sumxy += int(i) * v.at(i);
+  for (unsigned int i = 0; i < distances.size(); i++) {
+    sumxy += int(i) * distances.at(i);
     sumxx += std::pow(int(i), 2);
-    sumyy += std::pow(v.at(i), 2);
+    sumyy += std::pow(distances.at(i), 2);
   }
 
   r = sumxy / sqrt(sumxx*sumyy);
 
   // Calculate slope and intercept
-  b = r * (sdy/sdx);
-  a = (v.at( n/2 - 1) + v.at( n/2 )) / 2;
+  slope = r * (sdy/sdx);
+  intercept = (distances.at( n/2 - 1) + distances.at( n/2 )) / 2;
 //  std::cout << "SLope " << b << "  Intercept: " << a << std::endl;
 //  std::cout << "MEANX, MEANY " << mx << " " << my << std::endl;
 
   // If any of the segments exceed tolerated measurement error -
   // A wall is not considered to exist across the field of vision
   bool wall = true;
-  for ( unsigned int i=0; i<v.size(); i++ ){
-    float errori = std::abs( (b*int(i) + a) - v.at(i) );
+  for ( unsigned int i = 0; i < distances.size(); i++ ){
+    float errori = std::abs( (slope*int(i) + intercept) - distances.at(i) );
     if ( errori > measure_error )  {
-//       std::cout << "error" << (b*int(i)+a) - v.at(i) << std::endl;
+//       std::cout << "error" << (b*int(i)+a) - distances.at(i) << std::endl;
       wall = false;
     }
   }
@@ -139,11 +151,11 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
   // If a wall exists, check if flat, left slant, or right slant
   if (wall) {
     // flat wall
-    if (std::abs(b) < flat_error) {
+    if (std::abs(slope) < flat_error) {
       return 1;
     }
     //left slant (/)
-    else if (b > 0) {
+    else if (slope > 0) {
       return 2;
     }
     //right slant (\)
@@ -153,9 +165,9 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
   }
   // Check left and right fields of vision for hall way
   // TODO: EXPAND CASES TO CHECK FOR LEFT/RIGHT OBSTRUCTION
-  else if (v.size() == 16) {
-    std::vector<float> left_v(v.begin(), v.begin() + 8);
-    std::vector<float> right_v(v.end() - 8, v.end());
+  else if (distances.size() == 16) {
+    std::vector<float> left_v(distances.begin(), distances.begin() + 8);
+    std::vector<float> right_v(distances.end() - 8, distances.end());
 
     int left_wall = detect_wall(left_v, measure_error, flat_error);
     int right_wall = detect_wall(right_v, measure_error, flat_error);
@@ -167,9 +179,8 @@ int objectDetector::detect_wall(std::vector<float> v, float measure_error, float
   // No Wall
   return -1;
 }
-/* Function projects onto the y-axis
- *
- *
+/*
+ *  Projects each distance in a vector onto the y-axis and returns the projections in a vecctor
 */
 vector<float> objectDetector::yaxis_projection(vector<float> distances){
     vector<float> projected;
