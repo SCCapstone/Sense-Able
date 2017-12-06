@@ -36,6 +36,7 @@ public:
     char* FindAddressByIndex( unsigned int aIndex, char* aAddresses );
 
     LeddarHandle gHandle;
+    bool isrunning, isstopped;
 
 public slots:
 //    void StartReplay(QString filename);
@@ -54,8 +55,6 @@ signals:
     void running();
     void stopped();
 
-private:
-    bool isrunning, isstopped;
 };
 
 #endif // MAIN_H

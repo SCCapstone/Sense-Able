@@ -67,49 +67,23 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_readDataButton_clicked()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
-                                                    "./LeddarData", tr("Leddar files (*.ltl)"));
-    // Given a filename, find the matching recording if there exists one
+    if (!this->stream->isrunning) {
+        QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
+                                                        "./LeddarData", tr("Leddar files (*.ltl)"));
+        // Given a filename, find the matching recording if there exists one
 
-    emit startRead(filename);
-    emit startDetect();
-
-/*    // TODO: PASS THIS FILENAME TO THE LEDDAR THREAD
-    QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
-                                                    "../LeddarData", tr("Leddar files (*.ltl)"));
-    qInfo() << filename;
-    // Given a filename, find the matching recording if there exists one
-    this->stream->moveToThread(leddarThread);
-
-    // Roundabout "magical" way to pass 'filename' to 'StartReplay'.
-    connect(leddarThread, SIGNAL(started()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(leddarThread, filename);
-    connect(signalMapper, SIGNAL(mapped(QString)), stream, SLOT(StartReplay(QString)));
-
-    //connect(leddarThread, SIGNAL(started()), stream, SLOT(StartReplay(filename)));
-    connect(stream, SIGNAL(finished()), leddarThread, SLOT(quit()));
-    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
-                    SLOT(catchDataPoints(int,vector<float>)),
-                    Qt::BlockingQueuedConnection);
-    leddarThread->start();
-
-    this->objdetector->moveToThread(objdetectThread);
-    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
-                    objdetector,
-                    SLOT(processDataPoints(int, vector<float>)),
-                    Qt::QueuedConnection);
-    connect(objdetector, SIGNAL(finished()), objdetectThread, SLOT(quit()));
-    connect(objdetector, SIGNAL(sendObjectDetected(string)),
-                         SLOT(catchObjectDetected(string)),
-                         Qt::QueuedConnection);
-    objdetectThread->start();*/
+        emit startRead(filename);
+        emit startDetect();
+    }
 }
 
 void MainWindow::on_streamButton_clicked()
 {
-    emit startCapture();
-    emit startStream();
-    emit startDetect();
+    if (!this->stream->isrunning) {
+        emit startCapture();
+        emit startStream();
+        emit startDetect();
+    }
 }
 
 void MainWindow::on_readDataButton_clicked(bool checked)
