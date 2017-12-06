@@ -155,6 +155,7 @@ cout << "Function ReplayData" << endl;
         // Signal the detected points to the GUI.
         if (dataPoints.size() != 0) {
             emit this->sendDataPoints(currentRecordIndex, dataPoints);
+            QThread::msleep(100);
         }
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();

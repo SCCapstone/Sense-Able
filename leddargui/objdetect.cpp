@@ -36,7 +36,7 @@ cout << "Entering doDetect" << endl;
     int detectCode;
     float measure_err = .75;
     float flat_err = 100;
-    sig_dist = 2;
+    float sig_dist = 2;
 
     if (!isrunning || isstopped) return;
 

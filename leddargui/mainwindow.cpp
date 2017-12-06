@@ -131,7 +131,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
     }
 
     // Delay a little for the presentation of this program.
-//    QThread::msleep(100);
+
 
 }
 
