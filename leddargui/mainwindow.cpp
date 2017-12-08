@@ -9,8 +9,6 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
-//static QThread MainWindow::myThread;
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -26,12 +24,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->signalMapper = new QSignalMapper(this);
 
-    // Connect the threads, signals, and slots together.
+    /*
+     * Connect the threads, signals, and slots together.
+     * This section connects signals and slots between the capture thread and the main thread
+     * in order to display a video feed.
+     */
     this->capture->moveToThread(captureThread);
     connect(this, SIGNAL(startCapture()), capture, SLOT(StartCapture())); /***************************************/
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
 
+    /*
+     * Connects the signals and slots between the leddar stream and main thread.
+     * Used to allow the gui to display the data read in from a file or the sensor.
+     */
     this->stream->moveToThread(leddarThread);
     connect(this, SIGNAL(startStream()), stream, SLOT(StartStream())); /**********************************/
     connect(this, SIGNAL(stopStream()), stream, SLOT(StopStream()));
@@ -49,9 +55,9 @@ MainWindow::MainWindow(QWidget *parent) :
                     SLOT(StartDetect(int, vector<float>)),
                     Qt::QueuedConnection);
     connect(objdetector, SIGNAL(sendObjectDetected(string)),
-                         this,
-                         SLOT(catchObjectDetected(string)),
-                         Qt::QueuedConnection);
+                    this,
+                    SLOT(catchObjectDetected(string)),
+                    Qt::QueuedConnection);
 
     // Start the threads.
     captureThread->start();
@@ -65,6 +71,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/*
+ * Opens a file dialog to allow the user to read in data from a file and view it in the gui.
+ */
 void MainWindow::on_readDataButton_clicked()
 {
     if (!this->stream->isrunning) {
@@ -77,6 +86,10 @@ void MainWindow::on_readDataButton_clicked()
     }
 }
 
+/*
+ * Starts a stream to read in data directly from the Leddar sensor.
+ * Also opens the camera and begins object detection.
+ */
 void MainWindow::on_streamButton_clicked()
 {
     if (!this->stream->isrunning) {
@@ -93,6 +106,9 @@ void MainWindow::on_readDataButton_clicked(bool checked)
     }
 }
 
+/*
+ * Takes the data from the Leddar stream and updates the gui with the most recent values.
+ */
 void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
     QLabel* labels[] = {ui->label_1, ui->label_2,  ui->label_3,
                        ui->label_4,  ui->label_5,  ui->label_6,
@@ -109,13 +125,20 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
 
 }
 
+/*
+ * Shows the name of the object detected, i.e. "Wall", "Stairs", etc.
+ */
 void MainWindow::catchObjectDetected(string objectName) {
     ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));
 }
 
+/*
+ * Takes frames from video stream as OpenCV Mat images and converts to QImage.
+ * Adjusts the colors to account for different formats and then displays to the widget.
+ */
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
-    //Convert Mat to QImage and display to widget
+
     ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
 }
 
