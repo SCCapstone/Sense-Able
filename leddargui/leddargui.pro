@@ -24,21 +24,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-INCLUDEPATH += -L/usr/local/include
+INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lstdc++ -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio -lopencv_objdetect
-INCLUDEPATH += Release
-LIBS += -L$$PWD/Release/ -lLeddar -lLeddarC -lLeddarTech
+INCLUDEPATH += ../Release/
+LIBS += -L../Release/ -lLeddar -lLeddarC -lLeddarTech
+DEPENDPATH += ../Release
+LIBS += -Wl,-rpath=../Release/
+#LIBS += -Wl,-rpath='${ORIGIN}/../'
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
+    main.cpp \
+    mainwindow.cpp \
     leddarmain.cpp \
     usernotifier.cpp \
     capturethread.cpp \
     objdetect.cpp
 
 HEADERS += \
-        mainwindow.h \
+    mainwindow.h \
     LeddarProperties.h \
     leddarmain.h \
     LeddarC.h \
@@ -47,4 +50,4 @@ HEADERS += \
     objdetect.h
 
 FORMS += \
-        mainwindow.ui
+    mainwindow.ui

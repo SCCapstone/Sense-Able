@@ -42,18 +42,18 @@ cout << "Entering doDetect" << endl;
 
     detectCode = detect_wall(yaxis_projection(distances), measure_err, flat_err);
 
-    float closest_point = 0;
-    for (int i = 0; i < distances.size(); i++) {
-        if (distances.at(i) > closest_point) {
-            closest_point = distances.at(i);
-        }
-    }
+//    float closest_point = 0;
+//    for (int i = 0; i < distances.size(); i++) {
+//        if (distances.at(i) > closest_point) {
+//              closest_point = distances.at(i);
+//        }
+//    }
 
     if (detectCode == 1) {
         emit sendObjectDetected("Wall");
-        if ( closest_point - .5 < sig_dist ) {
-            notifier.playSound(0);
-        }
+//        if ( closest_point - .5 < sig_dist ) {
+        notifier.playSound(0);
+//        }
     } else if (detectCode == 2) {
         emit sendObjectDetected("Left Slant");
         notifier.playSound(1);
