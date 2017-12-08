@@ -9,7 +9,7 @@
 #include "capturethread.h"
 
 /*
- * Constructor for the capture thread. Opens the webcam
+ * Constructor for the capture thread. Opens the webcam.
  */
 CaptureThread::CaptureThread()
 {
@@ -62,22 +62,12 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
 }
 
 /*
- * TODO: Timer
-
-void CaptureThread::run()
-{
-    timr = new QTimer(this);
-    connect(timr, SIGNAL(timeout()), this, SLOT(doCapture()));
-    timr -> start(10);
-}
-*/
-
-void CaptureThread::doCapture()
-/*
- * Captures image from camera and passes frames to the Gui for display
+ * Captures image from camera and passes frames to the Gui for display.
  * Loads a hardcoded image detector and passes every frame of the the camera feed to
  * CaptureThread::imagedetect(). Sends the results to the QT Gui
  */
+void CaptureThread::doCapture()
+
 {
     if (!isrunning || isstopped) return;
 
@@ -101,6 +91,12 @@ void CaptureThread::doCapture()
 //    emit this->finished();
 }
 
+/*
+ * Checks if camera stream is open, and if not, attempts to open the stream
+ * using the device number specified. 0 is used to access the webcam.
+ * Sets variables to keep track of whether the camera is running or stopped,
+ * and then calls doCapture().
+ */
 void CaptureThread::StartCapture() {
     if(!cap.isOpened()) cap.open(0);
     isstopped = false;
@@ -109,6 +105,9 @@ void CaptureThread::StartCapture() {
     doCapture();
 }
 
+/*
+ * Indicates the camera should be stopped, thereby pausing the stream if it is currently running.
+ */
 void CaptureThread::StopCapture() {
     isstopped = true;
     isrunning = false;
