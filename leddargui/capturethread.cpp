@@ -4,6 +4,7 @@
 //#include <opencv2/videoio.hpp>
 //#include <QTimer>
 #include <QCoreApplication>
+#include <QDebug>
 
 #include "capturethread.h"
 
@@ -14,7 +15,7 @@ CaptureThread::CaptureThread()
 {
 
     //0: opens webcam
-    this->cap.open(0);
+    //this->cap.open(0);
     isstopped = false;
     isrunning = false;
 }
@@ -61,19 +62,19 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
 }
 
 /*
- * TODO: KATHRYN
- */
+ * TODO: Timer
+
 void CaptureThread::run()
 {
     timr = new QTimer(this);
-    connect(timr, SIGNAL(timeout()), this, SLOT(startCapture()));
-
+    connect(timr, SIGNAL(timeout()), this, SLOT(doCapture()));
     timr -> start(10);
 }
+*/
 
 void CaptureThread::doCapture()
 /*
- * TODO: KATHRYN
+ * Captures image from camera and passes frames to the Gui for display
  * Loads a hardcoded image detector and passes every frame of the the camera feed to
  * CaptureThread::imagedetect(). Sends the results to the QT Gui
  */
@@ -90,7 +91,8 @@ void CaptureThread::doCapture()
             emit(newFrame(&frame));
         }
         else{
-            std::cout<<"camera not detected";
+            qDebug()<<"camera not detected or is already in use";
+            StopCapture();
         }
         QCoreApplication::processEvents();
     }
@@ -100,6 +102,7 @@ void CaptureThread::doCapture()
 }
 
 void CaptureThread::StartCapture() {
+    if(!cap.isOpened()) cap.open(0);
     isstopped = false;
     isrunning = true;
     emit running();
