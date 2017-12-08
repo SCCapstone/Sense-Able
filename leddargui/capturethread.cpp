@@ -41,14 +41,21 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
     cv::Size winStride = cv::Size(48,48);
 
     hog.detectMultiScale( frame, detections, foundWeights, hitThreshold, winStride);
+
+    if (foundWeights.size() == 0) {
+        std::cout << "WARNING: foundWeights is empty!  foundWeights.size() == 0!  Jonathan fix this!" << std::endl;
+        return 0;
+    }
+
     int max = 0;
     for (size_t i = 0; i < foundWeights.size(); i++) {
         if ( foundWeights.at(i) > foundWeights.at(max) ) {
             max = i;
         }
     }
-    cv::Scalar color = cv::Scalar( 0, foundWeights[max] * foundWeights[max] * 200, 0 );
-    cv::rectangle( frame, detections[max], color, 2);
+
+    cv::Scalar color = cv::Scalar( 0, foundWeights.at(max) * foundWeights.at(max) * 200, 0);
+    cv::rectangle( frame, detections.at(max), color, 2);
 
     return 0;
 }

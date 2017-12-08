@@ -69,7 +69,7 @@ void MainWindow::on_readDataButton_clicked()
 {
     if (!this->stream->isrunning) {
         QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
-                                                        "./LeddarData", tr("Leddar files (*.ltl)"));
+                                                        "../LeddarData", tr("Leddar files (*.ltl)"));
         // Given a filename, find the matching recording if there exists one
 
         emit startRead(filename);

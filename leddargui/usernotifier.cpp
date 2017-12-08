@@ -8,8 +8,8 @@ using namespace std;
  * Constructor. Stores hardcoded sound filenames to an array
  */
 UserNotifier::UserNotifier() {
-    soundFiles.push_back("Sounds/owen_wilson.wav");
-    soundFiles.push_back("Sounds/hall_notification.wav");
+    soundFiles.push_back("../Sounds/owen_wilson.wav");
+    soundFiles.push_back("../Sounds/hall_notification.wav");
    /* soundFiles.push_back("");
     soundFiles.push_back("");
     soundFiles.push_back("");
