@@ -83,7 +83,7 @@ cout << "Exiting doDetect" << endl;
 *
 * y = a + bx
 * a = My - b(Mx)
-* b = r (sdy/sdx)
+* b = r * (sdy/sdx)
 */
 int objectDetector::detect_wall(std::vector<float> distances, float measure_error, float flat_error) {
 
