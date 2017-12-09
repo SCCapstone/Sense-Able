@@ -1,11 +1,13 @@
 Sense-Able Prototype:
 
 
-Required Packages to compile:
+Requirements:
 
   opencv + contrib modules https://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html
   qt5
-  libusb-dev
+  libusb
+  libxml2
+  gcc 4.8
 
 
 To compile and run :
