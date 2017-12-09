@@ -44,6 +44,7 @@ crop_bounded(box_folder, img_folder, dest_folder):
   of the sysnet, Crop all images to the bounding box, resize to mean height and 
   width unless size is too different. Save cropped image to dest_folder 
 
+
 delete.py:
   deletes images from a folder if they are empty or if they are not jpeg. 
   The second condition is kindof hacky but useful for bulk imagenet images.

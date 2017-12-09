@@ -57,7 +57,6 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
         return 0;
     }
     std::cout << "No objects detected" << std::endl;
-
     return -1;
 }
 
@@ -72,8 +71,8 @@ void CaptureThread::doCapture()
     if (!isrunning || isstopped) return;
 
     cv::HOGDescriptor hog;
-    hog.load("my_detector.yml");
-
+    hog.load("../my_detector.yml");
+//    std::cout  << hum << std::endl;
     while(isrunning && !isstopped){
         if(cap.isOpened()){
             cap >> frame;
