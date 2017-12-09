@@ -1,29 +1,27 @@
-// *****************************************************************************
-// Module..: SDK -- Software development kit for Leddar products.
-//
-/// \file    Main.c
-///
-/// \brief   Simple console program demonstrating the use of Leddar Tech's
-///					"read data" function
-// Platform: Win32, Linux
-//
-// Copyright (c) 2013-2015 LeddarTech Inc. All rights reserved.
-// Information contained herein is or may be confidential and proprietary to
-// LeddarTech inc. Prior to using any part of the software development kit
-// accompanying this notice, you must accept and agree to be bound to the
-// terms of the LeddarTech Inc. license agreement accompanying this file.
-//
-// *****************************************************************************
-//
-//	DISCLAIMER: This program is a modified version of the leddar C Demo. It
-//		has been modified to only use the read data function so that we  
-//		can simply show that we read back data from our simulations as
-//		well as show that we know how to take apart, analyze, and use 
-//		the resources that are given to us.
-//
-//		This Program was modified by Austin Scampini
-//
-// *****************************************************************************
+/******************************************************************************
+ * Module..: SDK -- Software development kit for Leddar products.
+ *
+ * \file    Main.c
+ *
+ * \brief   Simple console program demonstrating the use of Leddar Tech's
+ *					"read data" function
+ * Platform: Win32, Linux
+ *
+ * Copyright (c) 2013-2015 LeddarTech Inc. All rights reserved.
+ * Information contained herein is or may be confidential and proprietary to
+ * LeddarTech inc. Prior to using any part of the software development kit
+ * accompanying this notice, you must accept and agree to be bound to the
+ * terms of the LeddarTech Inc. license agreement accompanying this file.
+ *
+ ******************************************************************************
+ *
+ *	DISCLAIMER: This program is a modified form of the LeddarCDemo.
+ *
+ *  Modified by Austin Scampini, Caleb Kisby
+ *  Documentation modified by Caleb Kisby
+ *  Date last modified: 8 December 2017
+ *
+*******************************************************************************/
 
 #include <stdio.h>
 #include <ctype.h>
@@ -38,19 +36,17 @@
 
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
 
-// Global variable to avoid passing to each function.
-//static LeddarHandle this->gHandle=NULL;
-//QThread thread;
-
-// *****************************************************************************
-// Function: CheckError
-//
-/// \brief   Check a return code and if it is not success, display an error
-///          message corresponding to the code.
-///
-/// \param   aCode  The result code to verify.
-// *****************************************************************************
-
+/*********************************************************************
+ * The usual constructor.
+ *
+ * We establish that this thread is running, and has not been stopped.
+ * We also register the type 'vector<float>' so that we may emit objects
+ * of this type.
+ *
+ * We also allocate space for a 'LeddarHandle' gHandle for dealing with Leddar
+ * file and live streaming.
+ *
+***/
 LeddarStream::LeddarStream() {
 
     this->gHandle = new LeddarHandle();
@@ -59,10 +55,19 @@ LeddarStream::LeddarStream() {
     isrunning = false;
 }
 
+/*********************************************************************
+ * The usual destructor.
+***/
 LeddarStream::~LeddarStream() {
     return;
 }
 
+/*********************************************************************
+ * Function to check for an error in a Leddar command.
+ *
+ * This function prints out the error code to console for any
+ * unsuccessful Leddar library function.
+***/
 void LeddarStream::CheckError( int aCode )
 {
     if ( aCode != LD_SUCCESS )
@@ -86,16 +91,15 @@ void LeddarStream::CheckError( int aCode )
     }
 }
 
-// *****************************************************************************
-// Function: WaitKey
-//
-/// \brief   Wait for a key to be pressed on the keyboard, pinging the sensor
-///          to keep the connection alive while waiting.
-///
-/// \return  The character corresponding to the key pressed (converted to
-///          uppercase for letters).
-// *****************************************************************************
-
+/*********************************************************************
+ * Function to wait until a key is pressed.
+ *
+ * Note that we need to ping the sensor to keep the connection alive
+ * while waiting for the key.
+ *
+ * Returns:
+ *   The character corresponding to the key pressed (converted to uppercase)
+***/
 char LeddarStream::WaitKey( void )
 {
     // LeddarGetKey is blocking so we need to wait for a key to be pressed
@@ -108,13 +112,20 @@ char LeddarStream::WaitKey( void )
     return toupper( LeddarGetKey() );
 }
 
-// *****************************************************************************
-// Function: ReadLiveData
-//
-/// \brief   Start data transfer until a key is pressed and stop it (data is
-///          displayed by the callback).
-// *****************************************************************************
-
+/*********************************************************************
+ * Function to read Leddar data from a file.
+ *
+ * We detect the next set of points detected by the sensor, and store
+ * them in a 'float' 'vector'.  We then emit these points and their
+ * identifying index.  We continue reading points until either there
+ * are no more points available, this thread stops running, or this
+ * thread is stopped.
+ *
+ * We step the handle through the file until either we reach the end
+ * of the file or this thread is not running or is stopped.  For each
+ * step, we detect the next set of points and store them in a 'float'
+ * 'vector'.  We then emit these points and their identifying index.
+***/
 void LeddarStream::ReplayData( void )
 {
 cout << "Function ReplayData" << endl;
@@ -171,6 +182,12 @@ cout << "Function ReplayData" << endl;
 /// \brief   Main menu when a replay a record file.
 // *****************************************************************************
 
+/*********************************************************************
+ * Function to replay a Leddar file.
+ *
+ * We create a leddar handle and try to connect to a Leddar record file.
+ * We close up by disconnecting and destroying our handle.
+***/
 void LeddarStream::doReplay(QString fileName)
 {
     if (!isrunning || isstopped) return;
@@ -217,18 +234,15 @@ void LeddarStream::doReplay(QString fileName)
 //    emit this->finished();
 }
 
-// *****************************************************************************
-// Function: ReadLiveData
-//
-/// \brief   Start data transfer until a key is pressed and stop it (data is
-///          displayed by the callback).
-// *****************************************************************************
-
-
-// TODO Problem: We are not able to intercept the data and funnel it as it is
-//      being read.  Read the manual to get a function to get what is currently
-//      being read on 'gHandle'.
-
+/*********************************************************************
+ * Function to read live data from the sensor.
+ *
+ * We detect the next set of points detected by the sensor, and store
+ * them in a 'float' 'vector'.  We then emit these points and their
+ * identifying index.  We continue reading points until either there
+ * are no more points available, this thread stops running, or this
+ * thread is stopped.
+***/
 void LeddarStream::ReadLiveData( void )
 {
 cout << "Start ReadLiveData" << endl;
@@ -241,11 +255,8 @@ cout << "Start ReadLiveData" << endl;
 
     CheckError( LeddarStartDataTransfer( gHandle, LDDL_DETECTIONS ) );
 
-// Datacallback stuff **************************************************************************
     while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS && isrunning && !isstopped) {
-cout << "Getting next data points" << endl;
         lCount = LeddarGetDetectionCount( this->gHandle );
-cout << lCount << endl;
         if ( lCount > ARRAY_LEN( lDetections ) )
         {
             lCount = ARRAY_LEN( lDetections );
@@ -254,7 +265,6 @@ cout << lCount << endl;
         LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ));
 
         // When replaying a record, display the current index
-
         if ( LeddarGetRecordSize( this->gHandle ) != 0 )
         {
             currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
@@ -269,24 +279,22 @@ cout << lCount << endl;
             ++j;
         }
         cout << endl;
-cout << dataPoints.size() << endl;
         // Signal the detected points to the GUI.
         emit this->sendDataPoints(currentRecordIndex, dataPoints);
 
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
     }
-// Datacallback done **************************************************************************
 
     LeddarStopDataTransfer( this->gHandle );
 }
 
-// *****************************************************************************
-// Function: ListSensors
-//
-/// \brief   List the address of all sensors available.
-// *****************************************************************************
-
+/*********************************************************************
+ * Function to list the address of all sensors available.
+ *
+ * This was the extent of the documentation in the LeddarCDemo.
+ * More to come.
+***/
 void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize )
 {
     char         lConnectionType[256];
@@ -339,18 +347,19 @@ void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsign
     }
 }
 
-// *****************************************************************************
-// Function: FindAddressByIndex
-//
-/// \brief   Get the address found by the index displayed in the function ListSensors
-//
-//  \param  aIndex of the sensor to find
-//  \param  aAddresses List of addresses.
-//
-//  \return Address of the sensor, NULL if there is no address found for this index.
-//
-// *****************************************************************************
-
+/*********************************************************************
+ * Function to find an address by index.
+ *
+ * We get the address found by the 'aIndex' displayed in the function 'ListSensors'.
+ *
+ * Input:
+ *   aIndex - index of the sensor to find
+ *   aAddresses - list of addresses.
+ *
+ * Returns:
+ *   Address of the sensor,
+ *   NULL if there is no address found for this index.
+***/
 char* LeddarStream::FindAddressByIndex( unsigned int aIndex, char* aAddresses )
 {
     unsigned int lCurrentIndex = 0;
@@ -370,17 +379,18 @@ char* LeddarStream::FindAddressByIndex( unsigned int aIndex, char* aAddresses )
     return NULL;
 }
 
-// *****************************************************************************
-// Function: ConnectMenu
-//
-/// \brief   Main menu when a live connection is made.
-///
-/// \param   aTrySingleUsb  If true we will try to connect to a single USB
-///                         sensor by sending an empty string as the address.
-///                         This works only if there is 1 and only 1 USB sensor
-///                         plugged to the PC.
-// *****************************************************************************
-
+/*********************************************************************
+ * Function to stream from the LIDAR sensor.
+ *
+ * We create a leddar handle and try to connect to a single USB sensor
+ * by sending an empty string as the address.
+ *
+ * After connecting and streaming live, we then disconnect and destroy
+ * our handle.
+ *
+ * NOTE: This connection will only work if there is exactly 1 USB sensor
+ * plugged into the PC.
+***/
 void LeddarStream::doStream()
 {
     char lAddresses[256];
@@ -419,6 +429,14 @@ void LeddarStream::doStream()
 //    emit this->finished();
 }
 
+/*********************************************************************
+ * Slot to start replaying data from a file.
+ *
+ * We establish that this thread is running, has not been stopped,
+ * and emit that it is running to the main thread.
+ *
+ * We then perform the reading from a file.
+***/
 void LeddarStream::StartReplay(QString filename) {
     isstopped = false;
     isrunning = true;
@@ -426,12 +444,26 @@ void LeddarStream::StartReplay(QString filename) {
     doReplay(filename);
 }
 
+/*********************************************************************
+ * Slot to stop replaying data from a file.
+ *
+ * We establish that this thread is not running, has been stopped,
+ * and emit that it has been stopped to the main thread.
+***/
 void LeddarStream::StopReplay() {
     isstopped = true;
     isrunning = false;
     emit stopped();
 }
 
+/*********************************************************************
+ * Slot to start streaming data from the LIDAR.
+ *
+ * We establish that this thread is running, has not been stopped,
+ * and emit that it is running to the main thread.
+ *
+ * We then perform the streaming from the LIDAR sensor.
+***/
 void LeddarStream::StartStream() {
     isstopped = false;
     isrunning = true;
@@ -439,6 +471,12 @@ void LeddarStream::StartStream() {
     doStream();
 }
 
+/*********************************************************************
+ * Slot to stop streaming data from the LIDAR.
+ *
+ * We establish that this thread is not running, has been stopped,
+ * and emit that it has been stopped to the main thread.
+***/
 void LeddarStream::StopStream() {
     isstopped = true;
     isrunning = false;

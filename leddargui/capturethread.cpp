@@ -1,3 +1,10 @@
+/*********************************************************************
+ * Class for capturing webcam data.
+ *
+ * Date last modified: 8 December 2017
+ * Author: Kathryn Vincent, Jonathan Senn
+***/
+
 //#include <QThread>
 //#include <opencv2/opencv.hpp>
 //#include <opencv2/highgui.hpp>
@@ -8,9 +15,12 @@
 
 #include "capturethread.h"
 
-/*
- * Constructor for the capture thread. Opens the webcam.
- */
+/*********************************************************************
+ * The usual constructor.
+ *
+ * At initialization, we establish that this thread is not running,
+ * and has not been stopped.
+***/
 CaptureThread::CaptureThread()
 {
 
@@ -23,12 +33,16 @@ CaptureThread::~CaptureThread()
 {
     return;
 }
-/*
+
+/*********************************************************************
+ * Function to perform image detection
+ *
  * This fuction takes an image and a image detector, detects which objects are present
  * and paints bounding boxes over the objects. An integer representing what object is
  * also returned.
+ *
  * Hog is a preloaded, pretrained HOG based image detector.
- */
+***/
 int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
 
     if ( frame.empty() ){
@@ -61,11 +75,16 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
     return -1;
 }
 
-/*
- * Captures image from camera and passes frames to the Gui for display.
- * Loads a hardcoded image detector and passes every frame of the the camera feed to
- * CaptureThread::imagedetect(). Sends the results to the QT Gui
- */
+/*********************************************************************
+ * Function to capture images from the webcamera.
+ *
+ * This function captures images from the camera and emits the frames
+ * to the main thread to display on a window.
+ *
+ * We also load a hardcoded image detector and perform image detection on
+ * every frame of the camera feed.  The results are also emitted to
+ * the main thread for display.
+***/
 void CaptureThread::doCapture()
 
 {
@@ -91,12 +110,15 @@ void CaptureThread::doCapture()
 //    emit this->finished();
 }
 
-/*
- * Checks if camera stream is open, and if not, attempts to open the stream
- * using the device number specified. 0 is used to access the webcam.
- * Sets variables to keep track of whether the camera is running or stopped,
- * and then calls doCapture().
- */
+/*********************************************************************
+ * Slot to start this thread.
+ *
+ * We establish that this thread is running, has not stopped, and emit that
+ * it is running to the main thread. If the camera has not been opened, we
+ * also open the camera.
+ *
+ * We then proceed with performing the camera capture.
+***/
 void CaptureThread::StartCapture() {
     if(!cap.isOpened()) cap.open(0);
     isstopped = false;
@@ -105,9 +127,12 @@ void CaptureThread::StartCapture() {
     doCapture();
 }
 
-/*
- * Indicates the camera should be stopped, thereby pausing the stream if it is currently running.
- */
+/*********************************************************************
+ * Slot to stop this thread.
+ *
+ * We establish that this thread is not running, and has been stopped.
+ * We emit that it has been stopped to the main thread.
+***/
 void CaptureThread::StopCapture() {
     isstopped = true;
     isrunning = false;

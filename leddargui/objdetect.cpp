@@ -1,3 +1,11 @@
+/*********************************************************************
+ * Class for detecting objects from a vector of points.
+ *
+ * Date last modified: 8 December 2017
+ * Author: Jonathan Senn
+ * Modified by Caleb Kisby
+***/
+
 #include <vector>
 #include <string>
 #include <cmath>
@@ -5,32 +13,41 @@
 #include <iostream>
 #include "objdetect.h"
 
-/*
- * TODO: Caleb : Comment
- */
+/*********************************************************************
+ * The usual constructor.
+ *
+ * When initialized, we establish that this thread is not running, and
+ * has not been stopped.  We also register the string type so that it
+ * may be emitted via a signal.
+***/
 objectDetector::objectDetector()
 {
     qRegisterMetaType<string>("string");
     isstopped = false;
     isrunning = false;
 }
-/*
-void objectDetector::objDetect(int i)
-{
-    //this is a slot
 
-    //signal passes integer j
-    int j = i;
-    emit(objNotify(j));
-}
-*/
-
-/*
- * Takes a vector of distances and detects objects. If an object is found, a sound
- * notification is issued and the name of the object is sent to the GUI.
- */
-void objectDetector::doDetect(vector<float> distances)
-{
+/*********************************************************************
+ * Function to detect different classes of obstacles.
+ *
+ * Currently we do this only for types of walls.  We take a 'float' 'vector'
+ * of distances and pass them through a function for detecting walls.
+ * The resulting 'detectCode' may be interpreted as follows:
+ *
+ * 1  - Flat wall detected (Currently the only implemented class)
+ * 2  - Flat wall, at a left slant angle
+ * 3  - Flat wall, at a right slant angle
+ * 4  - Hallway
+ * -1 - Nothing detected.
+ *
+ * We then emit that the obstacle was detected, and issue a notification sound.
+ * If no obstacle was detected, we emit this as well, but play no
+ * notification sound.
+ *
+ * When we close this function, we stop the thread for doing detections
+ * so that it may be started later.
+***/
+void objectDetector::doDetect(vector<float> distances) {
 cout << "Entering doDetect" << endl;
     UserNotifier notifier = UserNotifier();
     int detectCode;
@@ -73,18 +90,30 @@ cout << "Entering doDetect" << endl;
 cout << "Exiting doDetect" << endl;
 }
 
-/*
-* Takes a vector of floats and determines wether a wall or hallway is present
-* -1 -> Wall not detected
-*  1 -> Flat wall detected
-*  2 -> Left slant (/) Wall detected
-*  3 -> Right slant (\) wall detected
-*  4 -> Hallway (/\) detected
-*
-* y = a + bx
-* a = My - b(Mx)
-* b = r * (sdy/sdx)
-*/
+/*********************************************************************
+ * Function to detect classes of flat walls.
+ *
+ * This function takes a 'float' 'vector' of distances, along with tolerance
+ * 'measure_error' and 'flat_error', and determines whether a wall or hallway
+ * is present.
+ *
+ * Input:
+ *   distances - The distances 'vector' given
+ *   measure_error - A parameter for tolerance
+ *   flat_error - A parameter for tolerance
+ *
+ * Returns:
+ *   1 if a flat wall is detected
+ *   2 if a left slant (/) wall detected
+ *   3 if a right slant (\) wall detected
+ *   4 if a hallway (/\) detected
+ *
+ * Note to self:
+ * y = a + bx
+ * a = My - b(Mx)
+ * b = r * (sdy/sdx)
+ *
+***/
 int objectDetector::detect_wall(std::vector<float> distances, float measure_error, float flat_error) {
 
   int n = 0;    // Size of distances
@@ -179,9 +208,19 @@ int objectDetector::detect_wall(std::vector<float> distances, float measure_erro
   // No Wall
   return -1;
 }
-/*
- *  Projects each distance in a vector onto the y-axis and returns the projections in a vecctor
-*/
+
+/*********************************************************************
+ * Function to project each distance onto the y-axis.
+ *
+ * This function projects each point of a 'float' 'vector' of distances
+ * onto the y-axis and returns the 'projected' points as a vector.
+ *
+ * Input:
+ *   distances - the 'vector' points to be projected
+ *
+ * Returns:
+ *   projected - the points projected onto the y-axis.
+***/
 vector<float> objectDetector::yaxis_projection(vector<float> distances){
     vector<float> projected;
     // Theta is the angle between the x-axis and the right most segment.
@@ -203,6 +242,13 @@ vector<float> objectDetector::yaxis_projection(vector<float> distances){
     return projected;
 }
 
+/*********************************************************************
+ * Slot to start this thread.
+ *
+ * We establish that this thread has started running, is not stopped,
+ * emit that this thread has started running, and then begin detecting
+ * objects among the 'dataPoints' caught by the slot.
+***/
 void objectDetector::StartDetect(int index, vector<float> dataPoints) {
     isstopped = false;
     isrunning = true;
@@ -210,6 +256,12 @@ void objectDetector::StartDetect(int index, vector<float> dataPoints) {
     doDetect(dataPoints);
 }
 
+/*********************************************************************
+ * Slot to stop this thread.
+ *
+ * We establish that this thread has stopped running, it is not running,
+ * and emit that this thread has stopped.
+***/
 void objectDetector::StopDetect() {
     isstopped = true;
     isrunning = false;
