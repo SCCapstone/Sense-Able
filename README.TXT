@@ -36,7 +36,7 @@ ___________________
 To make and run :
 ____________________
   
-  In Sense-Able/build-leddargui-Desktop_Qt_5_7_0_GCC_64bit-Release/
+  In Sense-Able/build-leddargui-Desktop-Release/
     Run the following in bash:
     
     make
