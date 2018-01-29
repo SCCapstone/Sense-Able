@@ -38,7 +38,8 @@ SOURCES += \
     leddarmain.cpp \
     usernotifier.cpp \
     capturethread.cpp \
-    objdetect.cpp
+    objdetect.cpp \
+    unittestsuite.cpp
 
 HEADERS += \
     mainwindow.h \
