@@ -81,7 +81,6 @@ MainWindow::MainWindow(QWidget *parent) :
     captureThread->start();
     leddarThread->start();
     objdetectThread->start();
-
 }
 
 /*********************************************************************
@@ -183,7 +182,6 @@ void MainWindow::catchObjectDetected(string objectName) {
 ***/
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
-
     ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
 }
 

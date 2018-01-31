@@ -30,6 +30,7 @@ INCLUDEPATH += ../Release/
 LIBS += -L../Release/ -lLeddar -lLeddarC -lLeddarTech
 DEPENDPATH += ../Release
 LIBS += -Wl,-rpath=../Release/
+INCLUDEPATH += googletest/include gtest
 #LIBS += -Wl,-rpath='${ORIGIN}/../'
 
 SOURCES += \
@@ -39,7 +40,8 @@ SOURCES += \
     usernotifier.cpp \
     capturethread.cpp \
     objdetect.cpp \
-    unittestsuite.cpp
+    unittestsuite.cpp \
+    googletest/src/gtest-all.cc
 
 HEADERS += \
     mainwindow.h \
