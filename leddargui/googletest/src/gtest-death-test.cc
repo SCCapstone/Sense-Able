@@ -66,7 +66,7 @@
 
 #include "gtest/gtest-message.h"
 #include "gtest/internal/gtest-string.h"
-#include "src/gtest-internal-inl.h"
+#include "googletest/src/gtest-internal-inl.h"
 
 namespace testing {
 

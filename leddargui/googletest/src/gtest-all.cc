@@ -39,10 +39,10 @@
 #include "gtest/gtest.h"
 
 // The following lines pull in the real gtest *.cc files.
-#include "src/gtest.cc"
-#include "src/gtest-death-test.cc"
-#include "src/gtest-filepath.cc"
-#include "src/gtest-port.cc"
-#include "src/gtest-printers.cc"
-#include "src/gtest-test-part.cc"
-#include "src/gtest-typed-test.cc"
+#include "googletest/src/gtest.cc"
+#include "googletest/src/gtest-death-test.cc"
+#include "googletest/src/gtest-filepath.cc"
+#include "googletest/src/gtest-port.cc"
+#include "googletest/src/gtest-printers.cc"
+#include "googletest/src/gtest-test-part.cc"
+#include "googletest/src/gtest-typed-test.cc"

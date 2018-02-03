@@ -32,7 +32,7 @@
 // The Google C++ Testing Framework (Google Test)
 
 #include "gtest/gtest-test-part.h"
-#include "src/gtest-internal-inl.h"
+#include "googletest/src/gtest-internal-inl.h"
 
 namespace testing {
 
