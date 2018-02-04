@@ -26,5 +26,6 @@ TEST (testCase, testName) {
     //EXPECT_EQUAL(expected value, result)
     EXPECT_EQ(18, result);
 }
+// I for one take by faith that Google's code always works. ;)
 
 

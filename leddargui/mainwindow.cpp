@@ -122,6 +122,8 @@ void MainWindow::on_readDataButton_clicked()
 ***/
 void MainWindow::on_streamButton_clicked()
 {
+    emit streamButtonClicked();
+
     if (!this->stream->isrunning) {
         emit startCapture();
         emit startStream();

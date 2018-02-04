@@ -46,6 +46,8 @@ signals:
     void startDetect();
     void stopDetect();
 
+    void streamButtonClicked();
+
 private:
     Ui::MainWindow *ui;
     LeddarStream* stream;

@@ -7,6 +7,7 @@
 QT       += core gui
 QT       += multimedia
 QT       += widgets
+QT       += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -41,7 +42,8 @@ SOURCES += \
     capturethread.cpp \
     objdetect.cpp \
     unittestsuite.cpp \
-    googletest/src/gtest-all.cc
+    googletest/src/gtest-all.cc \
+    QtBehaviorTestSuite.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -50,7 +52,8 @@ HEADERS += \
     LeddarC.h \
     usernotifier.h \
     capturethread.h \
-    objdetect.h
+    objdetect.h \
+    QtBehaviorTestSuite.h
 
 FORMS += \
     mainwindow.ui
