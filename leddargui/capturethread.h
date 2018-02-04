@@ -27,6 +27,7 @@ signals:
     void newFrame(cv::Mat*);
     void running();
     void stopped();
+    void cancel();
 //    void finished();
 
 private:
