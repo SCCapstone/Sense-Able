@@ -99,7 +99,8 @@ void CaptureThread::doCapture()
             emit(newFrame(&frame));
         }
         else{
-            qDebug()<<"camera not detected or is already in use";
+            qDebug()<<"\nCamera not detected or is already in use. \nClose any other applications using the camera and try again.";
+            emit(cancel());
             StopCapture();
         }
         QCoreApplication::processEvents();
@@ -136,4 +137,5 @@ void CaptureThread::StopCapture() {
     isstopped = true;
     isrunning = false;
     emit stopped();
+    cap.release();
 }
