@@ -1,3 +1,4 @@
+#include <qpushbutton.h>
 #include "QtBehaviorTestSuite.h"
 #include "mainwindow.h"
 
@@ -14,9 +15,9 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
     QSignalSpy spy (&window, SIGNAL(streamButtonClicked()));
 
     // Simulate clicking the Stream Button.
-    // QWidget *button = window.???????????
+    QWidget *button = window.findChild<QPushButton*>("streamButton");
     //          HOW DO WE GET THE streamButton?????
-    // QTest::mouseClick(button, Qt::LeftButton, Qt::NoModifier, position, 0);
+    QTest::mouseClick(button, Qt::LeftButton, Qt::NoModifier);
 
     cout << "testStreamButtonClicked:  ";
     if (spy.count() == 1) {
