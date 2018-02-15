@@ -53,12 +53,18 @@ LeddarStream::LeddarStream() {
     qRegisterMetaType<vector<float> >("vector<float>");
     isstopped = false;
     isrunning = false;
+
+    // Initialize the Leddar Handle.
+    this->gHandle = LeddarCreate();
 }
 
 /*********************************************************************
  * The usual destructor.
 ***/
 LeddarStream::~LeddarStream() {
+    // Destroy the handle.
+    LeddarDestroy(this->gHandle);
+
     return;
 }
 
@@ -434,9 +440,6 @@ cout << "Entering doStream" << endl;
 
     if (!isrunning || isstopped) return;
 
-    // Initialize the Leddar Handle.
-    this->gHandle = LeddarCreate();
-
     strcpy( lConnectionType, "USB" );
     ListSensors( lConnectionType, lAddresses, 255 );
     lAddress = FindAddressByIndex( 0, lAddresses );
@@ -446,8 +449,7 @@ cout << "Entering doStream" << endl;
 
     if ( LeddarConnect( this->gHandle, lConnectionType, lAddress ) == LD_SUCCESS )
     {
-        while( LeddarGetConnected( this->gHandle ) == LD_SUCCESS && isrunning && !isstopped)
-        {
+        if (LeddarGetConnected(this->gHandle) == LD_SUCCESS && isrunning && !isstopped) {
             ReadLiveData();
         }
     }
@@ -456,9 +458,7 @@ cout << "Entering doStream" << endl;
         cout << "Connection Failed!" << endl;
     }
 
-    // Disconnect, destroy the handle, and signal that we are done.
     LeddarDisconnect( gHandle );
-    LeddarDestroy(this->gHandle);
 
     QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
 //    emit this->finished();
@@ -474,6 +474,7 @@ cout << "Entering doStream" << endl;
 ***/
 void LeddarStream::StartReplay(QString filename) {
 cout << "Entering StartReplay" << endl;
+    if (isrunning) return;
     isstopped = false;
     isrunning = true;
     emit running();
@@ -488,6 +489,7 @@ cout << "Entering StartReplay" << endl;
 ***/
 void LeddarStream::StopReplay() {
 cout << "Entering StopReplay" << endl;
+    if (!isrunning || isstopped) return;
     isstopped = true;
     isrunning = false;
     emit stopped();
@@ -503,6 +505,7 @@ cout << "Entering StopReplay" << endl;
 ***/
 void LeddarStream::StartStream() {
 cout << "Entering StartStream" << endl;
+    if (isrunning) return;
     isstopped = false;
     isrunning = true;
     emit running();
@@ -517,6 +520,7 @@ cout << "Entering StartStream" << endl;
 ***/
 void LeddarStream::StopStream() {
 cout << "Entering StopStream" << endl;
+    if (!isrunning || isstopped) return;
     isstopped = true;
     isrunning = false;
     emit stopped();
