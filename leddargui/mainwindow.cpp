@@ -109,7 +109,8 @@ void MainWindow::on_readDataButton_clicked()
         // Given a filename, find the matching recording if there exists one
 
         emit startRead(filename);
-        emit startDetect();
+//        emit startDetect();  We should not start detecting until an object
+//                             is actually detected.
     }
 }
 
@@ -128,7 +129,8 @@ void MainWindow::on_streamButton_clicked()
     if (!this->stream->isrunning) {
         emit startCapture();
         emit startStream();
-        emit startDetect();
+//        emit startDetect();  We should not start detecting until an object
+//                             is actually detected.
     }
 }
 

@@ -37,23 +37,23 @@ INCLUDEPATH += googletest/include gtest
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    leddarmain.cpp \
     usernotifier.cpp \
     capturethread.cpp \
-    objdetect.cpp \
     unittestsuite.cpp \
     googletest/src/gtest-all.cc \
-    QtBehaviorTestSuite.cpp
+    QtBehaviorTestSuite.cpp \
+    leddarthread.cpp \
+    objectdetectthread.cpp
 
 HEADERS += \
     mainwindow.h \
     LeddarProperties.h \
-    leddarmain.h \
     LeddarC.h \
     usernotifier.h \
     capturethread.h \
-    objdetect.h \
-    QtBehaviorTestSuite.h
+    QtBehaviorTestSuite.h \
+    leddarthread.h \
+    objectdetectthread.h
 
 FORMS += \
     mainwindow.ui

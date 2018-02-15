@@ -27,7 +27,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "leddarmain.h"
+#include "leddarthread.h"
 
 #include <QCoreApplication>
 #include <QThread>
@@ -253,6 +253,8 @@ cout << "Start ReadLiveData" << endl;
 
     LeddarChar recordingFileName[255];
 
+    if (!isrunning || isstopped) return;
+
     CheckError( LeddarStartDataTransfer( gHandle, LDDL_DETECTIONS ) );
 
     while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS && isrunning && !isstopped) {
@@ -286,6 +288,7 @@ cout << "Start ReadLiveData" << endl;
         QCoreApplication::processEvents();
     }
 
+    StopStream();
     LeddarStopDataTransfer( this->gHandle );
 }
 

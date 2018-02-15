@@ -11,7 +11,7 @@
 #include <cmath>
 #include <math.h>
 #include <iostream>
-#include "objdetect.h"
+#include "objectdetectthread.h"
 
 /*********************************************************************
  * The usual constructor.

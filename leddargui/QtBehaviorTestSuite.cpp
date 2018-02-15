@@ -14,7 +14,7 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
     MainWindow window;
 
     // Set up a spy to check whether the Stream Button has been clicked.
-    QSignalSpy spy (&window, SIGNAL(streamButtonClicked()));
+    QSignalSpy spy(&window, SIGNAL(streamButtonClicked()));
 
     // Simulate clicking the Stream Button.
     QWidget *button = window.findChild<QPushButton*>("streamButton");

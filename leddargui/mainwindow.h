@@ -4,10 +4,10 @@
 #include <QMainWindow>
 #include <QThread>
 #include <QSignalMapper>
-#include "leddarmain.h"
+#include "leddarthread.h"
 #include "capturethread.h"
 //#include "OLDobjdetect.h"
-#include "objdetect.h"
+#include "objectdetectthread.h"
 
 namespace Ui {
 class MainWindow;
