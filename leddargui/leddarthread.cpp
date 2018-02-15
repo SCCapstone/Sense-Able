@@ -102,6 +102,7 @@ void LeddarStream::CheckError( int aCode )
 ***/
 char LeddarStream::WaitKey( void )
 {
+cout << "Entering WaitKey" << endl;
     // LeddarGetKey is blocking so we need to wait for a key to be pressed
     // before calling it.
     while( !LeddarKeyPressed() )
@@ -128,7 +129,7 @@ char LeddarStream::WaitKey( void )
 ***/
 void LeddarStream::ReplayData( void )
 {
-cout << "Function ReplayData" << endl;
+cout << "Entering ReplayData" << endl;
     int currentRecordIndex;
     vector<float> dataPoints;
     unsigned int i, lCount;
@@ -189,6 +190,7 @@ cout << "Function ReplayData" << endl;
 ***/
 void LeddarStream::doReplay(QString fileName)
 {
+cout << "Entering doReplay" << endl;
     if (!isrunning || isstopped) return;
 
     cout << fileName.toUtf8().constData() << endl;
@@ -244,7 +246,7 @@ void LeddarStream::doReplay(QString fileName)
 ***/
 void LeddarStream::ReadLiveData( void )
 {
-cout << "Start ReadLiveData" << endl;
+cout << "Entering ReadLiveData" << endl;;
     int currentRecordIndex;
     vector<float> dataPoints;
     unsigned int i, lCount;
@@ -327,6 +329,7 @@ cout << "Start ReadLiveData" << endl;
 ***/
 void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize )
 {
+cout << "Entering ListSensors" << endl;
     char         lConnectionType[256];
     unsigned int lIndex = 0;
 
@@ -392,6 +395,7 @@ void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsign
 ***/
 char* LeddarStream::FindAddressByIndex( unsigned int aIndex, char* aAddresses )
 {
+cout << "Entering FindAddressByIndex" << endl;
     unsigned int lCurrentIndex = 0;
     unsigned int lConnectionFoundIndex = 0;
 
@@ -423,6 +427,7 @@ char* LeddarStream::FindAddressByIndex( unsigned int aIndex, char* aAddresses )
 ***/
 void LeddarStream::doStream()
 {
+cout << "Entering doStream" << endl;
     char lAddresses[256];
     char* lAddress = NULL;
     char lConnectionType[10];
@@ -468,6 +473,7 @@ void LeddarStream::doStream()
  * We then perform the reading from a file.
 ***/
 void LeddarStream::StartReplay(QString filename) {
+cout << "Entering StartReplay" << endl;
     isstopped = false;
     isrunning = true;
     emit running();
@@ -481,6 +487,7 @@ void LeddarStream::StartReplay(QString filename) {
  * and emit that it has been stopped to the main thread.
 ***/
 void LeddarStream::StopReplay() {
+cout << "Entering StopReplay" << endl;
     isstopped = true;
     isrunning = false;
     emit stopped();
@@ -495,6 +502,7 @@ void LeddarStream::StopReplay() {
  * We then perform the streaming from the LIDAR sensor.
 ***/
 void LeddarStream::StartStream() {
+cout << "Entering StartStream" << endl;
     isstopped = false;
     isrunning = true;
     emit running();
@@ -508,6 +516,7 @@ void LeddarStream::StartStream() {
  * and emit that it has been stopped to the main thread.
 ***/
 void LeddarStream::StopStream() {
+cout << "Entering StopStream" << endl;
     isstopped = true;
     isrunning = false;
     emit stopped();
