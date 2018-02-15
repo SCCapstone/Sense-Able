@@ -131,7 +131,7 @@ void LeddarStream::ReplayData( void )
 cout << "Function ReplayData" << endl;
     int currentRecordIndex;
     vector<float> dataPoints;
-    unsigned int i, j, lCount;
+    unsigned int i, lCount;
     LdDetection lDetections[50];
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
@@ -155,11 +155,10 @@ cout << "Function ReplayData" << endl;
         }
 
         // Output the detected points to the console.
-        for( i=0, j=0; (i<lCount) && (j<12); ++i )
+        for( i=0; i < lCount; i++ )
         {
             cout << lDetections[i].mDistance << " ";
             dataPoints.push_back(lDetections[i].mDistance);
-            ++j;
         }
         cout << endl;
 
@@ -248,23 +247,51 @@ void LeddarStream::ReadLiveData( void )
 cout << "Start ReadLiveData" << endl;
     int currentRecordIndex;
     vector<float> dataPoints;
-    unsigned int i, j, lCount;
-    LdDetection lDetections[50];
+    unsigned int i, lCount;
+    LdDetection lDetections[16];
 
     LeddarChar recordingFileName[255];
 
     if (!isrunning || isstopped) return;
 
-    CheckError( LeddarStartDataTransfer( gHandle, LDDL_DETECTIONS ) );
+    CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
 
     while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS && isrunning && !isstopped) {
-        lCount = LeddarGetDetectionCount( this->gHandle );
-        if ( lCount > ARRAY_LEN( lDetections ) )
-        {
-            lCount = ARRAY_LEN( lDetections );
-        }
-
         LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ));
+        lCount = LeddarGetDetectionCount( this->gHandle );
+
+
+        /******************************
+         * Run some edge-case tests.
+        ***/
+        if (lCount == 0) {
+            cout << "ERROR: ReadLiveData - NO POINTS DETECTED!" << endl;
+
+            // The official Leddar documentation suggests sending LeddarGetDetections to
+            // a callback function.  Otherwise, the documentation suggests that we are
+            // "not guranteed to get coherent data."  We could not get the callback working
+            // with our Qt object-oriented structure.  Instead, I have determined that the
+            // only likely data incoherence involves receiving random 0 vectors of points.
+            // We 'continue' in case this is the case, so that we can later get actual data.
+            continue;
+        }
+        if (lCount > ARRAY_LEN(lDetections)) {
+            cout << "ERROR: ReadLiveData - More points detected than expected!" << endl;
+            break;
+
+            // lCount = ARRAY_LEN( lDetections );
+            // This was Leddar's default behavior.  I guess they're really bad testers, eh?
+        } else if (lCount < ARRAY_LEN(lDetections)) {
+            // TODO: What do we do in the situation where we get fewer points than expected?
+            // This can happen if the sensor is partially covered, or alternatively if the
+            // sensor sees half of a wall.  Right now we 'continue' so that we don't get a
+            // major crash.
+            cout << "ERROR: ReadLiveData - Fewer points detected than expected!" << endl;
+            continue;
+        } else {
+            cout << "ReadLiveData has exactly as many points as expected.";
+        }
+        /******************************/
 
         // When replaying a record, display the current index
         if ( LeddarGetRecordSize( this->gHandle ) != 0 )
@@ -274,13 +301,13 @@ cout << "Start ReadLiveData" << endl;
         }
 
         // Output the detected points to the console.
-        for( i=0, j=0; (i<lCount) && (j<12); ++i )
+        for (i=0; i < lCount; i++)
         {
             cout << lDetections[i].mDistance << " ";
             dataPoints.push_back(lDetections[i].mDistance);
-            ++j;
         }
         cout << endl;
+
         // Signal the detected points to the GUI.
         emit this->sendDataPoints(currentRecordIndex, dataPoints);
 
@@ -305,7 +332,7 @@ void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsign
 
     if ( aConnectyionType == NULL )
     {
-        printf("\nEnter the connection type (USB or SERIAL): ");
+        std::cout << "Enter the connection type (USB or SERIAL):" << endl;
         scanf("%255s", lConnectionType );
     }
     else
@@ -317,7 +344,7 @@ void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsign
 
     CheckError( LeddarListSensors( aAddresses, &aSize ) );
 
-    printf( "\nFound %d sensors of type %s\n", aSize, lConnectionType );
+    std::cout << "Found " << aSize << "sensors of type " << lConnectionType << endl;
 
     int lConnectionFoundIndex = 0;
     while( strlen( aAddresses+lIndex ) > 0 )
@@ -412,9 +439,9 @@ void LeddarStream::doStream()
         return;
     }
 
-    if ( LeddarConnect( gHandle, lConnectionType, lAddress ) == LD_SUCCESS )
+    if ( LeddarConnect( this->gHandle, lConnectionType, lAddress ) == LD_SUCCESS )
     {
-        while( LeddarGetConnected( gHandle ) == LD_SUCCESS && isrunning && !isstopped)
+        while( LeddarGetConnected( this->gHandle ) == LD_SUCCESS && isrunning && !isstopped)
         {
             ReadLiveData();
         }
