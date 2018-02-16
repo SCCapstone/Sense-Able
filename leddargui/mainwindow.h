@@ -36,6 +36,14 @@ private slots:
 
     void on_cancelButton_clicked();
 
+    void on_goPageButton_clicked();
+
+    void on_settingsPageButton_clicked();
+
+    void on_actionMain_Menu_triggered();
+
+    void on_calibratePageButton_clicked();
+
 signals:
     void startCapture();
     void stopCapture();

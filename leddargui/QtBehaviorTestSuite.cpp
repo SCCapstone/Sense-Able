@@ -16,10 +16,15 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
     // Set up a spy to check whether the Stream Button has been clicked.
     QSignalSpy spy(&window, SIGNAL(streamButtonClicked()));
 
-    // Simulate clicking the Stream Button.
+    //Get the buttons
     QWidget *button = window.findChild<QPushButton*>("streamButton");
-    //          HOW DO WE GET THE streamButton?????
+    //QWidget *readButton = window.findChild<QPushButton*>("readDataButton");
+
+    // Simulate clicking the buttons
+    QWidget *cancelButton = window.findChild<QPushButton*>("cancelButton");
     QTest::mouseClick(button, Qt::LeftButton, Qt::NoModifier);
+    QTest::mouseClick(cancelButton, Qt::LeftButton, Qt::NoModifier);
+    //QTest::mouseClick(readButton, Qt::LeftButton, Qt::NoModifier);
 
 
     cout << "testStreamButtonClicked:  ";
