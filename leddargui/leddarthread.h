@@ -41,7 +41,7 @@ public:
 public slots:
 //    void StartReplay(QString filename);
     void StartReplay(QString fileName);
-    void StopReplay();
+//    void StopReplay();
     void StartStream();
     void StopStream();
 

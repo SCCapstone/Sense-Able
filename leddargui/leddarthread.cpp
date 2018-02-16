@@ -56,6 +56,9 @@ LeddarStream::LeddarStream() {
 
     // Initialize the Leddar Handle.
     this->gHandle = LeddarCreate();
+
+//    LeddarSetProperty( this->gHandle, PID_ACCUMULATION_EXPONENT, 0, 128 );
+//    LeddarSetProperty(this->gHandle, PID_OVERSAMPLING_EXPONENT, 0, 4);
 }
 
 /*********************************************************************
@@ -117,6 +120,7 @@ cout << "Entering WaitKey" << endl;
     }
 
     return toupper( LeddarGetKey() );
+cout << "Exiting WaitKey" << endl;
 }
 
 /*********************************************************************
@@ -180,6 +184,7 @@ cout << "Entering ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
     return;
+cout << "Exiting ReplayData" << endl;
 }
 
 // *****************************************************************************
@@ -237,8 +242,9 @@ cout << "Entering doReplay" << endl;
     // Destroy the handle, and signal that we are done.
     LeddarDestroy(this->gHandle);
 //    QMetaObject::invokeMethod(this, "doReplay", Qt::QueuedConnection);
-    StopReplay();
+    StopStream();
 //    emit this->finished();
+cout << "Exiting doReplay" << endl;
 }
 
 /*********************************************************************
@@ -252,7 +258,7 @@ cout << "Entering doReplay" << endl;
 ***/
 void LeddarStream::ReadLiveData( void )
 {
-cout << "Entering ReadLiveData" << endl;;
+cout << "Entering ReadLiveData" << endl;
     int currentRecordIndex;
     vector<float> dataPoints;
     unsigned int i, lCount;
@@ -285,7 +291,7 @@ cout << "Entering ReadLiveData" << endl;;
         }
         if (lCount > ARRAY_LEN(lDetections)) {
             cout << "ERROR: ReadLiveData - More points detected than expected!" << endl;
-            break;
+            continue;
 
             // lCount = ARRAY_LEN( lDetections );
             // This was Leddar's default behavior.  I guess they're really bad testers, eh?
@@ -325,6 +331,7 @@ cout << "Entering ReadLiveData" << endl;;
 
     StopStream();
     LeddarStopDataTransfer( this->gHandle );
+cout << "Exiting ReadLiveData" << endl;
 }
 
 /*********************************************************************
@@ -384,6 +391,7 @@ cout << "Entering ListSensors" << endl;
         lConnectionFoundIndex++;
         lIndex += strlen( aAddresses+lIndex ) + 1;
     }
+cout << "Exiting ListSensors" << endl;
 }
 
 /*********************************************************************
@@ -417,6 +425,7 @@ cout << "Entering FindAddressByIndex" << endl;
     }
 
     return NULL;
+cout << "Exiting FindAddressByIndex" << endl;
 }
 
 /*********************************************************************
@@ -462,6 +471,7 @@ cout << "Entering doStream" << endl;
 
     QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
 //    emit this->finished();
+cout << "Exiting doStream" << endl;
 }
 
 /*********************************************************************
@@ -479,22 +489,28 @@ cout << "Entering StartReplay" << endl;
     isrunning = true;
     emit running();
     doReplay(filename);
+cout << "Exiting StartReplay" << endl;
 }
 
-/*********************************************************************
+/* TODO: REMOVE!!!
+ * Sometimes, this slot is called before StopStream, preventing the stream
+ * from being stopped.  Both functions do the same thing, anyway, so why
+ * bother calling them something different?
+ *
+*********************************************************************
  * Slot to stop replaying data from a file.
  *
  * We establish that this thread is not running, has been stopped,
  * and emit that it has been stopped to the main thread.
-***/
+***
 void LeddarStream::StopReplay() {
 cout << "Entering StopReplay" << endl;
     if (!isrunning || isstopped) return;
     isstopped = true;
     isrunning = false;
     emit stopped();
-}
-
+cout << "Exiting StopReplay" << endl;
+}*/
 /*********************************************************************
  * Slot to start streaming data from the LIDAR.
  *
@@ -510,6 +526,7 @@ cout << "Entering StartStream" << endl;
     isrunning = true;
     emit running();
     doStream();
+cout << "Exiting StartStream" << endl;
 }
 
 /*********************************************************************
@@ -524,6 +541,7 @@ cout << "Entering StopStream" << endl;
     isstopped = true;
     isrunning = false;
     emit stopped();
+cout << "Exiting StopStream" << endl;
 }
 
 // End of file Main.c

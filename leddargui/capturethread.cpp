@@ -120,6 +120,8 @@ void CaptureThread::doCapture()
  * We then proceed with performing the camera capture.
 ***/
 void CaptureThread::StartCapture() {
+    if (isrunning) return;
+
     if(!cap.isOpened()) cap.open(0);
     isstopped = false;
     isrunning = true;
@@ -134,6 +136,8 @@ void CaptureThread::StartCapture() {
  * We emit that it has been stopped to the main thread.
 ***/
 void CaptureThread::StopCapture() {
+    if (!isrunning || isstopped) return;
+
     isstopped = true;
     isrunning = false;
     emit stopped();
