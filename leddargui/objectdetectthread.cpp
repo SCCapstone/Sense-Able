@@ -172,7 +172,10 @@ int objectDetector::detect_wall(std::vector<float> distances, float measure_erro
   for ( unsigned int i = 0; i < distances.size(); i++ ){
     float errori = std::abs( (slope*int(i) + intercept) - distances.at(i) );
     if ( errori > measure_error )  {
-//       std::cout << "error" << (b*int(i)+a) - distances.at(i) << std::endl;
+       std::cout << "error: " << (slope*int(i)+intercept) - distances.at(i) << std::endl;
+       std::cout << "Distance: " << distances.at(i) << std::endl;
+       std::cout << "Slope: " << slope << std::endl;
+       std::cout << "Intercept: " << intercept << std::endl;
       wall = false;
     }
   }

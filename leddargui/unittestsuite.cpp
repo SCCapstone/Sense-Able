@@ -24,10 +24,14 @@ objectDetector detect;
 ***/
 
 TEST (DetectWallTest, FlatDistribution) {
-    for (int i = 0; i < 16; i++) {
-        distances.push_back(1.0);
+
+    for (int j=0; j < 1000; j++) {
+        for (int i = 0; i < 16; i++) {
+            distances.push_back(1.0 * j);
+        }
+        EXPECT_EQ(1, detect.detect_wall(distances, 0.75, 100));
     }
-    EXPECT_EQ(1, detect.detect_wall(distances, 0.75, 100));
+
 }
 
 //temp test for testing that google test tests
@@ -39,5 +43,16 @@ TEST (testCase, testName) {
     EXPECT_EQ(18, result);
 }
 // I for one take by faith that Google's code always works. ;)
+
+/** Functions to Test:
+*
+*    FlatDistribution:
+*        - All 0's
+*        - More points
+*        - Less points
+*        - Angles (grid search)
+*        - Noisey Angles (grid search)
+*
+**/
 
 
