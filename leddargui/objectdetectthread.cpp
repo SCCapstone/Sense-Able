@@ -22,6 +22,7 @@
 ***/
 objectDetector::objectDetector()
 {
+cout << "Entering objectDetector" << endl;
     qRegisterMetaType<string>("string");
     isstopped = false;
     isrunning = false;
@@ -87,7 +88,7 @@ cout << "Entering doDetect" << endl;
     }
 
     StopDetect();
-cout << "Exiting doDetect" << endl;
+//cout << "Exiting doDetect" << endl;
 }
 
 /*********************************************************************
@@ -115,6 +116,7 @@ cout << "Exiting doDetect" << endl;
  *
 ***/
 int objectDetector::detect_wall(std::vector<float> distances, float measure_error, float flat_error) {
+cout << "Entering detect_wall" << endl;
 
   int n = 0;    // Size of distances
   float sumx = 0; // sum of x
@@ -225,6 +227,7 @@ int objectDetector::detect_wall(std::vector<float> distances, float measure_erro
  *   projected - the points projected onto the y-axis.
 ***/
 vector<float> objectDetector::yaxis_projection(vector<float> distances){
+cout << "Entering yaxis_projection" << endl;
     vector<float> projected;
     // Theta is the angle between the x-axis and the right most segment.
     // The angle between segments is 2.8 degrees
@@ -253,6 +256,8 @@ vector<float> objectDetector::yaxis_projection(vector<float> distances){
  * objects among the 'dataPoints' caught by the slot.
 ***/
 void objectDetector::StartDetect(int index, vector<float> dataPoints) {
+cout << "Entering StartDetect" << endl;
+    if (isrunning) return;
     isstopped = false;
     isrunning = true;
     emit running();
@@ -266,6 +271,9 @@ void objectDetector::StartDetect(int index, vector<float> dataPoints) {
  * and emit that this thread has stopped.
 ***/
 void objectDetector::StopDetect() {
+cout << "Entering StopDetect" << endl;
+    if (!isrunning || isstopped) return;
+
     isstopped = true;
     isrunning = false;
     emit stopped();

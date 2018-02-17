@@ -32,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //Set to start the application on the Go Page.
+    //Will eventually start on the Landing Page.
+    ui->stackedWidget->setCurrentIndex(0);
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
     this->captureThread = new QThread();
@@ -201,4 +204,25 @@ void MainWindow::on_cancelButton_clicked()
     emit stopStream();
     emit stopRead();
     emit stopDetect();
+}
+
+//Switching between pages
+void MainWindow::on_goPageButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_settingsPageButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+}
+
+void MainWindow::on_actionMain_Menu_triggered()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::on_calibratePageButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
 }
