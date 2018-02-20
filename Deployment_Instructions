@@ -1,0 +1,24 @@
+App is deployed using shared libraries files bundled with the applicaiton using linuxdeployqt
+
+For full install instructions and documentation see:
+https://github.com/probonopd/linuxdeployqt
+
+Instructions: 
+
+Download linuxdeployqt script:
+  wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+
+Give permissions:
+  chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+
+Add Release to the path:
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/PATH/TO/Sense-Able/Release
+
+
+Run Script
+  ./linuxdeployqt-continuous-x86_64.AppImage /PATH/TO/LEDDARGUI -qmake=PATH/TO/QT/bin/qmake -bundle-non-qt-libs
+
+
+linuxdeployqt copies all non-linux standard .so files to AppBuild/lib and plugins to AppBuild/plugins
+
+You can determine your QT Path of your leddargui build by going to > QT Creator > Projects > Build Environment > Details and scroll to the PATH variable. The QT path will be there, mine is "/home/jms/Qt5.7.0/5.7/gcc_64/bin"
