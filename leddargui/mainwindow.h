@@ -44,6 +44,8 @@ private slots:
 
     void on_calibratePageButton_clicked();
 
+    void on_page_2_customContextMenuRequested(const QPoint &pos);
+
 signals:
     void startCapture();
     void stopCapture();

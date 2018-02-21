@@ -34,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //Set to start the application on the Go Page.
     //Will eventually start on the Landing Page.
-    ui->stackedWidget->setCurrentIndex(0);
+    //Index has been changed so it now starts on the Landing page
+    ui->stackedWidget->setCurrentIndex(1);
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
     this->captureThread = new QThread();
@@ -157,7 +158,7 @@ void MainWindow::on_readDataButton_clicked(bool checked)
  * Window 'labels'.
 ***/
 void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
-    QLabel* labels[] = {ui->label_1, ui->label_2,  ui->label_3,
+   /* QLabel* labels[] = {ui->label_1, ui->label_2,  ui->label_3,
                        ui->label_4,  ui->label_5,  ui->label_6,
                        ui->label_7,  ui->label_8,  ui->label_9,
                        ui->label_10, ui->label_11, ui->label_12};
@@ -165,7 +166,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
     // Update the labels with the values of the data points.
     for (int i = 0; i <= 11; i++) {
         (labels[i])->setText(QString::number(dataPoints.at(i)));
-    }
+    }*/
 }
 
 /*********************************************************************
@@ -225,4 +226,9 @@ void MainWindow::on_actionMain_Menu_triggered()
 void MainWindow::on_calibratePageButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(3);
+}
+
+void MainWindow::on_page_2_customContextMenuRequested(const QPoint &pos)
+{
+
 }
