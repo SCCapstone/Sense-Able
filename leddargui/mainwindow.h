@@ -36,13 +36,13 @@ private slots:
 
     void on_cancelButton_clicked();
 
-    void on_goPageButton_clicked();
-
     void on_settingsPageButton_clicked();
 
     void on_actionMain_Menu_triggered();
 
     void on_calibratePageButton_clicked();
+
+    void on_notificationsButton_clicked();
 
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 

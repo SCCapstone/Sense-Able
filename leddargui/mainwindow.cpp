@@ -107,6 +107,7 @@ MainWindow::~MainWindow()
 ***/
 void MainWindow::on_readDataButton_clicked()
 {
+    ui->stackedWidget->setCurrentIndex(5);
     if (!this->stream->isrunning) {
         QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
                                                         "../LeddarData", tr("Leddar files (*.ltl)"));
@@ -128,6 +129,7 @@ void MainWindow::on_readDataButton_clicked()
 ***/
 void MainWindow::on_streamButton_clicked()
 {
+    ui->stackedWidget->setCurrentIndex(0);
     emit streamButtonClicked();
 
     if (!this->stream->isrunning) {
@@ -158,15 +160,15 @@ void MainWindow::on_readDataButton_clicked(bool checked)
  * Window 'labels'.
 ***/
 void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
-   /* QLabel* labels[] = {ui->label_1, ui->label_2,  ui->label_3,
-                       ui->label_4,  ui->label_5,  ui->label_6,
-                       ui->label_7,  ui->label_8,  ui->label_9,
-                       ui->label_10, ui->label_11, ui->label_12};
+    QLabel* labels[] = {ui->pt1, ui->pt2,  ui->pt3,
+                       ui->pt4,  ui->pt5,  ui->pt6,
+                       ui->pt7,  ui->pt8,  ui->pt9,
+                       ui->pt10, ui->pt11, ui->pt12};
 
     // Update the labels with the values of the data points.
     for (int i = 0; i <= 11; i++) {
         (labels[i])->setText(QString::number(dataPoints.at(i)));
-    }*/
+    }
 }
 
 /*********************************************************************
@@ -208,11 +210,6 @@ void MainWindow::on_cancelButton_clicked()
 }
 
 //Switching between pages
-void MainWindow::on_goPageButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(0);
-}
-
 void MainWindow::on_settingsPageButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
@@ -231,4 +228,9 @@ void MainWindow::on_calibratePageButton_clicked()
 void MainWindow::on_page_2_customContextMenuRequested(const QPoint &pos)
 {
 
+}
+
+void MainWindow::on_notificationsButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(4);
 }
