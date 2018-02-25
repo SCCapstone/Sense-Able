@@ -149,8 +149,13 @@
           </disabled>
          </palette>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="page">
          <widget class="QLabel" name="objectLabel">
@@ -715,7 +720,7 @@
            <string>Begin Stream</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="readDataButton">
+         <widget class="QPushButton" name="readDataPageButton">
           <property name="geometry">
            <rect>
             <x>330</x>
@@ -937,98 +942,36 @@
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
-         <widget class="QPushButton" name="speechShortcuts">
-          <property name="geometry">
-           <rect>
-            <x>200</x>
-            <y>80</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="palette">
-           <palette>
-            <active>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>191</red>
-                <green>64</green>
-                <blue>64</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>255</red>
-                <green>255</green>
-                <blue>255</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </active>
-            <inactive>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>191</red>
-                <green>64</green>
-                <blue>64</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>255</red>
-                <green>255</green>
-                <blue>255</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </inactive>
-            <disabled>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>191</red>
-                <green>64</green>
-                <blue>64</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>190</red>
-                <green>190</green>
-                <blue>190</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </disabled>
-           </palette>
-          </property>
-          <property name="text">
-           <string>Speech Shortcuts</string>
-          </property>
-         </widget>
          <widget class="QComboBox" name="comboBox">
           <property name="geometry">
            <rect>
             <x>200</x>
-            <y>140</y>
+            <y>130</y>
             <width>181</width>
             <height>41</height>
            </rect>
           </property>
+          <item>
+           <property name="text">
+            <string>Normal</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Fast</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Slow</string>
+           </property>
+          </item>
          </widget>
          <widget class="Line" name="line_3">
           <property name="geometry">
            <rect>
             <x>200</x>
-            <y>190</y>
+            <y>180</y>
             <width>441</width>
             <height>30</height>
            </rect>
@@ -1084,7 +1027,7 @@
           <property name="geometry">
            <rect>
             <x>210</x>
-            <y>220</y>
+            <y>210</y>
             <width>231</width>
             <height>41</height>
            </rect>
@@ -1098,32 +1041,11 @@
            <string>Notification Type:</string>
           </property>
          </widget>
-         <widget class="QCheckBox" name="vibrateCheckBox">
-          <property name="geometry">
-           <rect>
-            <x>170</x>
-            <y>260</y>
-            <width>301</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>17</pointsize>
-           </font>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::RightToLeft</enum>
-          </property>
-          <property name="text">
-           <string>Vibrate                        </string>
-          </property>
-         </widget>
          <widget class="QCheckBox" name="speechCheckBox">
           <property name="geometry">
            <rect>
             <x>170</x>
-            <y>300</y>
+            <y>260</y>
             <width>301</width>
             <height>41</height>
            </rect>
@@ -1144,7 +1066,7 @@
           <property name="geometry">
            <rect>
             <x>170</x>
-            <y>340</y>
+            <y>300</y>
             <width>301</width>
             <height>41</height>
            </rect>
@@ -1165,7 +1087,7 @@
           <property name="geometry">
            <rect>
             <x>200</x>
-            <y>380</y>
+            <y>340</y>
             <width>441</width>
             <height>30</height>
            </rect>
@@ -1221,7 +1143,7 @@
           <property name="geometry">
            <rect>
             <x>210</x>
-            <y>410</y>
+            <y>370</y>
             <width>371</width>
             <height>41</height>
            </rect>
@@ -1232,24 +1154,14 @@
            </font>
           </property>
           <property name="text">
-           <string>Notifications measured with:</string>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_2">
-          <property name="geometry">
-           <rect>
-            <x>200</x>
-            <y>460</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
+           <string>Distance measured in:</string>
           </property>
          </widget>
          <widget class="Line" name="line_5">
           <property name="geometry">
            <rect>
             <x>200</x>
-            <y>510</y>
+            <y>480</y>
             <width>441</width>
             <height>30</height>
            </rect>
@@ -1301,88 +1213,11 @@
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
-         <widget class="QPushButton" name="objectDectButton">
-          <property name="geometry">
-           <rect>
-            <x>200</x>
-            <y>570</y>
-            <width>181</width>
-            <height>51</height>
-           </rect>
-          </property>
-          <property name="palette">
-           <palette>
-            <active>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>191</red>
-                <green>64</green>
-                <blue>64</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>255</red>
-                <green>255</green>
-                <blue>255</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </active>
-            <inactive>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>191</red>
-                <green>64</green>
-                <blue>64</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>255</red>
-                <green>255</green>
-                <blue>255</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </inactive>
-            <disabled>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>191</red>
-                <green>64</green>
-                <blue>64</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>190</red>
-                <green>190</green>
-                <blue>190</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </disabled>
-           </palette>
-          </property>
-          <property name="text">
-           <string>Object Detection</string>
-          </property>
-         </widget>
          <widget class="QPushButton" name="notificationsButton">
           <property name="geometry">
            <rect>
-            <x>460</x>
-            <y>570</y>
+            <x>200</x>
+            <y>520</y>
             <width>181</width>
             <height>51</height>
            </rect>
@@ -1454,6 +1289,44 @@
           <property name="text">
            <string>Notifications</string>
           </property>
+         </widget>
+         <widget class="QLabel" name="label_9">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>80</y>
+            <width>191</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>20</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Speech Speed:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_2">
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>420</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>Metric </string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>US customary systems</string>
+           </property>
+          </item>
          </widget>
         </widget>
         <widget class="QWidget" name="page_4">
@@ -2598,76 +2471,41 @@
             <height>41</height>
            </rect>
           </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_4">
-          <property name="geometry">
-           <rect>
-            <x>450</x>
-            <y>220</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_5">
-          <property name="geometry">
-           <rect>
-            <x>450</x>
-            <y>280</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_6">
-          <property name="geometry">
-           <rect>
-            <x>450</x>
-            <y>340</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_7">
-          <property name="geometry">
-           <rect>
-            <x>450</x>
-            <y>400</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_8">
-          <property name="geometry">
-           <rect>
-            <x>450</x>
-            <y>460</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_9">
-          <property name="geometry">
-           <rect>
-            <x>450</x>
-            <y>520</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QComboBox" name="comboBox_10">
-          <property name="geometry">
-           <rect>
-            <x>450</x>
-            <y>580</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
+          <item>
+           <property name="text">
+            <string>1 Short Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 1 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short Beeps</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 2 Short</string>
+           </property>
+          </item>
          </widget>
          <widget class="QLabel" name="label_2">
           <property name="geometry">
@@ -2752,6 +2590,398 @@
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_4">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>220</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>1 Long Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 1 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short Beeps</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 2 Short</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QComboBox" name="comboBox_5">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>280</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>1 Long, 1 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short Beeps</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 2 Short</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QComboBox" name="comboBox_6">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>340</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>1 Long, 2 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short Beeps</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 1 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short, 1 Long</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QComboBox" name="comboBox_7">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>400</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>2 Short Beeps</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 1 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 2 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long Beep</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QComboBox" name="comboBox_8">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>460</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>1 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 1 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short Beeps</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 2 Short</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QComboBox" name="comboBox_9">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>520</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>2 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 1 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short Beeps</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 2 Short</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QComboBox" name="comboBox_10">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>580</y>
+            <width>181</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>1 Long, 2 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long Beep</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Long, 1 Short</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short Beeps</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 Short, 1 Long</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 Short, 1 Long</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QPushButton" name="backButton">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>71</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="palette">
+           <palette>
+            <active>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>59</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </active>
+            <inactive>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>59</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </inactive>
+            <disabled>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>59</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>190</red>
+                <green>190</green>
+                <blue>190</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </disabled>
+           </palette>
+          </property>
+          <property name="text">
+           <string>Back</string>
           </property>
          </widget>
         </widget>
@@ -3180,6 +3410,115 @@
           </property>
           <property name="text">
            <string>Point 7</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="readDataButton">
+          <property name="geometry">
+           <rect>
+            <x>330</x>
+            <y>500</y>
+            <width>181</width>
+            <height>61</height>
+           </rect>
+          </property>
+          <property name="palette">
+           <palette>
+            <active>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>54</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="Text">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </active>
+            <inactive>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>54</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="Text">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </inactive>
+            <disabled>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>54</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="Text">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>190</red>
+                <green>190</green>
+                <blue>190</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>190</red>
+                <green>190</green>
+                <blue>190</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </disabled>
+           </palette>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>17</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Read Data </string>
           </property>
          </widget>
         </widget>

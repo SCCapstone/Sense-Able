@@ -44,6 +44,10 @@ private slots:
 
     void on_notificationsButton_clicked();
 
+    void on_readDataPageButton_clicked();
+
+    void on_backButton_clicked();
+
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 
 signals:

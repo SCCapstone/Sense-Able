@@ -107,7 +107,6 @@ MainWindow::~MainWindow()
 ***/
 void MainWindow::on_readDataButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(5);
     if (!this->stream->isrunning) {
         QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
                                                         "../LeddarData", tr("Leddar files (*.ltl)"));
@@ -233,4 +232,14 @@ void MainWindow::on_page_2_customContextMenuRequested(const QPoint &pos)
 void MainWindow::on_notificationsButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(4);
+}
+
+void MainWindow::on_readDataPageButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(5);
+}
+
+void MainWindow::on_backButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
 }
