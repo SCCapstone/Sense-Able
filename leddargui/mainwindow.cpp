@@ -209,6 +209,21 @@ void MainWindow::on_cancelButton_clicked()
 }
 
 /*********************************************************************
+ * Function to run when the cancelButtonRead is clicked.
+ *
+ * We stop all threads from executing processes, except the main thread.
+ * Does the same as the above button but is used for a different page of
+ * the application
+***/
+void MainWindow::on_cancelButtonRead_clicked()
+{
+    emit stopCapture();
+    emit stopStream();
+    emit stopRead();
+    emit stopDetect();
+}
+
+/*********************************************************************
  * Function to run when the back Button on the go page is clicked.
  *
  * We stop all threads from executing processes, except the main thread.

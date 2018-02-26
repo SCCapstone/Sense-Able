@@ -36,6 +36,8 @@ private slots:
 
     void on_cancelButton_clicked();
 
+    void on_cancelButtonRead_clicked();
+
     void on_settingsPageButton_clicked();
 
     void on_actionMain_Menu_triggered();
