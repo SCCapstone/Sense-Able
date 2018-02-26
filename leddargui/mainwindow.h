@@ -48,6 +48,14 @@ private slots:
 
     void on_backButton_clicked();
 
+    void on_backButtonGo_clicked();
+
+    void on_backButtonSettings_clicked();
+
+    void on_backButtonRead_clicked();
+
+    void on_backButtonCalibration_clicked();
+
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 
 signals:

@@ -208,6 +208,30 @@ void MainWindow::on_cancelButton_clicked()
     emit stopDetect();
 }
 
+/*********************************************************************
+ * Function to run when the back Button on the go page is clicked.
+ *
+ * We stop all threads from executing processes, except the main thread.
+ * and then we go back to the main page of the app
+***/
+void MainWindow::on_backButtonGo_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+    emit stopCapture();
+    emit stopStream();
+    emit stopRead();
+    emit stopDetect();
+}
+
+void MainWindow::on_backButtonRead_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+    emit stopCapture();
+    emit stopStream();
+    emit stopRead();
+    emit stopDetect();
+}
+
 //Switching between pages
 void MainWindow::on_settingsPageButton_clicked()
 {
@@ -243,3 +267,15 @@ void MainWindow::on_backButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
 }
+
+void MainWindow::on_backButtonSettings_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::on_backButtonCalibration_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+
