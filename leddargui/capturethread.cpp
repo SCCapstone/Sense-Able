@@ -96,6 +96,13 @@ void CaptureThread::doCapture()
         if(cap.isOpened()){
             cap >> frame;
             int a = imagedetect(hog, frame);
+/*
+            cv::Point pt1(45,5);
+            cv::Point pt2(45,245);
+            cv::Scalar color = cv::Scalar(255,210,12);
+            cv::line(frame,pt1,pt2,color,5);
+*/
+
             emit(newFrame(&frame));
         }
         else{
@@ -108,6 +115,14 @@ void CaptureThread::doCapture()
 
     QMetaObject::invokeMethod(this, "doCapture", Qt::QueuedConnection);
 //    emit this->finished();
+}
+
+//Slot to catch data points from the leddar thread
+void CaptureThread::captureDataPoints(int index, std::vector<float> points){
+    if(isrunning && !isstopped){
+        //Draw stuff on frame
+        qDebug()<<"capturing points in capture thread";
+    }
 }
 
 /*********************************************************************

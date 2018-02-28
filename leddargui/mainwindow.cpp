@@ -66,6 +66,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
                     SLOT(catchDataPoints(int,vector<float>)),
                     Qt::QueuedConnection);
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
+                    capture, SLOT(captureDataPoints(int,std::vector<float>)),
+                    Qt::QueuedConnection);
 
     // We then connect the leddar stream and the object detector so that
     // an object is detected when new leddar data is found.
