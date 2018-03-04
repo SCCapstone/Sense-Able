@@ -155,7 +155,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="page">
          <widget class="QLabel" name="objectLabel">
@@ -1447,7 +1447,7 @@
            <rect>
             <x>210</x>
             <y>80</y>
-            <width>191</width>
+            <width>291</width>
             <height>41</height>
            </rect>
           </property>
@@ -1457,7 +1457,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Speech Speed:</string>
+           <string>Notification Distance</string>
           </property>
          </widget>
          <widget class="QComboBox" name="comboBox_2">
@@ -4014,7 +4014,7 @@
      <x>0</x>
      <y>0</y>
      <width>892</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBack">

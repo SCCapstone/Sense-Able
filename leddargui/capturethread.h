@@ -15,6 +15,7 @@ public:
     ~CaptureThread();
     void run();
     int imagedetect(cv::HOGDescriptor, cv::Mat);
+    void overlayDistance(std::vector<float> distances, cv::Mat frame);
 
 public slots:
     void StartCapture();
@@ -37,6 +38,7 @@ private:
     cv::Mat frame;
 
     bool isrunning, isstopped;
+    std::vector<float> distances;
 
 };
 

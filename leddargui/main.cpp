@@ -20,10 +20,10 @@ int main(int argc, char *argv[])
 
     // Perform unit tests.
     ::testing::InitGoogleTest(&argc, argv);
-   // RUN_ALL_TESTS();
+    RUN_ALL_TESTS();
 
     // Perform behavioral tests.
-    QtBehaviorTestSuite suite;
+//    QtBehaviorTestSuite suite;
     //suite.runTests();
 
     // Show the app.

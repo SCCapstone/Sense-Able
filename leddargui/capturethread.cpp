@@ -75,6 +75,44 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
 }
 
 /*********************************************************************
+ * Function to overlay some distance rendering onto the fram
+ *
+ * This fuction takes an image and a set of points and displays the distance on the frame
+ ***/
+void CaptureThread::overlayDistance(std::vector<float> distances, cv::Mat frame) {
+    int height = frame.size().height;
+    int width = frame.size().width;
+    std::cout << height << "   " << width << std::endl;
+
+
+    int segments = int(distances.size()) + 1;
+    int seg_dist = width/segments; //Truncates but this shouldn't be noticeable. Also it doesn't matter.
+
+    std::cout << seg_dist << std::endl;
+
+    for (int i=1; i<segments; i++) {
+        // point(x_coord, y_coord);
+       cv::line(frame,
+                cv::Point(seg_dist*i, height/2),
+                cv::Point(seg_dist*i, height),
+                cv::Scalar( 0, 255, 255 ),
+                1);
+       cv::putText(frame,
+                   std::to_string(int(round(distances.at(i-1)))),
+                   cv::Point(seg_dist*i, height/2 - 10),
+                   cv::FONT_HERSHEY_SCRIPT_SIMPLEX,
+                   .3,
+                   cv::Scalar(0, 255, 255),
+                   1);
+//               putText(InputOutputArray img, const String& text, Point org, int fontFace, double fontScale, Scalar color, int thickness=1, int lineType=LINE_8, bool bottomLeftOrigin=false )
+    }
+    return;
+
+//    C++: void line(InputOutputArray img, Point pt1, Point pt2, const Scalar& color, int thickness=1, int lineType=LINE_8, int shift=0 )
+
+}
+
+/*********************************************************************
  * Function to capture images from the webcamera.
  *
  * This function captures images from the camera and emits the frames
@@ -91,11 +129,17 @@ void CaptureThread::doCapture()
 
     cv::HOGDescriptor hog;
     hog.load("../my_detector.yml");
-//    std::cout  << hum << std::endl;
+
     while(isrunning && !isstopped){
         if(cap.isOpened()){
             cap >> frame;
             int a = imagedetect(hog, frame);
+
+            std::vector<float> poop;
+            for (int i=0; i<16; i++){
+                poop.push_back(i);
+            }
+            overlayDistance(poop, frame);
 /*
             cv::Point pt1(45,5);
             cv::Point pt2(45,245);
@@ -117,10 +161,16 @@ void CaptureThread::doCapture()
 //    emit this->finished();
 }
 
-//Slot to catch data points from the leddar thread
+/*********************************************************************
+ * Slot to receive data points from leddar thread
+ *
+ * Set class variable distances to the newly received dataPoints.
+ ****/
 void CaptureThread::captureDataPoints(int index, std::vector<float> points){
     if(isrunning && !isstopped){
         //Draw stuff on frame
+        distances.empty();
+        distances = points;
         qDebug()<<"capturing points in capture thread";
     }
 }

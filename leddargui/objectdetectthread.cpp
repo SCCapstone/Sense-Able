@@ -54,11 +54,26 @@ cout << "Entering doDetect" << endl;
     int detectCode;
     float measure_err = .75;
     float flat_err = 100;
-    float sig_dist = 2;
+//    float sig_dist = 2;
+    this->num_beams = 16;
 
     if (!isrunning || isstopped) return;
 
-    detectCode = detect_wall(yaxis_projection(distances), measure_err, flat_err);
+    bool close = false;
+    for (unsigned i=0; i<distances.size(); i++) {
+        if (distances.at(i) < sig_dist + .1 * sig_dist) {
+            close = true;
+        }
+    }
+
+    try{
+        detectCode = detect_wall(yaxis_projection(distances), measure_err, flat_err);
+    }
+    catch (const std::exception& e){
+        // TODO:: Change to log
+        std::cout << e.what() << std::endl;
+        detectCode = -1;
+    }
 
 //    float closest_point = 0;
 //    for (int i = 0; i < distances.size(); i++) {
@@ -100,10 +115,12 @@ cout << "Entering doDetect" << endl;
  *
  * Input:
  *   distances - The distances 'vector' given
- *   measure_error - A parameter for tolerance
- *   flat_error - A parameter for tolerance
+ *   measure_error - A parameter for tolerance - deviation of individual measurements to the mean
+ *   flat_error - A parameter for tolerance - deviation of slope
  *
  * Returns:
+ *  -1 if invalid input
+ *   0 if no wall
  *   1 if a flat wall is detected
  *   2 if a left slant (/) wall detected
  *   3 if a right slant (\) wall detected
@@ -116,7 +133,11 @@ cout << "Entering doDetect" << endl;
  *
 ***/
 int objectDetector::detect_wall(std::vector<float> distances, float measure_error, float flat_error) {
-cout << "Entering detect_wall" << endl;
+  std::cout << "Entering detect_wall" << std::endl;
+
+  if (distances.size() != 16) {
+      return -1;
+  }
 
   int n = 0;    // Size of distances
   float sumx = 0; // sum of x
@@ -164,8 +185,9 @@ cout << "Entering detect_wall" << endl;
 
   // Calculate slope and intercept
   slope = r * (sdy/sdx);
+  // TODO: This assumes even number of beams
   intercept = (distances.at( n/2 - 1) + distances.at( n/2 )) / 2;
-//  std::cout << "SLope " << b << "  Intercept: " << a << std::endl;
+//  std::cout << "SLope " << slope << "  Intercept: " << intercept << std::endl;
 //  std::cout << "MEANX, MEANY " << mx << " " << my << std::endl;
 
   // If any of the segments exceed tolerated measurement error -
@@ -174,10 +196,10 @@ cout << "Entering detect_wall" << endl;
   for ( unsigned int i = 0; i < distances.size(); i++ ){
     float errori = std::abs( (slope*int(i) + intercept) - distances.at(i) );
     if ( errori > measure_error )  {
-       std::cout << "error: " << (slope*int(i)+intercept) - distances.at(i) << std::endl;
-       std::cout << "Distance: " << distances.at(i) << std::endl;
-       std::cout << "Slope: " << slope << std::endl;
-       std::cout << "Intercept: " << intercept << std::endl;
+//       std::cout << "error: " << (slope*int(i)+intercept) - distances.at(i) << std::endl;
+//       std::cout << "Distance: " << distances.at(i) << std::endl;
+//       std::cout << "Slope: " << slope << std::endl;
+//       std::cout << "Intercept: " << intercept << std::endl;
       wall = false;
     }
   }
@@ -277,4 +299,14 @@ cout << "Entering StopDetect" << endl;
     isstopped = true;
     isrunning = false;
     emit stopped();
+}
+
+/**********************************************************************
+ * Slot to change the signal distance
+ *
+ * Overwrite whatever the previous signal distance
+***/
+void objectDetector::SetSignalDist(float new_dist) {
+cout << "Entering SetsignalDist" << endl;
+    sig_dist = new_dist;
 }

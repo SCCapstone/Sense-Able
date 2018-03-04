@@ -24,6 +24,7 @@ public slots:
     void StartDetect(int index, vector<float> distances);
     void StopDetect();
     //void objDetect(int i);
+    void SetSignalDist(float sig_dist);
 
 private slots:
     void doDetect(vector<float> dataPoints);
@@ -36,6 +37,8 @@ signals:
 
 private:
     bool isrunning, isstopped;
+    int num_beams;
+    float sig_dist;
 };
 
 #endif // OBJECTDETECT_H
