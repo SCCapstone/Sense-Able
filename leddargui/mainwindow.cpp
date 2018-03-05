@@ -60,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // First, we connect the captureThread and the main thread
     // in order to display a video feed on the window.
+    qRegisterMetaType<vector<string> >("vector<string>");
+
     this->capture->moveToThread(captureThread);
     connect(this, SIGNAL(startCapture()), capture, SLOT(StartCapture()));
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
@@ -98,8 +100,6 @@ MainWindow::MainWindow(QWidget *parent) :
                     this,
                     SLOT(catchObjectDetected(string)),
                     Qt::QueuedConnection);
-
-    qRegisterMetaType<vector<string> >("vector<string>");
 
     // Start the threads.
     captureThread->start();
