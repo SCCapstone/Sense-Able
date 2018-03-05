@@ -44,6 +44,16 @@ MainWindow::MainWindow(QWidget *parent) :
     this->objdetectThread = new QThread();
     this->objdetector = new objectDetector();
 
+    this->notifier = UserNotifier();
+    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
+    this->defaultSoundOrder.push_back("../Sounds/hall_notification.wav");
+    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
+    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
+    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
+    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
+    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
+    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
+
 //    this->signalMapper = new QSignalMapper(this);
 
     // We connect the threads together via their signals and slots.
@@ -80,6 +90,9 @@ MainWindow::MainWindow(QWidget *parent) :
                     objdetector,
                     SLOT(StartDetect(int, vector<float>)),
                     Qt::QueuedConnection);
+    connect(this, SIGNAL(passNotifier(UserNotifier)),
+                    objdetector,
+                    SLOT(getCurrentNotifier(UserNotifier)));
     connect(objdetector, SIGNAL(sendObjectDetected(string)),
                     this,
                     SLOT(catchObjectDetected(string)),
@@ -116,6 +129,22 @@ void MainWindow::on_readDataButton_clicked()
         // Given a filename, find the matching recording if there exists one
 
         emit startRead(filename);
+
+        // Setup the current notifier based on the notification settings.
+        QComboBox* notif_choices[] = {ui->obj1_notif_choice,
+            ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
+            ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
+            ui->obj8_notif_choice};
+
+        for(int i = 0; i < 8; i++) {
+            notifier.soundFiles.at(i) = defaultSoundOrder.at((notif_choices[i])->currentIndex());
+        }
+
+        cout << endl;
+        cout << "GEY: " << ui->obj1_notif_choice->currentIndex() << endl;
+        cout << endl;
+
+        emit passNotifier(this->notifier);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
     }
@@ -137,6 +166,7 @@ void MainWindow::on_streamButton_clicked()
     if (!this->stream->isrunning) {
         emit startCapture();
         emit startStream();
+        emit passNotifier(this->notifier);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
     }

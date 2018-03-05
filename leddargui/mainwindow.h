@@ -71,6 +71,7 @@ signals:
     void stopDetect();
 
     void streamButtonClicked();
+    void passNotifier(UserNotifier someNotifier);
 
 private:
     Ui::MainWindow *ui;
@@ -82,6 +83,8 @@ private:
     QThread* objdetectThread;
 
     QSignalMapper* signalMapper;
+    UserNotifier notifier;
+    vector<string> defaultSoundOrder;
 };
 
 #endif // MAINWINDOW_H

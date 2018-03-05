@@ -23,6 +23,7 @@ public:
 public slots:
     void StartDetect(int index, vector<float> distances);
     void StopDetect();
+    void getCurrentNotifier(UserNotifier someNotifier);
     //void objDetect(int i);
 
 private slots:
@@ -36,6 +37,8 @@ signals:
 
 private:
     bool isrunning, isstopped;
+
+    UserNotifier currentNotifier;
 };
 
 #endif // OBJECTDETECT_H

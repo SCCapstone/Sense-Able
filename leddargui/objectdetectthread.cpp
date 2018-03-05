@@ -26,6 +26,8 @@ cout << "Entering objectDetector" << endl;
     qRegisterMetaType<string>("string");
     isstopped = false;
     isrunning = false;
+
+    currentNotifier = UserNotifier();
 }
 
 /*********************************************************************
@@ -50,7 +52,6 @@ cout << "Entering objectDetector" << endl;
 ***/
 void objectDetector::doDetect(vector<float> distances) {
 cout << "Entering doDetect" << endl;
-    UserNotifier notifier = UserNotifier();
     int detectCode;
     float measure_err = .75;
     float flat_err = 100;
@@ -70,17 +71,17 @@ cout << "Entering doDetect" << endl;
     if (detectCode == 1) {
         emit sendObjectDetected("Wall");
 //        if ( closest_point - .5 < sig_dist ) {
-        notifier.playSound(0);
+        currentNotifier.playSound(0);
 //        }
     } else if (detectCode == 2) {
         emit sendObjectDetected("Left Slant");
-        notifier.playSound(1);
+        currentNotifier.playSound(1);
     } else if (detectCode == 3) {
         emit sendObjectDetected("Right Slant");
-        notifier.playSound(2);
+        currentNotifier.playSound(2);
     } else if (detectCode == 4) {
         emit sendObjectDetected("Hallway");
-        notifier.playSound(3);
+        currentNotifier.playSound(3);
     } else if (detectCode == -1) {
         emit sendObjectDetected("NONE");
     } else {
@@ -262,6 +263,10 @@ cout << "Entering StartDetect" << endl;
     isrunning = true;
     emit running();
     doDetect(dataPoints);
+}
+
+void objectDetector::getCurrentNotifier(UserNotifier someNotifier) {
+    this->currentNotifier = someNotifier;
 }
 
 /*********************************************************************

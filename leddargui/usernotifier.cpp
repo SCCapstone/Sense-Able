@@ -19,6 +19,12 @@ using namespace std;
 UserNotifier::UserNotifier() {
     soundFiles.push_back("../Sounds/owen_wilson.wav");
     soundFiles.push_back("../Sounds/hall_notification.wav");
+    soundFiles.push_back("../Sounds/owen_wilson.wav");
+    soundFiles.push_back("../Sounds/owen_wilson.wav");
+    soundFiles.push_back("../Sounds/owen_wilson.wav");
+    soundFiles.push_back("../Sounds/owen_wilson.wav");
+    soundFiles.push_back("../Sounds/owen_wilson.wav");
+    soundFiles.push_back("../Sounds/owen_wilson.wav");
    /* soundFiles.push_back("");
     soundFiles.push_back("");
     soundFiles.push_back("");

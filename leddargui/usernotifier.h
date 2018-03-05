@@ -12,9 +12,10 @@ public:
     ~UserNotifier();
 
     void playSound(int index);
+    vector<string> soundFiles;
 
 private:
-    vector<string> soundFiles;
+
 };
 
 #endif // USERNOTIFIER_H
