@@ -25,12 +25,6 @@ UserNotifier::UserNotifier() {
     soundFiles.push_back("../Sounds/beep-06.wav");
     soundFiles.push_back("../Sounds/beep-07.wav");
     soundFiles.push_back("../Sounds/beep-08.wav");
-   /* soundFiles.push_back("");
-    soundFiles.push_back("");
-    soundFiles.push_back("");
-    soundFiles.push_back("");
-    soundFiles.push_back("");
-    soundFiles.push_back("");*/
 }
 
 /*********************************************************************
