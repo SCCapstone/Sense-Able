@@ -3443,9 +3443,9 @@
          <widget class="QLabel" name="pt1">
           <property name="geometry">
            <rect>
-            <x>30</x>
+            <x>20</x>
             <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3456,22 +3456,9 @@
          <widget class="QLabel" name="pt3">
           <property name="geometry">
            <rect>
-            <x>170</x>
+            <x>120</x>
             <y>350</y>
-            <width>67</width>
-            <height>51</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>0</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="pt4">
-          <property name="geometry">
-           <rect>
-            <x>240</x>
-            <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3482,9 +3469,9 @@
          <widget class="QLabel" name="pt5">
           <property name="geometry">
            <rect>
-            <x>310</x>
+            <x>220</x>
             <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3495,22 +3482,9 @@
          <widget class="QLabel" name="pt6">
           <property name="geometry">
            <rect>
-            <x>380</x>
+            <x>270</x>
             <y>350</y>
-            <width>67</width>
-            <height>51</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>0</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="pt2">
-          <property name="geometry">
-           <rect>
-            <x>100</x>
-            <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3521,9 +3495,9 @@
          <widget class="QLabel" name="pt7">
           <property name="geometry">
            <rect>
-            <x>450</x>
+            <x>320</x>
             <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3534,9 +3508,9 @@
          <widget class="QLabel" name="pt8">
           <property name="geometry">
            <rect>
-            <x>520</x>
+            <x>370</x>
             <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3547,9 +3521,9 @@
          <widget class="QLabel" name="pt9">
           <property name="geometry">
            <rect>
-            <x>590</x>
+            <x>420</x>
             <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3563,9 +3537,9 @@
           </property>
           <property name="geometry">
            <rect>
-            <x>660</x>
+            <x>470</x>
             <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3576,9 +3550,9 @@
          <widget class="QLabel" name="pt12">
           <property name="geometry">
            <rect>
-            <x>790</x>
+            <x>570</x>
             <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3589,9 +3563,9 @@
          <widget class="QLabel" name="pt11">
           <property name="geometry">
            <rect>
-            <x>720</x>
+            <x>520</x>
             <y>350</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
@@ -3604,155 +3578,142 @@
            <rect>
             <x>20</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 1</string>
+           <string>Pt 1</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_2">
           <property name="geometry">
            <rect>
-            <x>90</x>
+            <x>70</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 2</string>
+           <string>Pt 2</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_3">
           <property name="geometry">
            <rect>
-            <x>160</x>
+            <x>120</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 3</string>
+           <string>Pt 3</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_4">
           <property name="geometry">
            <rect>
-            <x>230</x>
+            <x>170</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 4</string>
+           <string>Pt 4</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_5">
           <property name="geometry">
            <rect>
-            <x>300</x>
+            <x>220</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 5</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="pointLabel_6">
-          <property name="geometry">
-           <rect>
-            <x>370</x>
-            <y>310</y>
-            <width>67</width>
-            <height>51</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Point 6</string>
+           <string>Pt 5</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_9">
           <property name="geometry">
            <rect>
-            <x>580</x>
+            <x>420</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 9</string>
+           <string>Pt 9</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_10">
           <property name="geometry">
            <rect>
-            <x>650</x>
+            <x>470</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 10</string>
+           <string>Pt10</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_11">
           <property name="geometry">
            <rect>
-            <x>720</x>
+            <x>520</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 11</string>
+           <string>Pt11</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_12">
           <property name="geometry">
            <rect>
-            <x>790</x>
+            <x>570</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 12</string>
+           <string>Pt12</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_7">
           <property name="geometry">
            <rect>
-            <x>510</x>
+            <x>370</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 8</string>
+           <string>Pt 8</string>
           </property>
          </widget>
          <widget class="QLabel" name="pointLabel_8">
           <property name="geometry">
            <rect>
-            <x>440</x>
+            <x>320</x>
             <y>310</y>
-            <width>67</width>
+            <width>41</width>
             <height>51</height>
            </rect>
           </property>
           <property name="text">
-           <string>Point 7</string>
+           <string>Pt 7</string>
           </property>
          </widget>
          <widget class="QPushButton" name="readDataButton">
@@ -4026,6 +3987,149 @@
           </property>
           <property name="text">
            <string>Cancel</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pointLabel_13">
+          <property name="geometry">
+           <rect>
+            <x>620</x>
+            <y>310</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Pt13</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pointLabel_14">
+          <property name="geometry">
+           <rect>
+            <x>670</x>
+            <y>310</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Pt14</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pointLabel_15">
+          <property name="geometry">
+           <rect>
+            <x>720</x>
+            <y>310</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Pt15</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pointLabel_16">
+          <property name="geometry">
+           <rect>
+            <x>770</x>
+            <y>310</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Pt16</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pt13">
+          <property name="geometry">
+           <rect>
+            <x>620</x>
+            <y>350</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pt14">
+          <property name="geometry">
+           <rect>
+            <x>670</x>
+            <y>350</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pt15">
+          <property name="geometry">
+           <rect>
+            <x>720</x>
+            <y>350</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pt16">
+          <property name="geometry">
+           <rect>
+            <x>770</x>
+            <y>350</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pointLabel_6">
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>310</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Pt 6</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pt2">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>350</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pt4">
+          <property name="geometry">
+           <rect>
+            <x>170</x>
+            <y>350</y>
+            <width>41</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0</string>
           </property>
          </widget>
         </widget>
