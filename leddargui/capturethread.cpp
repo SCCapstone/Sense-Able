@@ -136,7 +136,7 @@ void CaptureThread::doCapture()
     while(isrunning && !isstopped){
         if(cap.isOpened()){
             cap >> frame;
-            int a = imagedetect(hog, frame);
+//            int a = imagedetect(hog, frame);
 
             if (distances.size() > 5){
                 overlayDistance(distances, frame);
