@@ -123,6 +123,21 @@ MainWindow::~MainWindow()
 ***/
 void MainWindow::on_readDataButton_clicked()
 {
+
+    // Setup the current notifier based on the notification settings.
+    QComboBox* notif_choices[] = {ui->obj1_notif_choice,
+        ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
+        ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
+        ui->obj8_notif_choice};
+
+    for(int i = 0; i < 8; i++) {
+        notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
+    }
+
+    cout << endl;
+    cout << "GEY: " << notifier.soundFiles[0] << endl;
+    cout << endl;
+
     if (!this->stream->isrunning) {
         QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
                                                         "../LeddarData", tr("Leddar files (*.ltl)"));
@@ -130,19 +145,6 @@ void MainWindow::on_readDataButton_clicked()
 
         emit startRead(filename);
 
-        // Setup the current notifier based on the notification settings.
-        QComboBox* notif_choices[] = {ui->obj1_notif_choice,
-            ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
-            ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
-            ui->obj8_notif_choice};
-
-        for(int i = 0; i < 8; i++) {
-            notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
-        }
-
-        cout << endl;
-        cout << "GEY: " << ui->obj1_notif_choice->currentIndex() << endl;
-        cout << endl;
 
         emit passNotifier(this->notifier);
 //        emit startDetect();  We should not start detecting until an object
@@ -195,10 +197,12 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
     QLabel* labels[] = {ui->pt1, ui->pt2,  ui->pt3,
                        ui->pt4,  ui->pt5,  ui->pt6,
                        ui->pt7,  ui->pt8,  ui->pt9,
-                       ui->pt10, ui->pt11, ui->pt12};
+                       ui->pt10, ui->pt11, ui->pt12,
+                       ui->pt13, ui->pt14, ui->pt15,
+                       ui->pt16};
 
     // Update the labels with the values of the data points.
-    for (int i = 0; i <= 11; i++) {
+    for (int i = 0; i <= 15; i++) {
         (labels[i])->setText(QString::number(dataPoints.at(i)));
     }
 }
