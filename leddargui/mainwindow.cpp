@@ -45,14 +45,14 @@ MainWindow::MainWindow(QWidget *parent) :
     this->objdetector = new objectDetector();
 
     this->notifier = UserNotifier();
-    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
-    this->defaultSoundOrder.push_back("../Sounds/hall_notification.wav");
-    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
-    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
-    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
-    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
-    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
-    this->defaultSoundOrder.push_back("../Sounds/owen_wilson.wav");
+    this->defaultSoundOrder.push_back("../Sounds/beep-01.wav");
+    this->defaultSoundOrder.push_back("../Sounds/beep-02.wav");
+    this->defaultSoundOrder.push_back("../Sounds/beep-03.wav");
+    this->defaultSoundOrder.push_back("../Sounds/beep-04.wav");
+    this->defaultSoundOrder.push_back("../Sounds/beep-05.wav");
+    this->defaultSoundOrder.push_back("../Sounds/beep-06.wav");
+    this->defaultSoundOrder.push_back("../Sounds/beep-07.wav");
+    this->defaultSoundOrder.push_back("../Sounds/beep-08.wav");
 
 //    this->signalMapper = new QSignalMapper(this);
 
