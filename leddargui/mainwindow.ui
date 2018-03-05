@@ -156,6 +156,7 @@
         </property>
         <property name="currentIndex">
          <number>0</number>
+>>>>>>> 4d8efbab7efcf8f5af78dbd3a3be928990a15f30
         </property>
         <widget class="QWidget" name="page">
          <widget class="QLabel" name="objectLabel">
@@ -4035,26 +4036,6 @@
     </item>
    </layout>
   </widget>
-<<<<<<< HEAD
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>892</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuBack">
-    <property name="title">
-     <string>Menu</string>
-    </property>
-    <addaction name="actionMain_Menu"/>
-   </widget>
-   <addaction name="menuBack"/>
-  </widget>
-=======
->>>>>>> 4d8efbab7efcf8f5af78dbd3a3be928990a15f30
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
