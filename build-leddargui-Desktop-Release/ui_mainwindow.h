@@ -13,17 +13,18 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -31,50 +32,103 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *actionMain_Menu;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QHBoxLayout *horizontalLayout;
     QStackedWidget *stackedWidget;
     QWidget *page;
-    QGridLayout *gridLayout_2;
-    QVBoxLayout *verticalLayout_3;
-    QHBoxLayout *horizontalLayout_4;
     QLabel *objectLabel;
-    QHBoxLayout *horizontalLayout_2;
-    QPushButton *streamButton;
-    QPushButton *readDataButton;
+    QLabel *cameraView;
     QPushButton *cancelButton;
-    QHBoxLayout *horizontalLayout_3;
-    QGridLayout *gridLayout;
-    QVBoxLayout *verticalLayout;
-    QLabel *label_1;
-    QLabel *label_2;
+    QPushButton *backButtonGo;
+    QWidget *page_2;
+    QLabel *titleLabel;
+    QPushButton *calibratePageButton;
+    QPushButton *settingsPageButton;
+    QPushButton *streamButton;
+    QPushButton *readDataPageButton;
+    QWidget *page_3;
+    QLabel *settingsLabel;
+    QFrame *line_2;
+    QComboBox *comboBox;
+    QFrame *line_3;
+    QLabel *label_25;
+    QCheckBox *speechCheckBox;
+    QCheckBox *beepCheckBox;
+    QFrame *line_4;
+    QLabel *label_26;
+    QFrame *line_5;
+    QPushButton *notificationsButton;
+    QLabel *label_9;
+    QComboBox *comboBox_2;
+    QPushButton *backButtonSettings;
+    QWidget *page_4;
+    QLabel *calibrationLabel;
+    QFrame *line;
+    QPushButton *beginCalibrationButton;
+    QPushButton *cancelCalibrationButton;
+    QPushButton *backButtonCalibration;
+    QWidget *page_5;
+    QLabel *notificationsTitle;
+    QFrame *line_6;
+    QLabel *notificationLabel;
+    QLabel *objectTypeLabel;
+    QLabel *label;
     QLabel *label_3;
     QLabel *label_4;
-    QLabel *label_5;
-    QLabel *label_6;
     QLabel *label_7;
     QLabel *label_8;
-    QLabel *label_9;
-    QLabel *label_10;
-    QLabel *label_11;
-    QLabel *label_12;
-    QVBoxLayout *verticalLayout_2;
-    QLabel *label;
-    QLabel *label_14;
-    QLabel *label_15;
-    QLabel *label_16;
-    QLabel *label_17;
-    QLabel *label_18;
-    QLabel *label_19;
-    QLabel *label_20;
-    QLabel *label_23;
-    QLabel *label_13;
-    QLabel *label_21;
-    QLabel *label_22;
-    QLabel *cameraView;
-    QWidget *page_2;
-    QMenuBar *menuBar;
+    QLabel *label_5;
+    QLabel *label_6;
+    QComboBox *obj1_notif_choice;
+    QLabel *label_2;
+    QComboBox *obj2_notif_choice;
+    QComboBox *obj3_notif_choice;
+    QComboBox *obj4_notif_choice;
+    QComboBox *obj5_notif_choice;
+    QComboBox *obj6_notif_choice;
+    QComboBox *obj7_notif_choice;
+    QComboBox *obj8_notif_choice;
+    QPushButton *backButton;
+    QWidget *page_6;
+    QLabel *readingDataLabel;
+    QFrame *line_7;
+    QLabel *pt1;
+    QLabel *pt3;
+    QLabel *pt5;
+    QLabel *pt6;
+    QLabel *pt7;
+    QLabel *pt8;
+    QLabel *pt9;
+    QLabel *pt10;
+    QLabel *pt12;
+    QLabel *pt11;
+    QLabel *pointLabel;
+    QLabel *pointLabel_2;
+    QLabel *pointLabel_3;
+    QLabel *pointLabel_4;
+    QLabel *pointLabel_5;
+    QLabel *pointLabel_9;
+    QLabel *pointLabel_10;
+    QLabel *pointLabel_11;
+    QLabel *pointLabel_12;
+    QLabel *pointLabel_7;
+    QLabel *pointLabel_8;
+    QPushButton *readDataButton;
+    QPushButton *backButtonRead;
+    QPushButton *cancelButtonRead;
+    QLabel *pointLabel_13;
+    QLabel *pointLabel_14;
+    QLabel *pointLabel_15;
+    QLabel *pointLabel_16;
+    QLabel *pt13;
+    QLabel *pt14;
+    QLabel *pt15;
+    QLabel *pt16;
+    QLabel *pointLabel_6;
+    QLabel *pt2;
+    QLabel *pt4;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -84,6 +138,8 @@ public:
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(892, 726);
         MainWindow->setMinimumSize(QSize(782, 0));
+        actionMain_Menu = new QAction(MainWindow);
+        actionMain_Menu->setObjectName(QStringLiteral("actionMain_Menu"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -96,232 +152,698 @@ public:
         stackedWidget = new QStackedWidget(centralWidget);
         stackedWidget->setObjectName(QStringLiteral("stackedWidget"));
         stackedWidget->setMinimumSize(QSize(866, 624));
+        QPalette palette;
+        QBrush brush(QColor(239, 246, 238, 255));
+        brush.setStyle(Qt::SolidPattern);
+        palette.setBrush(QPalette::Active, QPalette::Base, brush);
+        palette.setBrush(QPalette::Active, QPalette::Window, brush);
+        palette.setBrush(QPalette::Active, QPalette::AlternateBase, brush);
+        QBrush brush1(QColor(114, 159, 207, 255));
+        brush1.setStyle(Qt::SolidPattern);
+        palette.setBrush(QPalette::Active, QPalette::NoRole, brush1);
+        palette.setBrush(QPalette::Inactive, QPalette::Base, brush);
+        palette.setBrush(QPalette::Inactive, QPalette::Window, brush);
+        palette.setBrush(QPalette::Inactive, QPalette::AlternateBase, brush);
+        palette.setBrush(QPalette::Inactive, QPalette::NoRole, brush1);
+        palette.setBrush(QPalette::Disabled, QPalette::Base, brush);
+        palette.setBrush(QPalette::Disabled, QPalette::Window, brush);
+        palette.setBrush(QPalette::Disabled, QPalette::AlternateBase, brush);
+        palette.setBrush(QPalette::Disabled, QPalette::NoRole, brush1);
+        stackedWidget->setPalette(palette);
+        QFont font;
+        font.setPointSize(11);
+        stackedWidget->setFont(font);
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        gridLayout_2 = new QGridLayout(page);
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setContentsMargins(11, 11, 11, 11);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        verticalLayout_3 = new QVBoxLayout();
-        verticalLayout_3->setSpacing(6);
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
-        horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setSpacing(6);
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
         objectLabel = new QLabel(page);
         objectLabel->setObjectName(QStringLiteral("objectLabel"));
-
-        horizontalLayout_4->addWidget(objectLabel);
-
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        horizontalLayout_2->setSizeConstraint(QLayout::SetFixedSize);
-        streamButton = new QPushButton(page);
-        streamButton->setObjectName(QStringLiteral("streamButton"));
-
-        horizontalLayout_2->addWidget(streamButton);
-
-        readDataButton = new QPushButton(page);
-        readDataButton->setObjectName(QStringLiteral("readDataButton"));
-
-        horizontalLayout_2->addWidget(readDataButton);
-
-        cancelButton = new QPushButton(page);
-        cancelButton->setObjectName(QStringLiteral("cancelButton"));
-
-        horizontalLayout_2->addWidget(cancelButton);
-
-
-        horizontalLayout_4->addLayout(horizontalLayout_2);
-
-
-        verticalLayout_3->addLayout(horizontalLayout_4);
-
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setSpacing(6);
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        gridLayout = new QGridLayout();
-        gridLayout->setSpacing(6);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setSizeConstraint(QLayout::SetFixedSize);
-        gridLayout->setContentsMargins(-1, -1, 0, -1);
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setSpacing(6);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        label_1 = new QLabel(page);
-        label_1->setObjectName(QStringLiteral("label_1"));
-        label_1->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_1);
-
-        label_2 = new QLabel(page);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_2);
-
-        label_3 = new QLabel(page);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_3);
-
-        label_4 = new QLabel(page);
-        label_4->setObjectName(QStringLiteral("label_4"));
-        label_4->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_4);
-
-        label_5 = new QLabel(page);
-        label_5->setObjectName(QStringLiteral("label_5"));
-        label_5->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_5);
-
-        label_6 = new QLabel(page);
-        label_6->setObjectName(QStringLiteral("label_6"));
-        label_6->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_6);
-
-        label_7 = new QLabel(page);
-        label_7->setObjectName(QStringLiteral("label_7"));
-        label_7->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_7);
-
-        label_8 = new QLabel(page);
-        label_8->setObjectName(QStringLiteral("label_8"));
-        label_8->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_8);
-
-        label_9 = new QLabel(page);
-        label_9->setObjectName(QStringLiteral("label_9"));
-        label_9->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_9);
-
-        label_10 = new QLabel(page);
-        label_10->setObjectName(QStringLiteral("label_10"));
-        label_10->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_10);
-
-        label_11 = new QLabel(page);
-        label_11->setObjectName(QStringLiteral("label_11"));
-        label_11->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_11);
-
-        label_12 = new QLabel(page);
-        label_12->setObjectName(QStringLiteral("label_12"));
-        label_12->setMinimumSize(QSize(100, 0));
-
-        verticalLayout->addWidget(label_12);
-
-
-        gridLayout->addLayout(verticalLayout, 0, 1, 1, 1);
-
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        label = new QLabel(page);
-        label->setObjectName(QStringLiteral("label"));
-        label->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label);
-
-        label_14 = new QLabel(page);
-        label_14->setObjectName(QStringLiteral("label_14"));
-        label_14->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_14);
-
-        label_15 = new QLabel(page);
-        label_15->setObjectName(QStringLiteral("label_15"));
-        label_15->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_15);
-
-        label_16 = new QLabel(page);
-        label_16->setObjectName(QStringLiteral("label_16"));
-        label_16->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_16);
-
-        label_17 = new QLabel(page);
-        label_17->setObjectName(QStringLiteral("label_17"));
-        label_17->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_17);
-
-        label_18 = new QLabel(page);
-        label_18->setObjectName(QStringLiteral("label_18"));
-        label_18->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_18);
-
-        label_19 = new QLabel(page);
-        label_19->setObjectName(QStringLiteral("label_19"));
-        label_19->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_19);
-
-        label_20 = new QLabel(page);
-        label_20->setObjectName(QStringLiteral("label_20"));
-        label_20->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_20);
-
-        label_23 = new QLabel(page);
-        label_23->setObjectName(QStringLiteral("label_23"));
-        label_23->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_23);
-
-        label_13 = new QLabel(page);
-        label_13->setObjectName(QStringLiteral("label_13"));
-        label_13->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_13);
-
-        label_21 = new QLabel(page);
-        label_21->setObjectName(QStringLiteral("label_21"));
-        label_21->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_21);
-
-        label_22 = new QLabel(page);
-        label_22->setObjectName(QStringLiteral("label_22"));
-        label_22->setMinimumSize(QSize(63, 0));
-
-        verticalLayout_2->addWidget(label_22);
-
-
-        gridLayout->addLayout(verticalLayout_2, 0, 0, 1, 1);
-
-
-        horizontalLayout_3->addLayout(gridLayout);
-
+        objectLabel->setGeometry(QRect(380, 10, 95, 27));
+        QPalette palette1;
+        QBrush brush2(QColor(255, 255, 255, 255));
+        brush2.setStyle(Qt::SolidPattern);
+        palette1.setBrush(QPalette::Active, QPalette::WindowText, brush2);
+        palette1.setBrush(QPalette::Active, QPalette::Base, brush2);
+        palette1.setBrush(QPalette::Active, QPalette::Window, brush2);
+        palette1.setBrush(QPalette::Active, QPalette::ToolTipBase, brush2);
+        palette1.setBrush(QPalette::Inactive, QPalette::WindowText, brush2);
+        palette1.setBrush(QPalette::Inactive, QPalette::Base, brush2);
+        palette1.setBrush(QPalette::Inactive, QPalette::Window, brush2);
+        palette1.setBrush(QPalette::Inactive, QPalette::ToolTipBase, brush2);
+        QBrush brush3(QColor(190, 190, 190, 255));
+        brush3.setStyle(Qt::SolidPattern);
+        palette1.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette1.setBrush(QPalette::Disabled, QPalette::Base, brush2);
+        palette1.setBrush(QPalette::Disabled, QPalette::Window, brush2);
+        palette1.setBrush(QPalette::Disabled, QPalette::ToolTipBase, brush2);
+        objectLabel->setPalette(palette1);
         cameraView = new QLabel(page);
         cameraView->setObjectName(QStringLiteral("cameraView"));
+        cameraView->setGeometry(QRect(0, 10, 881, 591));
         cameraView->setMinimumSize(QSize(641, 541));
         cameraView->setStyleSheet(QStringLiteral("background-color: rgb(136, 138, 133);"));
-
-        horizontalLayout_3->addWidget(cameraView);
-
-
-        verticalLayout_3->addLayout(horizontalLayout_3);
-
-
-        gridLayout_2->addLayout(verticalLayout_3, 0, 0, 1, 1);
-
+        cameraView->setAlignment(Qt::AlignCenter);
+        cancelButton = new QPushButton(page);
+        cancelButton->setObjectName(QStringLiteral("cancelButton"));
+        cancelButton->setGeometry(QRect(370, 560, 121, 31));
+        QPalette palette2;
+        QBrush brush4(QColor(245, 36, 54, 255));
+        brush4.setStyle(Qt::SolidPattern);
+        palette2.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette2.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette2.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette2.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette2.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette2.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        cancelButton->setPalette(palette2);
+        QFont font1;
+        font1.setPointSize(12);
+        cancelButton->setFont(font1);
+        backButtonGo = new QPushButton(page);
+        backButtonGo->setObjectName(QStringLiteral("backButtonGo"));
+        backButtonGo->setGeometry(QRect(10, 20, 61, 51));
+        QPalette palette3;
+        palette3.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette3.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette3.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette3.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette3.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette3.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        backButtonGo->setPalette(palette3);
+        backButtonGo->setFont(font1);
         stackedWidget->addWidget(page);
+        cameraView->raise();
+        objectLabel->raise();
+        cancelButton->raise();
+        backButtonGo->raise();
         page_2 = new QWidget();
         page_2->setObjectName(QStringLiteral("page_2"));
+        titleLabel = new QLabel(page_2);
+        titleLabel->setObjectName(QStringLiteral("titleLabel"));
+        titleLabel->setGeometry(QRect(250, 0, 341, 121));
+        QPalette palette4;
+        QBrush brush5(QColor(185, 88, 107, 255));
+        brush5.setStyle(Qt::SolidPattern);
+        palette4.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette4.setBrush(QPalette::Active, QPalette::Text, brush5);
+        palette4.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette4.setBrush(QPalette::Inactive, QPalette::Text, brush5);
+        palette4.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette4.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        titleLabel->setPalette(palette4);
+        QFont font2;
+        font2.setPointSize(45);
+        titleLabel->setFont(font2);
+        titleLabel->setAlignment(Qt::AlignCenter);
+        titleLabel->setIndent(0);
+        calibratePageButton = new QPushButton(page_2);
+        calibratePageButton->setObjectName(QStringLiteral("calibratePageButton"));
+        calibratePageButton->setGeometry(QRect(330, 180, 181, 51));
+        QPalette palette5;
+        palette5.setBrush(QPalette::Active, QPalette::WindowText, brush2);
+        palette5.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette5.setBrush(QPalette::Active, QPalette::Text, brush2);
+        palette5.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette5.setBrush(QPalette::Inactive, QPalette::WindowText, brush2);
+        palette5.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette5.setBrush(QPalette::Inactive, QPalette::Text, brush2);
+        palette5.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette5.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette5.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette5.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        palette5.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        calibratePageButton->setPalette(palette5);
+        QFont font3;
+        font3.setPointSize(17);
+        calibratePageButton->setFont(font3);
+        settingsPageButton = new QPushButton(page_2);
+        settingsPageButton->setObjectName(QStringLiteral("settingsPageButton"));
+        settingsPageButton->setGeometry(QRect(330, 250, 181, 51));
+        QPalette palette6;
+        palette6.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette6.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette6.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette6.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette6.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette6.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        settingsPageButton->setPalette(palette6);
+        settingsPageButton->setFont(font3);
+        streamButton = new QPushButton(page_2);
+        streamButton->setObjectName(QStringLiteral("streamButton"));
+        streamButton->setGeometry(QRect(330, 500, 181, 61));
+        QPalette palette7;
+        palette7.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette7.setBrush(QPalette::Active, QPalette::Text, brush2);
+        palette7.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette7.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette7.setBrush(QPalette::Inactive, QPalette::Text, brush2);
+        palette7.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette7.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette7.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        palette7.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        streamButton->setPalette(palette7);
+        streamButton->setFont(font3);
+        readDataPageButton = new QPushButton(page_2);
+        readDataPageButton->setObjectName(QStringLiteral("readDataPageButton"));
+        readDataPageButton->setGeometry(QRect(330, 420, 181, 61));
+        QPalette palette8;
+        palette8.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette8.setBrush(QPalette::Active, QPalette::Text, brush2);
+        palette8.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette8.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette8.setBrush(QPalette::Inactive, QPalette::Text, brush2);
+        palette8.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette8.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette8.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        palette8.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        readDataPageButton->setPalette(palette8);
+        readDataPageButton->setFont(font3);
         stackedWidget->addWidget(page_2);
+        page_3 = new QWidget();
+        page_3->setObjectName(QStringLiteral("page_3"));
+        settingsLabel = new QLabel(page_3);
+        settingsLabel->setObjectName(QStringLiteral("settingsLabel"));
+        settingsLabel->setGeometry(QRect(220, -30, 301, 121));
+        QPalette palette9;
+        palette9.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette9.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette9.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        settingsLabel->setPalette(palette9);
+        QFont font4;
+        font4.setPointSize(37);
+        settingsLabel->setFont(font4);
+        line_2 = new QFrame(page_3);
+        line_2->setObjectName(QStringLiteral("line_2"));
+        line_2->setGeometry(QRect(200, 50, 441, 30));
+        QPalette palette10;
+        palette10.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette10.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette10.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        line_2->setPalette(palette10);
+        line_2->setFrameShadow(QFrame::Plain);
+        line_2->setLineWidth(3);
+        line_2->setFrameShape(QFrame::HLine);
+        comboBox = new QComboBox(page_3);
+        comboBox->setObjectName(QStringLiteral("comboBox"));
+        comboBox->setGeometry(QRect(200, 130, 181, 41));
+        line_3 = new QFrame(page_3);
+        line_3->setObjectName(QStringLiteral("line_3"));
+        line_3->setGeometry(QRect(200, 180, 441, 30));
+        QPalette palette11;
+        palette11.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette11.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette11.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        line_3->setPalette(palette11);
+        line_3->setFrameShadow(QFrame::Plain);
+        line_3->setLineWidth(3);
+        line_3->setFrameShape(QFrame::HLine);
+        label_25 = new QLabel(page_3);
+        label_25->setObjectName(QStringLiteral("label_25"));
+        label_25->setGeometry(QRect(210, 210, 231, 41));
+        QFont font5;
+        font5.setPointSize(20);
+        label_25->setFont(font5);
+        speechCheckBox = new QCheckBox(page_3);
+        speechCheckBox->setObjectName(QStringLiteral("speechCheckBox"));
+        speechCheckBox->setGeometry(QRect(170, 260, 301, 41));
+        speechCheckBox->setFont(font3);
+        speechCheckBox->setLayoutDirection(Qt::RightToLeft);
+        beepCheckBox = new QCheckBox(page_3);
+        beepCheckBox->setObjectName(QStringLiteral("beepCheckBox"));
+        beepCheckBox->setGeometry(QRect(170, 300, 301, 41));
+        beepCheckBox->setFont(font3);
+        beepCheckBox->setLayoutDirection(Qt::RightToLeft);
+        line_4 = new QFrame(page_3);
+        line_4->setObjectName(QStringLiteral("line_4"));
+        line_4->setGeometry(QRect(200, 340, 441, 30));
+        QPalette palette12;
+        palette12.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette12.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette12.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        line_4->setPalette(palette12);
+        line_4->setFrameShadow(QFrame::Plain);
+        line_4->setLineWidth(3);
+        line_4->setFrameShape(QFrame::HLine);
+        label_26 = new QLabel(page_3);
+        label_26->setObjectName(QStringLiteral("label_26"));
+        label_26->setGeometry(QRect(210, 370, 371, 41));
+        label_26->setFont(font5);
+        line_5 = new QFrame(page_3);
+        line_5->setObjectName(QStringLiteral("line_5"));
+        line_5->setGeometry(QRect(200, 480, 441, 30));
+        QPalette palette13;
+        palette13.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette13.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette13.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        line_5->setPalette(palette13);
+        line_5->setFrameShadow(QFrame::Plain);
+        line_5->setLineWidth(3);
+        line_5->setFrameShape(QFrame::HLine);
+        notificationsButton = new QPushButton(page_3);
+        notificationsButton->setObjectName(QStringLiteral("notificationsButton"));
+        notificationsButton->setGeometry(QRect(200, 520, 181, 51));
+        QPalette palette14;
+        QBrush brush6(QColor(191, 64, 64, 255));
+        brush6.setStyle(Qt::SolidPattern);
+        palette14.setBrush(QPalette::Active, QPalette::Button, brush6);
+        palette14.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette14.setBrush(QPalette::Inactive, QPalette::Button, brush6);
+        palette14.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette14.setBrush(QPalette::Disabled, QPalette::Button, brush6);
+        palette14.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        notificationsButton->setPalette(palette14);
+        label_9 = new QLabel(page_3);
+        label_9->setObjectName(QStringLiteral("label_9"));
+        label_9->setGeometry(QRect(210, 80, 291, 41));
+        label_9->setFont(font5);
+        comboBox_2 = new QComboBox(page_3);
+        comboBox_2->setObjectName(QStringLiteral("comboBox_2"));
+        comboBox_2->setGeometry(QRect(200, 420, 181, 41));
+        backButtonSettings = new QPushButton(page_3);
+        backButtonSettings->setObjectName(QStringLiteral("backButtonSettings"));
+        backButtonSettings->setGeometry(QRect(10, 10, 61, 51));
+        QPalette palette15;
+        palette15.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette15.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette15.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette15.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette15.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette15.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        backButtonSettings->setPalette(palette15);
+        backButtonSettings->setFont(font1);
+        stackedWidget->addWidget(page_3);
+        page_4 = new QWidget();
+        page_4->setObjectName(QStringLiteral("page_4"));
+        calibrationLabel = new QLabel(page_4);
+        calibrationLabel->setObjectName(QStringLiteral("calibrationLabel"));
+        calibrationLabel->setGeometry(QRect(270, -30, 301, 121));
+        QPalette palette16;
+        palette16.setBrush(QPalette::Active, QPalette::WindowText, brush6);
+        palette16.setBrush(QPalette::Inactive, QPalette::WindowText, brush6);
+        palette16.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        calibrationLabel->setPalette(palette16);
+        calibrationLabel->setFont(font4);
+        calibrationLabel->setTextFormat(Qt::AutoText);
+        calibrationLabel->setAlignment(Qt::AlignCenter);
+        line = new QFrame(page_4);
+        line->setObjectName(QStringLiteral("line"));
+        line->setGeometry(QRect(200, 60, 441, 30));
+        QPalette palette17;
+        palette17.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette17.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette17.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        line->setPalette(palette17);
+        line->setFrameShadow(QFrame::Plain);
+        line->setLineWidth(3);
+        line->setFrameShape(QFrame::HLine);
+        beginCalibrationButton = new QPushButton(page_4);
+        beginCalibrationButton->setObjectName(QStringLiteral("beginCalibrationButton"));
+        beginCalibrationButton->setGeometry(QRect(270, 110, 301, 61));
+        QPalette palette18;
+        palette18.setBrush(QPalette::Active, QPalette::Button, brush6);
+        palette18.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette18.setBrush(QPalette::Inactive, QPalette::Button, brush6);
+        palette18.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette18.setBrush(QPalette::Disabled, QPalette::Button, brush6);
+        palette18.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        beginCalibrationButton->setPalette(palette18);
+        beginCalibrationButton->setFont(font3);
+        cancelCalibrationButton = new QPushButton(page_4);
+        cancelCalibrationButton->setObjectName(QStringLiteral("cancelCalibrationButton"));
+        cancelCalibrationButton->setGeometry(QRect(270, 530, 301, 61));
+        QPalette palette19;
+        palette19.setBrush(QPalette::Active, QPalette::Button, brush6);
+        palette19.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette19.setBrush(QPalette::Inactive, QPalette::Button, brush6);
+        palette19.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette19.setBrush(QPalette::Disabled, QPalette::Button, brush6);
+        palette19.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        cancelCalibrationButton->setPalette(palette19);
+        cancelCalibrationButton->setFont(font3);
+        backButtonCalibration = new QPushButton(page_4);
+        backButtonCalibration->setObjectName(QStringLiteral("backButtonCalibration"));
+        backButtonCalibration->setGeometry(QRect(10, 10, 61, 51));
+        QPalette palette20;
+        palette20.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette20.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette20.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette20.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette20.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette20.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        backButtonCalibration->setPalette(palette20);
+        backButtonCalibration->setFont(font1);
+        stackedWidget->addWidget(page_4);
+        page_5 = new QWidget();
+        page_5->setObjectName(QStringLiteral("page_5"));
+        notificationsTitle = new QLabel(page_5);
+        notificationsTitle->setObjectName(QStringLiteral("notificationsTitle"));
+        notificationsTitle->setGeometry(QRect(220, -30, 381, 121));
+        QPalette palette21;
+        palette21.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette21.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette21.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        notificationsTitle->setPalette(palette21);
+        notificationsTitle->setFont(font4);
+        line_6 = new QFrame(page_5);
+        line_6->setObjectName(QStringLiteral("line_6"));
+        line_6->setGeometry(QRect(190, 50, 441, 30));
+        QPalette palette22;
+        palette22.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette22.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette22.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        line_6->setPalette(palette22);
+        line_6->setFrameShadow(QFrame::Plain);
+        line_6->setLineWidth(3);
+        line_6->setFrameShape(QFrame::HLine);
+        notificationLabel = new QLabel(page_5);
+        notificationLabel->setObjectName(QStringLiteral("notificationLabel"));
+        notificationLabel->setGeometry(QRect(460, 80, 231, 41));
+        QPalette palette23;
+        palette23.setBrush(QPalette::Active, QPalette::WindowText, brush4);
+        palette23.setBrush(QPalette::Inactive, QPalette::WindowText, brush4);
+        palette23.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        notificationLabel->setPalette(palette23);
+        QFont font6;
+        font6.setPointSize(19);
+        notificationLabel->setFont(font6);
+        notificationLabel->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        objectTypeLabel = new QLabel(page_5);
+        objectTypeLabel->setObjectName(QStringLiteral("objectTypeLabel"));
+        objectTypeLabel->setGeometry(QRect(220, 80, 231, 41));
+        QPalette palette24;
+        palette24.setBrush(QPalette::Active, QPalette::WindowText, brush4);
+        palette24.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette24.setBrush(QPalette::Inactive, QPalette::WindowText, brush4);
+        palette24.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette24.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette24.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        objectTypeLabel->setPalette(palette24);
+        objectTypeLabel->setFont(font6);
+        objectTypeLabel->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        label = new QLabel(page_5);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(220, 160, 231, 41));
+        QPalette palette25;
+        QBrush brush7(QColor(0, 0, 0, 255));
+        brush7.setStyle(Qt::SolidPattern);
+        palette25.setBrush(QPalette::Active, QPalette::WindowText, brush7);
+        palette25.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette25.setBrush(QPalette::Inactive, QPalette::WindowText, brush7);
+        palette25.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette25.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette25.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        label->setPalette(palette25);
+        label->setFont(font3);
+        label->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        label_3 = new QLabel(page_5);
+        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setGeometry(QRect(220, 280, 231, 41));
+        QPalette palette26;
+        palette26.setBrush(QPalette::Active, QPalette::WindowText, brush7);
+        palette26.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette26.setBrush(QPalette::Inactive, QPalette::WindowText, brush7);
+        palette26.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette26.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette26.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        label_3->setPalette(palette26);
+        label_3->setFont(font3);
+        label_3->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        label_4 = new QLabel(page_5);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setGeometry(QRect(220, 340, 231, 41));
+        QPalette palette27;
+        palette27.setBrush(QPalette::Active, QPalette::WindowText, brush7);
+        palette27.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette27.setBrush(QPalette::Inactive, QPalette::WindowText, brush7);
+        palette27.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette27.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette27.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        label_4->setPalette(palette27);
+        label_4->setFont(font3);
+        label_4->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        label_7 = new QLabel(page_5);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setGeometry(QRect(220, 520, 231, 41));
+        QPalette palette28;
+        palette28.setBrush(QPalette::Active, QPalette::WindowText, brush7);
+        palette28.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette28.setBrush(QPalette::Inactive, QPalette::WindowText, brush7);
+        palette28.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette28.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette28.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        label_7->setPalette(palette28);
+        label_7->setFont(font3);
+        label_7->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        label_8 = new QLabel(page_5);
+        label_8->setObjectName(QStringLiteral("label_8"));
+        label_8->setGeometry(QRect(220, 580, 231, 41));
+        QPalette palette29;
+        palette29.setBrush(QPalette::Active, QPalette::WindowText, brush7);
+        palette29.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette29.setBrush(QPalette::Inactive, QPalette::WindowText, brush7);
+        palette29.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette29.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette29.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        label_8->setPalette(palette29);
+        label_8->setFont(font3);
+        label_8->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        label_5 = new QLabel(page_5);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setGeometry(QRect(220, 400, 231, 41));
+        QPalette palette30;
+        palette30.setBrush(QPalette::Active, QPalette::WindowText, brush7);
+        palette30.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette30.setBrush(QPalette::Inactive, QPalette::WindowText, brush7);
+        palette30.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette30.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette30.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        label_5->setPalette(palette30);
+        label_5->setFont(font3);
+        label_5->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        label_6 = new QLabel(page_5);
+        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setGeometry(QRect(220, 460, 231, 41));
+        QPalette palette31;
+        palette31.setBrush(QPalette::Active, QPalette::WindowText, brush7);
+        palette31.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette31.setBrush(QPalette::Inactive, QPalette::WindowText, brush7);
+        palette31.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette31.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette31.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        label_6->setPalette(palette31);
+        label_6->setFont(font3);
+        label_6->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        obj1_notif_choice = new QComboBox(page_5);
+        obj1_notif_choice->setObjectName(QStringLiteral("obj1_notif_choice"));
+        obj1_notif_choice->setGeometry(QRect(450, 160, 181, 41));
+        label_2 = new QLabel(page_5);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(220, 220, 231, 41));
+        QPalette palette32;
+        palette32.setBrush(QPalette::Active, QPalette::WindowText, brush7);
+        palette32.setBrush(QPalette::Active, QPalette::Text, brush4);
+        palette32.setBrush(QPalette::Inactive, QPalette::WindowText, brush7);
+        palette32.setBrush(QPalette::Inactive, QPalette::Text, brush4);
+        palette32.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        palette32.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        label_2->setPalette(palette32);
+        label_2->setFont(font3);
+        label_2->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        obj2_notif_choice = new QComboBox(page_5);
+        obj2_notif_choice->setObjectName(QStringLiteral("obj2_notif_choice"));
+        obj2_notif_choice->setGeometry(QRect(450, 220, 181, 41));
+        obj3_notif_choice = new QComboBox(page_5);
+        obj3_notif_choice->setObjectName(QStringLiteral("obj3_notif_choice"));
+        obj3_notif_choice->setGeometry(QRect(450, 280, 181, 41));
+        obj4_notif_choice = new QComboBox(page_5);
+        obj4_notif_choice->setObjectName(QStringLiteral("obj4_notif_choice"));
+        obj4_notif_choice->setGeometry(QRect(450, 340, 181, 41));
+        obj5_notif_choice = new QComboBox(page_5);
+        obj5_notif_choice->setObjectName(QStringLiteral("obj5_notif_choice"));
+        obj5_notif_choice->setGeometry(QRect(450, 400, 181, 41));
+        obj6_notif_choice = new QComboBox(page_5);
+        obj6_notif_choice->setObjectName(QStringLiteral("obj6_notif_choice"));
+        obj6_notif_choice->setGeometry(QRect(450, 460, 181, 41));
+        obj7_notif_choice = new QComboBox(page_5);
+        obj7_notif_choice->setObjectName(QStringLiteral("obj7_notif_choice"));
+        obj7_notif_choice->setGeometry(QRect(450, 520, 181, 41));
+        obj8_notif_choice = new QComboBox(page_5);
+        obj8_notif_choice->setObjectName(QStringLiteral("obj8_notif_choice"));
+        obj8_notif_choice->setGeometry(QRect(450, 580, 181, 41));
+        backButton = new QPushButton(page_5);
+        backButton->setObjectName(QStringLiteral("backButton"));
+        backButton->setGeometry(QRect(10, 10, 61, 51));
+        QPalette palette33;
+        QBrush brush8(QColor(245, 36, 59, 255));
+        brush8.setStyle(Qt::SolidPattern);
+        palette33.setBrush(QPalette::Active, QPalette::Button, brush8);
+        palette33.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette33.setBrush(QPalette::Inactive, QPalette::Button, brush8);
+        palette33.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette33.setBrush(QPalette::Disabled, QPalette::Button, brush8);
+        palette33.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        backButton->setPalette(palette33);
+        stackedWidget->addWidget(page_5);
+        page_6 = new QWidget();
+        page_6->setObjectName(QStringLiteral("page_6"));
+        readingDataLabel = new QLabel(page_6);
+        readingDataLabel->setObjectName(QStringLiteral("readingDataLabel"));
+        readingDataLabel->setGeometry(QRect(220, -30, 431, 121));
+        QPalette palette34;
+        palette34.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette34.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette34.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        readingDataLabel->setPalette(palette34);
+        QFont font7;
+        font7.setPointSize(25);
+        readingDataLabel->setFont(font7);
+        line_7 = new QFrame(page_6);
+        line_7->setObjectName(QStringLiteral("line_7"));
+        line_7->setGeometry(QRect(220, 50, 441, 30));
+        QPalette palette35;
+        palette35.setBrush(QPalette::Active, QPalette::WindowText, brush5);
+        palette35.setBrush(QPalette::Inactive, QPalette::WindowText, brush5);
+        palette35.setBrush(QPalette::Disabled, QPalette::WindowText, brush3);
+        line_7->setPalette(palette35);
+        line_7->setFrameShadow(QFrame::Plain);
+        line_7->setLineWidth(3);
+        line_7->setFrameShape(QFrame::HLine);
+        pt1 = new QLabel(page_6);
+        pt1->setObjectName(QStringLiteral("pt1"));
+        pt1->setGeometry(QRect(20, 350, 41, 51));
+        pt3 = new QLabel(page_6);
+        pt3->setObjectName(QStringLiteral("pt3"));
+        pt3->setGeometry(QRect(120, 350, 41, 51));
+        pt5 = new QLabel(page_6);
+        pt5->setObjectName(QStringLiteral("pt5"));
+        pt5->setGeometry(QRect(220, 350, 41, 51));
+        pt6 = new QLabel(page_6);
+        pt6->setObjectName(QStringLiteral("pt6"));
+        pt6->setGeometry(QRect(270, 350, 41, 51));
+        pt7 = new QLabel(page_6);
+        pt7->setObjectName(QStringLiteral("pt7"));
+        pt7->setGeometry(QRect(320, 350, 41, 51));
+        pt8 = new QLabel(page_6);
+        pt8->setObjectName(QStringLiteral("pt8"));
+        pt8->setGeometry(QRect(370, 350, 41, 51));
+        pt9 = new QLabel(page_6);
+        pt9->setObjectName(QStringLiteral("pt9"));
+        pt9->setGeometry(QRect(420, 350, 41, 51));
+        pt10 = new QLabel(page_6);
+        pt10->setObjectName(QStringLiteral("pt10"));
+        pt10->setEnabled(true);
+        pt10->setGeometry(QRect(470, 350, 41, 51));
+        pt12 = new QLabel(page_6);
+        pt12->setObjectName(QStringLiteral("pt12"));
+        pt12->setGeometry(QRect(570, 350, 41, 51));
+        pt11 = new QLabel(page_6);
+        pt11->setObjectName(QStringLiteral("pt11"));
+        pt11->setGeometry(QRect(520, 350, 41, 51));
+        pointLabel = new QLabel(page_6);
+        pointLabel->setObjectName(QStringLiteral("pointLabel"));
+        pointLabel->setGeometry(QRect(20, 310, 41, 51));
+        pointLabel_2 = new QLabel(page_6);
+        pointLabel_2->setObjectName(QStringLiteral("pointLabel_2"));
+        pointLabel_2->setGeometry(QRect(70, 310, 41, 51));
+        pointLabel_3 = new QLabel(page_6);
+        pointLabel_3->setObjectName(QStringLiteral("pointLabel_3"));
+        pointLabel_3->setGeometry(QRect(120, 310, 41, 51));
+        pointLabel_4 = new QLabel(page_6);
+        pointLabel_4->setObjectName(QStringLiteral("pointLabel_4"));
+        pointLabel_4->setGeometry(QRect(170, 310, 41, 51));
+        pointLabel_5 = new QLabel(page_6);
+        pointLabel_5->setObjectName(QStringLiteral("pointLabel_5"));
+        pointLabel_5->setGeometry(QRect(220, 310, 41, 51));
+        pointLabel_9 = new QLabel(page_6);
+        pointLabel_9->setObjectName(QStringLiteral("pointLabel_9"));
+        pointLabel_9->setGeometry(QRect(420, 310, 41, 51));
+        pointLabel_10 = new QLabel(page_6);
+        pointLabel_10->setObjectName(QStringLiteral("pointLabel_10"));
+        pointLabel_10->setGeometry(QRect(470, 310, 41, 51));
+        pointLabel_11 = new QLabel(page_6);
+        pointLabel_11->setObjectName(QStringLiteral("pointLabel_11"));
+        pointLabel_11->setGeometry(QRect(520, 310, 41, 51));
+        pointLabel_12 = new QLabel(page_6);
+        pointLabel_12->setObjectName(QStringLiteral("pointLabel_12"));
+        pointLabel_12->setGeometry(QRect(570, 310, 41, 51));
+        pointLabel_7 = new QLabel(page_6);
+        pointLabel_7->setObjectName(QStringLiteral("pointLabel_7"));
+        pointLabel_7->setGeometry(QRect(370, 310, 41, 51));
+        pointLabel_8 = new QLabel(page_6);
+        pointLabel_8->setObjectName(QStringLiteral("pointLabel_8"));
+        pointLabel_8->setGeometry(QRect(320, 310, 41, 51));
+        readDataButton = new QPushButton(page_6);
+        readDataButton->setObjectName(QStringLiteral("readDataButton"));
+        readDataButton->setGeometry(QRect(330, 460, 181, 61));
+        QPalette palette36;
+        palette36.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette36.setBrush(QPalette::Active, QPalette::Text, brush2);
+        palette36.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette36.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette36.setBrush(QPalette::Inactive, QPalette::Text, brush2);
+        palette36.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette36.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette36.setBrush(QPalette::Disabled, QPalette::Text, brush3);
+        palette36.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        readDataButton->setPalette(palette36);
+        readDataButton->setFont(font3);
+        backButtonRead = new QPushButton(page_6);
+        backButtonRead->setObjectName(QStringLiteral("backButtonRead"));
+        backButtonRead->setGeometry(QRect(10, 10, 61, 51));
+        QPalette palette37;
+        palette37.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette37.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette37.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette37.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette37.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette37.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        backButtonRead->setPalette(palette37);
+        backButtonRead->setFont(font1);
+        cancelButtonRead = new QPushButton(page_6);
+        cancelButtonRead->setObjectName(QStringLiteral("cancelButtonRead"));
+        cancelButtonRead->setGeometry(QRect(360, 550, 121, 31));
+        QPalette palette38;
+        palette38.setBrush(QPalette::Active, QPalette::Button, brush4);
+        palette38.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette38.setBrush(QPalette::Inactive, QPalette::Button, brush4);
+        palette38.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        palette38.setBrush(QPalette::Disabled, QPalette::Button, brush4);
+        palette38.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        cancelButtonRead->setPalette(palette38);
+        cancelButtonRead->setFont(font1);
+        pointLabel_13 = new QLabel(page_6);
+        pointLabel_13->setObjectName(QStringLiteral("pointLabel_13"));
+        pointLabel_13->setGeometry(QRect(620, 310, 41, 51));
+        pointLabel_14 = new QLabel(page_6);
+        pointLabel_14->setObjectName(QStringLiteral("pointLabel_14"));
+        pointLabel_14->setGeometry(QRect(670, 310, 41, 51));
+        pointLabel_15 = new QLabel(page_6);
+        pointLabel_15->setObjectName(QStringLiteral("pointLabel_15"));
+        pointLabel_15->setGeometry(QRect(720, 310, 41, 51));
+        pointLabel_16 = new QLabel(page_6);
+        pointLabel_16->setObjectName(QStringLiteral("pointLabel_16"));
+        pointLabel_16->setGeometry(QRect(770, 310, 41, 51));
+        pt13 = new QLabel(page_6);
+        pt13->setObjectName(QStringLiteral("pt13"));
+        pt13->setGeometry(QRect(620, 350, 41, 51));
+        pt14 = new QLabel(page_6);
+        pt14->setObjectName(QStringLiteral("pt14"));
+        pt14->setGeometry(QRect(670, 350, 41, 51));
+        pt15 = new QLabel(page_6);
+        pt15->setObjectName(QStringLiteral("pt15"));
+        pt15->setGeometry(QRect(720, 350, 41, 51));
+        pt16 = new QLabel(page_6);
+        pt16->setObjectName(QStringLiteral("pt16"));
+        pt16->setGeometry(QRect(770, 350, 41, 51));
+        pointLabel_6 = new QLabel(page_6);
+        pointLabel_6->setObjectName(QStringLiteral("pointLabel_6"));
+        pointLabel_6->setGeometry(QRect(270, 310, 41, 51));
+        pt2 = new QLabel(page_6);
+        pt2->setObjectName(QStringLiteral("pt2"));
+        pt2->setGeometry(QRect(70, 350, 41, 51));
+        pt4 = new QLabel(page_6);
+        pt4->setObjectName(QStringLiteral("pt4"));
+        pt4->setGeometry(QRect(170, 350, 41, 51));
+        stackedWidget->addWidget(page_6);
 
         horizontalLayout->addWidget(stackedWidget);
 
@@ -329,10 +851,6 @@ public:
         gridLayout_3->addLayout(horizontalLayout, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
-        menuBar = new QMenuBar(MainWindow);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 892, 28));
-        MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
         MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -342,7 +860,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(0);
+        stackedWidget->setCurrentIndex(5);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -351,35 +869,167 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
+        actionMain_Menu->setText(QApplication::translate("MainWindow", "Main Menu", 0));
         objectLabel->setText(QApplication::translate("MainWindow", "Object: NONE", 0));
-        streamButton->setText(QApplication::translate("MainWindow", "Stream Data", 0));
-        readDataButton->setText(QApplication::translate("MainWindow", "Read Data from File", 0));
-        cancelButton->setText(QApplication::translate("MainWindow", "Cancel", 0));
-        label_1->setText(QApplication::translate("MainWindow", "0", 0));
-        label_2->setText(QApplication::translate("MainWindow", "0", 0));
-        label_3->setText(QApplication::translate("MainWindow", "0", 0));
-        label_4->setText(QApplication::translate("MainWindow", "0", 0));
-        label_5->setText(QApplication::translate("MainWindow", "0", 0));
-        label_6->setText(QApplication::translate("MainWindow", "0", 0));
-        label_7->setText(QApplication::translate("MainWindow", "0", 0));
-        label_8->setText(QApplication::translate("MainWindow", "0", 0));
-        label_9->setText(QApplication::translate("MainWindow", "0", 0));
-        label_10->setText(QApplication::translate("MainWindow", "0", 0));
-        label_11->setText(QApplication::translate("MainWindow", "0", 0));
-        label_12->setText(QApplication::translate("MainWindow", "0", 0));
-        label->setText(QApplication::translate("MainWindow", "1", 0));
-        label_14->setText(QApplication::translate("MainWindow", "2", 0));
-        label_15->setText(QApplication::translate("MainWindow", "3", 0));
-        label_16->setText(QApplication::translate("MainWindow", "4", 0));
-        label_17->setText(QApplication::translate("MainWindow", "5", 0));
-        label_18->setText(QApplication::translate("MainWindow", "6", 0));
-        label_19->setText(QApplication::translate("MainWindow", "7", 0));
-        label_20->setText(QApplication::translate("MainWindow", "8", 0));
-        label_23->setText(QApplication::translate("MainWindow", "9", 0));
-        label_13->setText(QApplication::translate("MainWindow", "10", 0));
-        label_21->setText(QApplication::translate("MainWindow", "11", 0));
-        label_22->setText(QApplication::translate("MainWindow", "12", 0));
         cameraView->setText(QString());
+        cancelButton->setText(QApplication::translate("MainWindow", "Cancel", 0));
+        backButtonGo->setText(QApplication::translate("MainWindow", "Back", 0));
+        titleLabel->setText(QApplication::translate("MainWindow", "Sense-able", 0));
+        calibratePageButton->setText(QApplication::translate("MainWindow", "Calibrate", 0));
+        settingsPageButton->setText(QApplication::translate("MainWindow", "Settings", 0));
+        streamButton->setText(QApplication::translate("MainWindow", "Begin Stream", 0));
+        readDataPageButton->setText(QApplication::translate("MainWindow", "Read Data ", 0));
+        settingsLabel->setText(QApplication::translate("MainWindow", "Settings:", 0));
+        comboBox->clear();
+        comboBox->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "Normal", 0)
+         << QApplication::translate("MainWindow", "Fast", 0)
+         << QApplication::translate("MainWindow", "Slow", 0)
+        );
+        label_25->setText(QApplication::translate("MainWindow", "Notification Type:", 0));
+        speechCheckBox->setText(QApplication::translate("MainWindow", "Speech                        ", 0));
+        beepCheckBox->setText(QApplication::translate("MainWindow", "Beep                            ", 0));
+        label_26->setText(QApplication::translate("MainWindow", "Distance measured in:", 0));
+        notificationsButton->setText(QApplication::translate("MainWindow", "Notifications", 0));
+        label_9->setText(QApplication::translate("MainWindow", "Notification Distance", 0));
+        comboBox_2->clear();
+        comboBox_2->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "Metric ", 0)
+         << QApplication::translate("MainWindow", "US customary systems", 0)
+        );
+        backButtonSettings->setText(QApplication::translate("MainWindow", "Back", 0));
+        calibrationLabel->setText(QApplication::translate("MainWindow", "Calibration:", 0));
+        beginCalibrationButton->setText(QApplication::translate("MainWindow", "Begin Calibration", 0));
+        cancelCalibrationButton->setText(QApplication::translate("MainWindow", " Cancel", 0));
+        backButtonCalibration->setText(QApplication::translate("MainWindow", "Back", 0));
+        notificationsTitle->setText(QApplication::translate("MainWindow", "Notifications:", 0));
+        notificationLabel->setText(QApplication::translate("MainWindow", "Notification", 0));
+        objectTypeLabel->setText(QApplication::translate("MainWindow", "Object Type", 0));
+        label->setText(QApplication::translate("MainWindow", "1. Trip Hazard", 0));
+        label_3->setText(QApplication::translate("MainWindow", "3. Stairs Up", 0));
+        label_4->setText(QApplication::translate("MainWindow", "4. Stairs Down", 0));
+        label_7->setText(QApplication::translate("MainWindow", "7. Left Protrusion", 0));
+        label_8->setText(QApplication::translate("MainWindow", "8. Right Protrusion", 0));
+        label_5->setText(QApplication::translate("MainWindow", "5. Cliff / Ledge", 0));
+        label_6->setText(QApplication::translate("MainWindow", "6. Low Hanging", 0));
+        obj1_notif_choice->clear();
+        obj1_notif_choice->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "1 Short Beep", 0)
+         << QApplication::translate("MainWindow", "1 Long Beep", 0)
+         << QApplication::translate("MainWindow", "1 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 1 Short", 0)
+         << QApplication::translate("MainWindow", "2 Short Beeps", 0)
+         << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
+        );
+        label_2->setText(QApplication::translate("MainWindow", "2. Wall", 0));
+        obj2_notif_choice->clear();
+        obj2_notif_choice->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "1 Short Beep", 0)
+         << QApplication::translate("MainWindow", "1 Long Beep", 0)
+         << QApplication::translate("MainWindow", "1 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 1 Short", 0)
+         << QApplication::translate("MainWindow", "2 Short Beeps", 0)
+         << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
+        );
+        obj3_notif_choice->clear();
+        obj3_notif_choice->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "1 Short Beep", 0)
+         << QApplication::translate("MainWindow", "1 Long Beep", 0)
+         << QApplication::translate("MainWindow", "1 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 1 Short", 0)
+         << QApplication::translate("MainWindow", "2 Short Beeps", 0)
+         << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
+        );
+        obj4_notif_choice->clear();
+        obj4_notif_choice->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "1 Short Beep", 0)
+         << QApplication::translate("MainWindow", "1 Long Beep", 0)
+         << QApplication::translate("MainWindow", "1 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 1 Short", 0)
+         << QApplication::translate("MainWindow", "2 Short Beeps", 0)
+         << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
+        );
+        obj5_notif_choice->clear();
+        obj5_notif_choice->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "1 Short Beep", 0)
+         << QApplication::translate("MainWindow", "1 Long Beep", 0)
+         << QApplication::translate("MainWindow", "1 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 1 Short", 0)
+         << QApplication::translate("MainWindow", "2 Short Beeps", 0)
+         << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
+        );
+        obj6_notif_choice->clear();
+        obj6_notif_choice->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "1 Short Beep", 0)
+         << QApplication::translate("MainWindow", "1 Long Beep", 0)
+         << QApplication::translate("MainWindow", "1 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 1 Short", 0)
+         << QApplication::translate("MainWindow", "2 Short Beeps", 0)
+         << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
+        );
+        obj7_notif_choice->clear();
+        obj7_notif_choice->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "1 Short Beep", 0)
+         << QApplication::translate("MainWindow", "1 Long Beep", 0)
+         << QApplication::translate("MainWindow", "1 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 1 Short", 0)
+         << QApplication::translate("MainWindow", "2 Short Beeps", 0)
+         << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
+        );
+        obj8_notif_choice->clear();
+        obj8_notif_choice->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "1 Short Beep", 0)
+         << QApplication::translate("MainWindow", "1 Long Beep", 0)
+         << QApplication::translate("MainWindow", "1 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 1 Short", 0)
+         << QApplication::translate("MainWindow", "2 Short Beeps", 0)
+         << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
+         << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
+        );
+        backButton->setText(QApplication::translate("MainWindow", "Back", 0));
+        readingDataLabel->setText(QApplication::translate("MainWindow", "Reading Data From a file:", 0));
+        pt1->setText(QApplication::translate("MainWindow", "0", 0));
+        pt3->setText(QApplication::translate("MainWindow", "0", 0));
+        pt5->setText(QApplication::translate("MainWindow", "0", 0));
+        pt6->setText(QApplication::translate("MainWindow", "0", 0));
+        pt7->setText(QApplication::translate("MainWindow", "0", 0));
+        pt8->setText(QApplication::translate("MainWindow", "0", 0));
+        pt9->setText(QApplication::translate("MainWindow", "0", 0));
+        pt10->setText(QApplication::translate("MainWindow", "0", 0));
+        pt12->setText(QApplication::translate("MainWindow", "0", 0));
+        pt11->setText(QApplication::translate("MainWindow", "0", 0));
+        pointLabel->setText(QApplication::translate("MainWindow", "Pt 1", 0));
+        pointLabel_2->setText(QApplication::translate("MainWindow", "Pt 2", 0));
+        pointLabel_3->setText(QApplication::translate("MainWindow", "Pt 3", 0));
+        pointLabel_4->setText(QApplication::translate("MainWindow", "Pt 4", 0));
+        pointLabel_5->setText(QApplication::translate("MainWindow", "Pt 5", 0));
+        pointLabel_9->setText(QApplication::translate("MainWindow", "Pt 9", 0));
+        pointLabel_10->setText(QApplication::translate("MainWindow", "Pt10", 0));
+        pointLabel_11->setText(QApplication::translate("MainWindow", "Pt11", 0));
+        pointLabel_12->setText(QApplication::translate("MainWindow", "Pt12", 0));
+        pointLabel_7->setText(QApplication::translate("MainWindow", "Pt 8", 0));
+        pointLabel_8->setText(QApplication::translate("MainWindow", "Pt 7", 0));
+        readDataButton->setText(QApplication::translate("MainWindow", "Read Data ", 0));
+        backButtonRead->setText(QApplication::translate("MainWindow", "Back", 0));
+        cancelButtonRead->setText(QApplication::translate("MainWindow", "Cancel", 0));
+        pointLabel_13->setText(QApplication::translate("MainWindow", "Pt13", 0));
+        pointLabel_14->setText(QApplication::translate("MainWindow", "Pt14", 0));
+        pointLabel_15->setText(QApplication::translate("MainWindow", "Pt15", 0));
+        pointLabel_16->setText(QApplication::translate("MainWindow", "Pt16", 0));
+        pt13->setText(QApplication::translate("MainWindow", "0", 0));
+        pt14->setText(QApplication::translate("MainWindow", "0", 0));
+        pt15->setText(QApplication::translate("MainWindow", "0", 0));
+        pt16->setText(QApplication::translate("MainWindow", "0", 0));
+        pointLabel_6->setText(QApplication::translate("MainWindow", "Pt 6", 0));
+        pt2->setText(QApplication::translate("MainWindow", "0", 0));
+        pt4->setText(QApplication::translate("MainWindow", "0", 0));
     } // retranslateUi
 
 };

@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_MULTIMEDIA_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR='"/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/build-leddargui-Desktop-Release"'
 CFLAGS        = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I../leddargui -I. -isystem /usr/local/include -I../Release -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtMultimedia -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtNetwork -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
+CXXFLAGS      = -m64 -pipe -O2 -std=c++0x -Wall -W -D_REENTRANT -fPIC $(DEFINES)
+INCPATH       = -I../leddargui -I. -isystem /usr/local/include -I../Release -I../leddargui/googletest/include -Igtest -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtMultimedia -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtNetwork -isystem /usr/include/x86_64-linux-gnu/qt5/QtTest -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -33,10 +33,10 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = leddargui1.0.0
-DISTDIR = /home/ckisby/senseableTEMP/Sense-Able/build-leddargui-Desktop-Release/.tmp/leddargui1.0.0
+DISTDIR = /home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/build-leddargui-Desktop-Release/.tmp/leddargui1.0.0
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -ggdb -L/usr/local/lib -lstdc++ -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio -lopencv_objdetect -L../Release/ -lLeddar -lLeddarC -lLeddarTech -Wl,-rpath=../Release/ -lQt5Multimedia -lQt5Widgets -lQt5Gui -lQt5Network -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -ggdb -L/usr/local/lib -lstdc++ -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio -lopencv_objdetect -L../Release/ -lLeddar -lLeddarC -lLeddarTech -Wl,-rpath=../Release/ -lQt5Multimedia -lQt5Widgets -lQt5Gui -lQt5Network -lQt5Test -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -50,23 +50,31 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../leddargui/main.cpp \
 		../leddargui/mainwindow.cpp \
-		../leddargui/leddarmain.cpp \
 		../leddargui/usernotifier.cpp \
 		../leddargui/capturethread.cpp \
-		../leddargui/objdetect.cpp moc_mainwindow.cpp \
-		moc_leddarmain.cpp \
+		../leddargui/unittestsuite.cpp \
+		../leddargui/googletest/src/gtest-all.cc \
+		../leddargui/QtBehaviorTestSuite.cpp \
+		../leddargui/leddarthread.cpp \
+		../leddargui/objectdetectthread.cpp moc_mainwindow.cpp \
 		moc_capturethread.cpp \
-		moc_objdetect.cpp
+		moc_QtBehaviorTestSuite.cpp \
+		moc_leddarthread.cpp \
+		moc_objectdetectthread.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
-		leddarmain.o \
 		usernotifier.o \
 		capturethread.o \
-		objdetect.o \
+		unittestsuite.o \
+		gtest-all.o \
+		QtBehaviorTestSuite.o \
+		leddarthread.o \
+		objectdetectthread.o \
 		moc_mainwindow.o \
-		moc_leddarmain.o \
 		moc_capturethread.o \
-		moc_objdetect.o
+		moc_QtBehaviorTestSuite.o \
+		moc_leddarthread.o \
+		moc_objectdetectthread.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -83,9 +91,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_core_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_dbus.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_dbus_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_designer.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_help.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimedia.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network.pri \
@@ -105,6 +115,8 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_sql_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_testlib.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_testlib_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_uiplugin.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_uitools.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_widgets.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_widgets_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri \
@@ -118,10 +130,12 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resolve_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_post.prf \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/c++11.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/warn_on.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/moc.prf \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/opengl.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/uic.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/thread.prf \
@@ -131,16 +145,20 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../leddargui/leddargui.pro ../leddargui/mainwindow.h \
 		../leddargui/LeddarProperties.h \
-		../leddargui/leddarmain.h \
 		../leddargui/LeddarC.h \
 		../leddargui/usernotifier.h \
 		../leddargui/capturethread.h \
-		../leddargui/objdetect.h ../leddargui/main.cpp \
+		../leddargui/QtBehaviorTestSuite.h \
+		../leddargui/leddarthread.h \
+		../leddargui/objectdetectthread.h ../leddargui/main.cpp \
 		../leddargui/mainwindow.cpp \
-		../leddargui/leddarmain.cpp \
 		../leddargui/usernotifier.cpp \
 		../leddargui/capturethread.cpp \
-		../leddargui/objdetect.cpp
+		../leddargui/unittestsuite.cpp \
+		../leddargui/googletest/src/gtest-all.cc \
+		../leddargui/QtBehaviorTestSuite.cpp \
+		../leddargui/leddarthread.cpp \
+		../leddargui/objectdetectthread.cpp
 QMAKE_TARGET  = leddargui
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = leddargui
@@ -187,9 +205,11 @@ Makefile: ../leddargui/leddargui.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_core_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_dbus.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_dbus_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_designer.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_help.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimedia.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network.pri \
@@ -209,6 +229,8 @@ Makefile: ../leddargui/leddargui.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_sql_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_testlib.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_testlib_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_uiplugin.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_uitools.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_widgets.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_widgets_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri \
@@ -222,10 +244,12 @@ Makefile: ../leddargui/leddargui.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resolve_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_post.prf \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/c++11.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/warn_on.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/moc.prf \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/opengl.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/uic.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/thread.prf \
@@ -238,6 +262,7 @@ Makefile: ../leddargui/leddargui.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux
 		/usr/lib/x86_64-linux-gnu/libQt5Widgets.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Gui.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Network.prl \
+		/usr/lib/x86_64-linux-gnu/libQt5Test.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Core.prl
 	$(QMAKE) -spec linux-g++-64 -o Makefile ../leddargui/leddargui.pro
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
@@ -256,9 +281,11 @@ Makefile: ../leddargui/leddargui.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_core_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_dbus.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_dbus_private.pri:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_designer.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui_private.pri:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_help.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimedia.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network.pri:
@@ -278,6 +305,8 @@ Makefile: ../leddargui/leddargui.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_sql_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_testlib.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_testlib_private.pri:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_uiplugin.pri:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_uitools.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_widgets.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_widgets_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri:
@@ -291,10 +320,12 @@ Makefile: ../leddargui/leddargui.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resolve_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_post.prf:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/c++11.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/warn_on.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/moc.prf:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/testlib_defines.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/opengl.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/uic.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/thread.prf:
@@ -307,6 +338,7 @@ Makefile: ../leddargui/leddargui.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux
 /usr/lib/x86_64-linux-gnu/libQt5Widgets.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Gui.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Network.prl:
+/usr/lib/x86_64-linux-gnu/libQt5Test.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -spec linux-g++-64 -o Makefile ../leddargui/leddargui.pro
@@ -322,8 +354,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../leddargui/mainwindow.h ../leddargui/LeddarProperties.h ../leddargui/leddarmain.h ../leddargui/LeddarC.h ../leddargui/usernotifier.h ../leddargui/capturethread.h ../leddargui/objdetect.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../leddargui/main.cpp ../leddargui/mainwindow.cpp ../leddargui/leddarmain.cpp ../leddargui/usernotifier.cpp ../leddargui/capturethread.cpp ../leddargui/objdetect.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../leddargui/mainwindow.h ../leddargui/LeddarProperties.h ../leddargui/LeddarC.h ../leddargui/usernotifier.h ../leddargui/capturethread.h ../leddargui/QtBehaviorTestSuite.h ../leddargui/leddarthread.h ../leddargui/objectdetectthread.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../leddargui/main.cpp ../leddargui/mainwindow.cpp ../leddargui/usernotifier.cpp ../leddargui/capturethread.cpp ../leddargui/unittestsuite.cpp ../leddargui/googletest/src/gtest-all.cc ../leddargui/QtBehaviorTestSuite.cpp ../leddargui/leddarthread.cpp ../leddargui/objectdetectthread.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../leddargui/mainwindow.ui $(DISTDIR)/
 
 
@@ -347,29 +379,32 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_leddarmain.cpp moc_capturethread.cpp moc_objdetect.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_capturethread.cpp moc_QtBehaviorTestSuite.cpp moc_leddarthread.cpp moc_objectdetectthread.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_leddarmain.cpp moc_capturethread.cpp moc_objdetect.cpp
-moc_mainwindow.cpp: ../leddargui/leddarmain.h \
+	-$(DEL_FILE) moc_mainwindow.cpp moc_capturethread.cpp moc_QtBehaviorTestSuite.cpp moc_leddarthread.cpp moc_objectdetectthread.cpp
+moc_mainwindow.cpp: ../leddargui/leddarthread.h \
 		../leddargui/LeddarC.h \
 		../leddargui/LeddarProperties.h \
 		../leddargui/capturethread.h \
-		../leddargui/objdetect.h \
+		../leddargui/objectdetectthread.h \
 		../leddargui/usernotifier.h \
 		../leddargui/mainwindow.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/senseableTEMP/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/senseableTEMP/Sense-Able/Release -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/mainwindow.h -o moc_mainwindow.cpp
-
-moc_leddarmain.cpp: ../leddargui/LeddarC.h \
-		../leddargui/LeddarProperties.h \
-		../leddargui/leddarmain.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/senseableTEMP/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/senseableTEMP/Sense-Able/Release -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/leddarmain.h -o moc_leddarmain.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/Release -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/googletest/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/gtest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/mainwindow.h -o moc_mainwindow.cpp
 
 moc_capturethread.cpp: ../leddargui/capturethread.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/senseableTEMP/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/senseableTEMP/Sense-Able/Release -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/capturethread.h -o moc_capturethread.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/Release -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/googletest/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/gtest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/capturethread.h -o moc_capturethread.cpp
 
-moc_objdetect.cpp: ../leddargui/usernotifier.h \
-		../leddargui/objdetect.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/senseableTEMP/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/senseableTEMP/Sense-Able/Release -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/objdetect.h -o moc_objdetect.cpp
+moc_QtBehaviorTestSuite.cpp: ../leddargui/QtBehaviorTestSuite.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/Release -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/googletest/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/gtest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/QtBehaviorTestSuite.h -o moc_QtBehaviorTestSuite.cpp
+
+moc_leddarthread.cpp: ../leddargui/LeddarC.h \
+		../leddargui/LeddarProperties.h \
+		../leddargui/leddarthread.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/Release -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/googletest/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/gtest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/leddarthread.h -o moc_leddarthread.cpp
+
+moc_objectdetectthread.cpp: ../leddargui/usernotifier.h \
+		../leddargui/objectdetectthread.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/Release -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/googletest/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/gtest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/objectdetectthread.h -o moc_objectdetectthread.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -390,28 +425,46 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 ####### Compile
 
 main.o: ../leddargui/main.cpp ../leddargui/mainwindow.h \
-		../leddargui/leddarmain.h \
+		../leddargui/leddarthread.h \
 		../leddargui/LeddarC.h \
 		../leddargui/LeddarProperties.h \
 		../leddargui/capturethread.h \
-		../leddargui/objdetect.h \
-		../leddargui/usernotifier.h
+		../leddargui/objectdetectthread.h \
+		../leddargui/usernotifier.h \
+		../leddargui/googletest/include/gtest/gtest.h \
+		../leddargui/googletest/include/gtest/internal/gtest-internal.h \
+		../leddargui/googletest/include/gtest/internal/gtest-port.h \
+		../leddargui/googletest/include/gtest/internal/gtest-port-arch.h \
+		../leddargui/googletest/include/gtest/internal/custom/gtest-port.h \
+		../leddargui/googletest/include/gtest/internal/gtest-tuple.h \
+		../leddargui/googletest/include/gtest/gtest-message.h \
+		../leddargui/googletest/include/gtest/internal/gtest-filepath.h \
+		../leddargui/googletest/include/gtest/internal/gtest-string.h \
+		../leddargui/googletest/include/gtest/internal/gtest-type-util.h \
+		../leddargui/googletest/include/gtest/gtest-death-test.h \
+		../leddargui/googletest/include/gtest/internal/gtest-death-test-internal.h \
+		../leddargui/googletest/include/gtest/gtest-param-test.h \
+		../leddargui/googletest/include/gtest/internal/gtest-param-util.h \
+		../leddargui/googletest/include/gtest/internal/gtest-linked_ptr.h \
+		../leddargui/googletest/include/gtest/gtest-printers.h \
+		../leddargui/googletest/include/gtest/internal/custom/gtest-printers.h \
+		../leddargui/googletest/include/gtest/internal/gtest-param-util-generated.h \
+		../leddargui/googletest/include/gtest/gtest_prod.h \
+		../leddargui/googletest/include/gtest/gtest-test-part.h \
+		../leddargui/googletest/include/gtest/gtest-typed-test.h \
+		../leddargui/googletest/include/gtest/gtest_pred_impl.h \
+		../leddargui/QtBehaviorTestSuite.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../leddargui/main.cpp
 
 mainwindow.o: ../leddargui/mainwindow.cpp ../leddargui/mainwindow.h \
-		../leddargui/leddarmain.h \
+		../leddargui/leddarthread.h \
 		../leddargui/LeddarC.h \
 		../leddargui/LeddarProperties.h \
 		../leddargui/capturethread.h \
-		../leddargui/objdetect.h \
+		../leddargui/objectdetectthread.h \
 		../leddargui/usernotifier.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../leddargui/mainwindow.cpp
-
-leddarmain.o: ../leddargui/leddarmain.cpp ../leddargui/leddarmain.h \
-		../leddargui/LeddarC.h \
-		../leddargui/LeddarProperties.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o leddarmain.o ../leddargui/leddarmain.cpp
 
 usernotifier.o: ../leddargui/usernotifier.cpp ../leddargui/usernotifier.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o usernotifier.o ../leddargui/usernotifier.cpp
@@ -419,21 +472,104 @@ usernotifier.o: ../leddargui/usernotifier.cpp ../leddargui/usernotifier.h
 capturethread.o: ../leddargui/capturethread.cpp ../leddargui/capturethread.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o capturethread.o ../leddargui/capturethread.cpp
 
-objdetect.o: ../leddargui/objdetect.cpp ../leddargui/objdetect.h \
+unittestsuite.o: ../leddargui/unittestsuite.cpp ../leddargui/googletest/include/gtest/gtest.h \
+		../leddargui/googletest/include/gtest/internal/gtest-internal.h \
+		../leddargui/googletest/include/gtest/internal/gtest-port.h \
+		../leddargui/googletest/include/gtest/internal/gtest-port-arch.h \
+		../leddargui/googletest/include/gtest/internal/custom/gtest-port.h \
+		../leddargui/googletest/include/gtest/internal/gtest-tuple.h \
+		../leddargui/googletest/include/gtest/gtest-message.h \
+		../leddargui/googletest/include/gtest/internal/gtest-filepath.h \
+		../leddargui/googletest/include/gtest/internal/gtest-string.h \
+		../leddargui/googletest/include/gtest/internal/gtest-type-util.h \
+		../leddargui/googletest/include/gtest/gtest-death-test.h \
+		../leddargui/googletest/include/gtest/internal/gtest-death-test-internal.h \
+		../leddargui/googletest/include/gtest/gtest-param-test.h \
+		../leddargui/googletest/include/gtest/internal/gtest-param-util.h \
+		../leddargui/googletest/include/gtest/internal/gtest-linked_ptr.h \
+		../leddargui/googletest/include/gtest/gtest-printers.h \
+		../leddargui/googletest/include/gtest/internal/custom/gtest-printers.h \
+		../leddargui/googletest/include/gtest/internal/gtest-param-util-generated.h \
+		../leddargui/googletest/include/gtest/gtest_prod.h \
+		../leddargui/googletest/include/gtest/gtest-test-part.h \
+		../leddargui/googletest/include/gtest/gtest-typed-test.h \
+		../leddargui/googletest/include/gtest/gtest_pred_impl.h \
+		../leddargui/objectdetectthread.h \
+		../leddargui/usernotifier.h \
+		../leddargui/mainwindow.h \
+		../leddargui/leddarthread.h \
+		../leddargui/LeddarC.h \
+		../leddargui/LeddarProperties.h \
+		../leddargui/capturethread.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o unittestsuite.o ../leddargui/unittestsuite.cpp
+
+gtest-all.o: ../leddargui/googletest/src/gtest-all.cc ../leddargui/googletest/include/gtest/gtest.h \
+		../leddargui/googletest/include/gtest/internal/gtest-internal.h \
+		../leddargui/googletest/include/gtest/internal/gtest-port.h \
+		../leddargui/googletest/include/gtest/internal/gtest-port-arch.h \
+		../leddargui/googletest/include/gtest/internal/custom/gtest-port.h \
+		../leddargui/googletest/include/gtest/internal/gtest-tuple.h \
+		../leddargui/googletest/include/gtest/gtest-message.h \
+		../leddargui/googletest/include/gtest/internal/gtest-filepath.h \
+		../leddargui/googletest/include/gtest/internal/gtest-string.h \
+		../leddargui/googletest/include/gtest/internal/gtest-type-util.h \
+		../leddargui/googletest/include/gtest/gtest-death-test.h \
+		../leddargui/googletest/include/gtest/internal/gtest-death-test-internal.h \
+		../leddargui/googletest/include/gtest/gtest-param-test.h \
+		../leddargui/googletest/include/gtest/internal/gtest-param-util.h \
+		../leddargui/googletest/include/gtest/internal/gtest-linked_ptr.h \
+		../leddargui/googletest/include/gtest/gtest-printers.h \
+		../leddargui/googletest/include/gtest/internal/custom/gtest-printers.h \
+		../leddargui/googletest/include/gtest/internal/gtest-param-util-generated.h \
+		../leddargui/googletest/include/gtest/gtest_prod.h \
+		../leddargui/googletest/include/gtest/gtest-test-part.h \
+		../leddargui/googletest/include/gtest/gtest-typed-test.h \
+		../leddargui/googletest/include/gtest/gtest_pred_impl.h \
+		../leddargui/googletest/src/gtest.cc \
+		../leddargui/googletest/include/gtest/internal/custom/gtest.h \
+		../leddargui/googletest/include/gtest/gtest-spi.h \
+		../leddargui/googletest/src/gtest-internal-inl.h \
+		../leddargui/googletest/src/gtest-death-test.cc \
+		../leddargui/googletest/src/gtest-filepath.cc \
+		../leddargui/googletest/src/gtest-port.cc \
+		../leddargui/googletest/src/gtest-printers.cc \
+		../leddargui/googletest/src/gtest-test-part.cc \
+		../leddargui/googletest/src/gtest-typed-test.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gtest-all.o ../leddargui/googletest/src/gtest-all.cc
+
+QtBehaviorTestSuite.o: ../leddargui/QtBehaviorTestSuite.cpp ../leddargui/QtBehaviorTestSuite.h \
+		../leddargui/mainwindow.h \
+		../leddargui/leddarthread.h \
+		../leddargui/LeddarC.h \
+		../leddargui/LeddarProperties.h \
+		../leddargui/capturethread.h \
+		../leddargui/objectdetectthread.h \
 		../leddargui/usernotifier.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objdetect.o ../leddargui/objdetect.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o QtBehaviorTestSuite.o ../leddargui/QtBehaviorTestSuite.cpp
+
+leddarthread.o: ../leddargui/leddarthread.cpp ../leddargui/leddarthread.h \
+		../leddargui/LeddarC.h \
+		../leddargui/LeddarProperties.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o leddarthread.o ../leddargui/leddarthread.cpp
+
+objectdetectthread.o: ../leddargui/objectdetectthread.cpp ../leddargui/objectdetectthread.h \
+		../leddargui/usernotifier.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objectdetectthread.o ../leddargui/objectdetectthread.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
-moc_leddarmain.o: moc_leddarmain.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_leddarmain.o moc_leddarmain.cpp
-
 moc_capturethread.o: moc_capturethread.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_capturethread.o moc_capturethread.cpp
 
-moc_objdetect.o: moc_objdetect.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_objdetect.o moc_objdetect.cpp
+moc_QtBehaviorTestSuite.o: moc_QtBehaviorTestSuite.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_QtBehaviorTestSuite.o moc_QtBehaviorTestSuite.cpp
+
+moc_leddarthread.o: moc_leddarthread.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_leddarthread.o moc_leddarthread.cpp
+
+moc_objectdetectthread.o: moc_objectdetectthread.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_objectdetectthread.o moc_objectdetectthread.cpp
 
 ####### Install
 
