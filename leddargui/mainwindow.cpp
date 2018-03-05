@@ -137,7 +137,12 @@ void MainWindow::on_readDataButton_clicked()
             ui->obj8_notif_choice};
 
         for(int i = 0; i < 8; i++) {
+            cout << "i=" << i << " CHOICE " << notif_choices[i]->currentIndex() << endl;
+            cout << "i=" << i << " SOUND " << defaultSoundOrder.at((notif_choices[i])->currentIndex()) << endl;
+
             notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
+            cout << "i=" << i << " AFTER MODIFY "<< notifier.soundFiles.at(i) << endl;
+
         }
 
         cout << endl;

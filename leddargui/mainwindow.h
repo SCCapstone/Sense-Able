@@ -71,7 +71,7 @@ signals:
     void stopDetect();
 
     void streamButtonClicked();
-    void passNotifier(UserNotifier someNotifier);
+    void passNotifier(UserNotifier);
 
 private:
     Ui::MainWindow *ui;

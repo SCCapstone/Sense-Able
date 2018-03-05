@@ -155,8 +155,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
->>>>>>> 4d8efbab7efcf8f5af78dbd3a3be928990a15f30
+         <number>5</number>
         </property>
         <widget class="QWidget" name="page">
          <widget class="QLabel" name="objectLabel">
