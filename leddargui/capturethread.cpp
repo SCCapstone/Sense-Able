@@ -80,36 +80,43 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
  * This fuction takes an image and a set of points and displays the distance on the frame
  ***/
 void CaptureThread::overlayDistance(std::vector<float> distances, cv::Mat frame) {
+
+    float max_dist = 15.;
     int height = frame.size().height;
     int width = frame.size().width;
-    std::cout << height << "   " << width << std::endl;
+//    std::cout << height << "   " << width << std::endl;
 
 
-    int segments = int(distances.size()) + 1;
+    int segments = int(distances.size());
     int seg_dist = width/segments; //Truncates but this shouldn't be noticeable. Also it doesn't matter.
 
-    std::cout << seg_dist << std::endl;
+//    std::cout << seg_dist << std::endl;
+    /*std::cout << s << std::endl*/;
 
-    for (int i=1; i<segments; i++) {
-        // point(x_coord, y_coord);
-       cv::line(frame,
-                cv::Point(seg_dist*i, height/2),
-                cv::Point(seg_dist*i, height),
-                cv::Scalar( 0, 255, 255 ),
-                1);
-       cv::putText(frame,
-                   std::to_string(int(round(distances.at(i-1)))),
-                   cv::Point(seg_dist*i, height/2 - 10),
+
+    for (int i=0; i<segments; i++) {
+        float distance = distances.at(i);
+        float scaling_factor = distance / max_dist;
+//        std::cout << scaling_factor << std::endl;
+        cv::Scalar color = cv::Scalar(scaling_factor*255, 0, scaling_factor*-255 + 255);
+//oid rectangle(InputOutputArray img, Point pt1, Point pt2, const Scalar& color, int thickness=1, int lineType=LINE_8, int shift=0 )
+        cv::rectangle(frame,
+                cv::Point(seg_dist*i, height/2-5),//upper left
+                cv::Point(seg_dist*i+seg_dist, height/2+5), //lower right
+                color, //cv::Scalar( 0, 255, 255 ),
+                -1);
+        cv::putText(frame,
+                   std::to_string(int(round(distances.at(i)))),
+                   cv::Point(seg_dist*i + seg_dist/2, height/2 - 10),
                    cv::FONT_HERSHEY_SCRIPT_SIMPLEX,
                    .3,
-                   cv::Scalar(0, 255, 255),
+                   color, //cv::Scalar(0, 255, 255),
                    1);
 //               putText(InputOutputArray img, const String& text, Point org, int fontFace, double fontScale, Scalar color, int thickness=1, int lineType=LINE_8, bool bottomLeftOrigin=false )
     }
     return;
 
 //    C++: void line(InputOutputArray img, Point pt1, Point pt2, const Scalar& color, int thickness=1, int lineType=LINE_8, int shift=0 )
-
 }
 
 /*********************************************************************

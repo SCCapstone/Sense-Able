@@ -37,7 +37,6 @@ signals:
 
 private:
     bool isrunning, isstopped;
-    int num_beams;
     float sig_dist;
 };
 

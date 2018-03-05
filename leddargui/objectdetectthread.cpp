@@ -55,7 +55,6 @@ cout << "Entering doDetect" << endl;
     float measure_err = .75;
     float flat_err = 100;
 //    float sig_dist = 2;
-    this->num_beams = 16;
 
     if (!isrunning || isstopped) return;
 
