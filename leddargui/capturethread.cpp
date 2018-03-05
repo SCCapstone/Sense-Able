@@ -81,42 +81,38 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
  ***/
 void CaptureThread::overlayDistance(std::vector<float> distances, cv::Mat frame) {
 
-    float max_dist = 15.;
+    float max_dist = 10.;
     int height = frame.size().height;
     int width = frame.size().width;
-//    std::cout << height << "   " << width << std::endl;
-
 
     int segments = int(distances.size());
     int seg_dist = width/segments; //Truncates but this shouldn't be noticeable. Also it doesn't matter.
 
-//    std::cout << seg_dist << std::endl;
-    /*std::cout << s << std::endl*/;
-
-
     for (int i=0; i<segments; i++) {
         float distance = distances.at(i);
+
+        // Normalize the distance from 0 - max distance
         float scaling_factor = distance / max_dist;
-//        std::cout << scaling_factor << std::endl;
+        if (scaling_factor > 1) {
+            scaling_factor = 1.0;
+        }
         cv::Scalar color = cv::Scalar(scaling_factor*255, 0, scaling_factor*-255 + 255);
-//oid rectangle(InputOutputArray img, Point pt1, Point pt2, const Scalar& color, int thickness=1, int lineType=LINE_8, int shift=0 )
-        cv::rectangle(frame,
-                cv::Point(seg_dist*i, height/2-5),//upper left
-                cv::Point(seg_dist*i+seg_dist, height/2+5), //lower right
-                color, //cv::Scalar( 0, 255, 255 ),
+            // Draw the rectangles
+            cv::rectangle(frame,
+                    cv::Point(seg_dist*i, height/2-5),//upper left
+                    cv::Point(seg_dist*i+seg_dist, height/2+5), //lower right
+                    color, //cv::Scalar( 0, 255, 255 ),
                 -1);
+        // Write the distance
         cv::putText(frame,
-                   std::to_string(int(round(distances.at(i)))),
-                   cv::Point(seg_dist*i + seg_dist/2, height/2 - 10),
-                   cv::FONT_HERSHEY_SCRIPT_SIMPLEX,
-                   .3,
+                   std::to_string(distance).substr(0,4),
+                   cv::Point(seg_dist*i + 3, height/2 - 10),
+                   cv::FONT_HERSHEY_DUPLEX,
+                   .45,
                    color, //cv::Scalar(0, 255, 255),
-                   1);
-//               putText(InputOutputArray img, const String& text, Point org, int fontFace, double fontScale, Scalar color, int thickness=1, int lineType=LINE_8, bool bottomLeftOrigin=false )
+                   1.6);
     }
     return;
-
-//    C++: void line(InputOutputArray img, Point pt1, Point pt2, const Scalar& color, int thickness=1, int lineType=LINE_8, int shift=0 )
 }
 
 /*********************************************************************
@@ -142,17 +138,16 @@ void CaptureThread::doCapture()
             cap >> frame;
             int a = imagedetect(hog, frame);
 
-            std::vector<float> poop;
-            for (int i=0; i<16; i++){
-                poop.push_back(i);
+            if (distances.size() > 5){
+                overlayDistance(distances, frame);
             }
-            overlayDistance(poop, frame);
 /*
             cv::Point pt1(45,5);
             cv::Point pt2(45,245);
             cv::Scalar color = cv::Scalar(255,210,12);
             cv::line(frame,pt1,pt2,color,5);
 */
+//            std::cout << distances.size() << std::endl;
 
             emit(newFrame(&frame));
         }
