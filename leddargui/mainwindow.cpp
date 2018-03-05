@@ -90,13 +90,16 @@ MainWindow::MainWindow(QWidget *parent) :
                     objdetector,
                     SLOT(StartDetect(int, vector<float>)),
                     Qt::QueuedConnection);
-    connect(this, SIGNAL(passNotifier(UserNotifier)),
+    connect(this, SIGNAL(passNotifier(vector<string>)),
                     objdetector,
-                    SLOT(getCurrentNotifier(UserNotifier)));
+                    SLOT(getCurrentNotifier(vector<string>)),
+                    Qt::QueuedConnection);
     connect(objdetector, SIGNAL(sendObjectDetected(string)),
                     this,
                     SLOT(catchObjectDetected(string)),
                     Qt::QueuedConnection);
+
+    qRegisterMetaType<vector<string> >("vector<string>");
 
     // Start the threads.
     captureThread->start();
@@ -149,7 +152,7 @@ void MainWindow::on_readDataButton_clicked()
         cout << "GEY: " << ui->obj1_notif_choice->currentIndex() << endl;
         cout << endl;
 
-        emit passNotifier(this->notifier);
+        emit passNotifier(this->notifier.soundFiles);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
     }
@@ -171,7 +174,7 @@ void MainWindow::on_streamButton_clicked()
     if (!this->stream->isrunning) {
         emit startCapture();
         emit startStream();
-        emit passNotifier(this->notifier);
+        emit passNotifier(this->notifier.soundFiles);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
     }

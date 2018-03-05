@@ -286,10 +286,11 @@ cout << "Entering StartDetect" << endl;
     doDetect(dataPoints);
 }
 
-void objectDetector::getCurrentNotifier(UserNotifier someNotifier) {
-    this->currentNotifier = someNotifier;
+void objectDetector::getCurrentNotifier(vector<string> someOrderedSounds) {
+    this->currentNotifier.soundFiles = someOrderedSounds;
+//    this->currentNotifier = someNotifier;
 
-    for (int i = 0; i <= someNotifier.soundFiles.size(); i++) {
+    for (int i = 0; i < 8; i++) {
         cout << "i=" << i << "AFTER SIGNAL, ASSIGN: " << currentNotifier.soundFiles.at(i) << endl;
     }
 }

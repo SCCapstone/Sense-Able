@@ -23,7 +23,7 @@ public:
 public slots:
     void StartDetect(int index, vector<float> distances);
     void StopDetect();
-    void getCurrentNotifier(UserNotifier someNotifier);
+    void getCurrentNotifier(vector<string> someOrderedSounds);
     //void objDetect(int i);
     void SetSignalDist(float sig_dist);
 

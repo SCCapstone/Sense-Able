@@ -71,7 +71,7 @@ signals:
     void stopDetect();
 
     void streamButtonClicked();
-    void passNotifier(UserNotifier);
+    void passNotifier(vector<string>);
 
 private:
     Ui::MainWindow *ui;
