@@ -25,6 +25,7 @@ public slots:
     void StopDetect();
     void getCurrentNotifier(UserNotifier someNotifier);
     //void objDetect(int i);
+    void SetSignalDist(float sig_dist);
 
 private slots:
     void doDetect(vector<float> dataPoints);
@@ -39,6 +40,8 @@ private:
     bool isrunning, isstopped;
 
     UserNotifier currentNotifier;
+
+    float sig_dist;
 };
 
 #endif // OBJECTDETECT_H
