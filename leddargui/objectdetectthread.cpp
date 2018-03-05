@@ -288,6 +288,10 @@ cout << "Entering StartDetect" << endl;
 
 void objectDetector::getCurrentNotifier(UserNotifier someNotifier) {
     this->currentNotifier = someNotifier;
+
+    for (int i = 0; i <= someNotifier.soundFiles.size(); i++) {
+        cout << "i=" << i << "AFTER SIGNAL, ASSIGN: " << currentNotifier.soundFiles.at(i) << endl;
+    }
 }
 
 /*********************************************************************

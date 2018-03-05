@@ -146,6 +146,25 @@ void MainWindow::on_readDataButton_clicked()
         emit startRead(filename);
 
 
+        // Setup the current notifier based on the notification settings.
+        QComboBox* notif_choices[] = {ui->obj1_notif_choice,
+            ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
+            ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
+            ui->obj8_notif_choice};
+
+        for(int i = 0; i < 8; i++) {
+            cout << "i=" << i << " CHOICE " << notif_choices[i]->currentIndex() << endl;
+            cout << "i=" << i << " SOUND " << defaultSoundOrder.at((notif_choices[i])->currentIndex()) << endl;
+
+            notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
+            cout << "i=" << i << " AFTER MODIFY "<< notifier.soundFiles.at(i) << endl;
+
+        }
+
+        cout << endl;
+        cout << "GEY: " << ui->obj1_notif_choice->currentIndex() << endl;
+        cout << endl;
+
         emit passNotifier(this->notifier);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
