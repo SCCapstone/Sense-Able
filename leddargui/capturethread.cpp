@@ -99,14 +99,14 @@ void CaptureThread::overlayDistance(std::vector<float> distances, cv::Mat frame)
         cv::Scalar color = cv::Scalar(scaling_factor*255, 0, scaling_factor*-255 + 255);
             // Draw the rectangles
             cv::rectangle(frame,
-                    cv::Point(seg_dist*i, height/2-5),//upper left
-                    cv::Point(seg_dist*i+seg_dist, height/2+5), //lower right
+                    cv::Point(seg_dist*i, height - 11),//upper left
+                    cv::Point(seg_dist*i+seg_dist, height - 1), //lower right
                     color, //cv::Scalar( 0, 255, 255 ),
                 -1);
         // Write the distance
         cv::putText(frame,
                    std::to_string(distance).substr(0,4),
-                   cv::Point(seg_dist*i + 3, height/2 - 10),
+                   cv::Point(seg_dist*i + 3, height - 16),
                    cv::FONT_HERSHEY_DUPLEX,
                    .45,
                    color, //cv::Scalar(0, 255, 255),

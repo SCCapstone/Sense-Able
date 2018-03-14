@@ -169,6 +169,7 @@ cout << "Entering ReplayData" << endl;
         for( i=0; i < lCount; i++ )
         {
             cout << lDetections[i].mDistance << " ";
+            // TODO: Check that the segment corresponds to index. Can they be out of order?
             dataPoints.push_back(lDetections[i].mDistance);
         }
         cout << endl;
@@ -329,8 +330,8 @@ cout << "Entering ReadLiveData" << endl;
         QCoreApplication::processEvents();
     }
 
-    StopStream();
     LeddarStopDataTransfer( this->gHandle );
+    StopStream();
 cout << "Exiting ReadLiveData" << endl;
 }
 

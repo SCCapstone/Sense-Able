@@ -53,7 +53,7 @@ cout << "Entering objectDetector" << endl;
 void objectDetector::doDetect(vector<float> distances) {
 cout << "Entering doDetect" << endl;
     int detectCode;
-    float measure_err = .75;
+    float measure_err = .3;
     float flat_err = 100;
 //    float sig_dist = 2;
 
