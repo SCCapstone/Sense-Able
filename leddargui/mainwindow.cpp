@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<vector<string> >("vector<string>");
 
     this->capture->moveToThread(captureThread);
-    connect(this, SIGNAL(startCapture()), capture, SLOT(StartCapture()));
+    connect(this, SIGNAL(startCapture(int)), capture, SLOT(StartCapture(int)));
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
     connect(capture, SIGNAL(cancel()),this,SLOT(on_cancelButton_clicked()));
@@ -188,7 +188,7 @@ void MainWindow::on_streamButton_clicked()
     emit streamButtonClicked();
 
     if (!this->stream->isrunning) {
-        emit startCapture();
+        emit startCapture(cameraNumber);
         emit startStream();
         emit passNotifier(this->notifier.soundFiles);
 //        emit startDetect();  We should not start detecting until an object
@@ -343,6 +343,44 @@ void MainWindow::on_backButtonSettings_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
+void MainWindow::on_changeCamera_clicked()
+{
+   emit stopCapture();
+   emit stopStream();
+   emit stopRead();
+   emit stopDetect();
+   QThread::usleep(10);
+
+   if(cameraNumber == 0) {
+       cameraNumber = 1;
+       ui->cameraLabel->setText("Camera: Webcam");
+   }
+   else if(cameraNumber == 1){
+        cameraNumber = 0;
+        ui->cameraLabel->setText("Camera: Built-In");
+   }
+   QThread::usleep(10);
+
+   if (!this->stream->isrunning) {
+       emit startCapture(cameraNumber);
+       emit startStream();
+       emit passNotifier(this->notifier.soundFiles);
+//        emit startDetect();  We should not start detecting until an object
+//                             is actually detected.
+   }
 
 
+}
 
+void MainWindow::on_changeOrient_clicked()
+{
+    if(orientDefault == true) {
+        orientDefault = false;
+        ui->orientLabel->setText("Orientation: Vertical");
+
+    }
+    else if (orientDefault == false) {
+        orientDefault = true;
+        ui->orientLabel->setText("Orientation: Horizontal");
+    }
+}

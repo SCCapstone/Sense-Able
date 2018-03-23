@@ -186,12 +186,13 @@ void CaptureThread::captureDataPoints(int index, std::vector<float> points){
  *
  * We then proceed with performing the camera capture.
 ***/
-void CaptureThread::StartCapture() {
+void CaptureThread::StartCapture(int cameraNumber) {
     if (isrunning) return;
 
-    if(!cap.isOpened()) cap.open(0);
+    if(!cap.isOpened()) cap.open(cameraNumber);
     isstopped = false;
     isrunning = true;
+
     emit running();
     doCapture();
 }

@@ -18,7 +18,7 @@ public:
     void overlayDistance(std::vector<float> distances, cv::Mat frame);
 
 public slots:
-    void StartCapture();
+    void StartCapture(int cameraNumber);
     void StopCapture();
 
 private slots:

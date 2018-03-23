@@ -54,10 +54,14 @@ private slots:
 
     void on_backButtonRead_clicked();
 
+    void on_changeCamera_clicked();
+
+    void on_changeOrient_clicked();
+
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 
 signals:
-    void startCapture();
+    void startCapture(int);
     void stopCapture();
     void startStream();
     void stopStream();
@@ -77,6 +81,9 @@ private:
     QThread* captureThread;
     objectDetector* objdetector;
     QThread* objdetectThread;
+
+    int cameraNumber = 0;
+    bool orientDefault = true;
 
     QSignalMapper* signalMapper;
     UserNotifier notifier;
