@@ -317,10 +317,6 @@ void MainWindow::on_actionMain_Menu_triggered()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::on_calibratePageButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(3);
-}
 
 void MainWindow::on_page_2_customContextMenuRequested(const QPoint &pos)
 {
@@ -329,12 +325,12 @@ void MainWindow::on_page_2_customContextMenuRequested(const QPoint &pos)
 
 void MainWindow::on_notificationsButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(4);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 
 void MainWindow::on_readDataPageButton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(5);
+    ui->stackedWidget->setCurrentIndex(4);
 }
 
 void MainWindow::on_backButton_clicked()
@@ -347,9 +343,6 @@ void MainWindow::on_backButtonSettings_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::on_backButtonCalibration_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(1);
-}
+
 
 

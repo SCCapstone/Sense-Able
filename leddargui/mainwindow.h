@@ -42,8 +42,6 @@ private slots:
 
     void on_actionMain_Menu_triggered();
 
-    void on_calibratePageButton_clicked();
-
     void on_notificationsButton_clicked();
 
     void on_readDataPageButton_clicked();
@@ -55,8 +53,6 @@ private slots:
     void on_backButtonSettings_clicked();
 
     void on_backButtonRead_clicked();
-
-    void on_backButtonCalibration_clicked();
 
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 
