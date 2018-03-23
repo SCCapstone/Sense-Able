@@ -155,7 +155,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="page">
          <widget class="QLabel" name="objectLabel">
@@ -2753,6 +2753,9 @@
             <height>41</height>
            </rect>
           </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
           <item>
            <property name="text">
             <string>1 Short Beep</string>
@@ -2883,6 +2886,9 @@
             <height>41</height>
            </rect>
           </property>
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
           <item>
            <property name="text">
             <string>1 Short Beep</string>
@@ -2927,6 +2933,9 @@
             <width>181</width>
             <height>41</height>
            </rect>
+          </property>
+          <property name="currentIndex">
+           <number>2</number>
           </property>
           <item>
            <property name="text">
@@ -2973,6 +2982,9 @@
             <height>41</height>
            </rect>
           </property>
+          <property name="currentIndex">
+           <number>3</number>
+          </property>
           <item>
            <property name="text">
             <string>1 Short Beep</string>
@@ -3017,6 +3029,9 @@
             <width>181</width>
             <height>41</height>
            </rect>
+          </property>
+          <property name="currentIndex">
+           <number>4</number>
           </property>
           <item>
            <property name="text">
@@ -3063,6 +3078,9 @@
             <height>41</height>
            </rect>
           </property>
+          <property name="currentIndex">
+           <number>5</number>
+          </property>
           <item>
            <property name="text">
             <string>1 Short Beep</string>
@@ -3108,6 +3126,9 @@
             <height>41</height>
            </rect>
           </property>
+          <property name="currentIndex">
+           <number>6</number>
+          </property>
           <item>
            <property name="text">
             <string>1 Short Beep</string>
@@ -3152,6 +3173,12 @@
             <width>181</width>
             <height>41</height>
            </rect>
+          </property>
+          <property name="editable">
+           <bool>false</bool>
+          </property>
+          <property name="currentIndex">
+           <number>6</number>
           </property>
           <item>
            <property name="text">
