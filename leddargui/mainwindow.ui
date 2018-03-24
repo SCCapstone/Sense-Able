@@ -481,9 +481,9 @@
          <widget class="QPushButton" name="changeCamera">
           <property name="geometry">
            <rect>
-            <x>80</x>
+            <x>70</x>
             <y>550</y>
-            <width>121</width>
+            <width>141</width>
             <height>31</height>
            </rect>
           </property>
@@ -645,7 +645,7 @@
          <widget class="QLabel" name="cameraLabel">
           <property name="geometry">
            <rect>
-            <x>80</x>
+            <x>70</x>
             <y>510</y>
             <width>141</width>
             <height>27</height>
