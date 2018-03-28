@@ -82,7 +82,7 @@ private:
     objectDetector* objdetector;
     QThread* objdetectThread;
 
-    int cameraNumber = 1;
+    int cameraNumber = 0;
     bool orientDefault = true;
 
     QSignalMapper* signalMapper;

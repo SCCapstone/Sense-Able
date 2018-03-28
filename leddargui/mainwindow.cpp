@@ -45,14 +45,14 @@ MainWindow::MainWindow(QWidget *parent) :
     this->objdetector = new objectDetector();
 
     this->notifier = UserNotifier();
-    this->defaultSoundOrder.push_back("../Sounds/beep-01.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-02.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-03.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-04.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-05.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-06.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-07.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-08.wav");
+    this->defaultSoundOrder.push_back("../Sounds/short.wav");
+    this->defaultSoundOrder.push_back("../Sounds/long.wav");
+    this->defaultSoundOrder.push_back("../Sounds/short-long.wav");
+    this->defaultSoundOrder.push_back("../Sounds/long-short.wav");
+    this->defaultSoundOrder.push_back("../Sounds/short-short.wav");
+    this->defaultSoundOrder.push_back("../Sounds/short-short-long.wav");
+    this->defaultSoundOrder.push_back("../Sounds/long-short-short.wav");
+    this->defaultSoundOrder.push_back("../Sounds/blaster-firing.wav");
 
 //    this->signalMapper = new QSignalMapper(this);
 
@@ -186,6 +186,20 @@ void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
     emit streamButtonClicked();
+
+    QComboBox* notif_choices[] = {ui->obj1_notif_choice,
+        ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
+        ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
+        ui->obj8_notif_choice};
+
+    for(int i = 0; i < 8; i++) {
+        cout << "i=" << i << " CHOICE " << notif_choices[i]->currentIndex() << endl;
+        cout << "i=" << i << " SOUND " << defaultSoundOrder.at((notif_choices[i])->currentIndex()) << endl;
+
+        notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
+        cout << "i=" << i << " AFTER MODIFY "<< notifier.soundFiles.at(i) << endl;
+
+    }
 
     if (!this->stream->isrunning) {
         emit startCapture(cameraNumber);
