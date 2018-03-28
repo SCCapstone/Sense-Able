@@ -1,0 +1,10 @@
+#!/bin/bash
+# declare STRING variable
+STRING="Sense-Able Demo"
+#print on screen
+echo $STRING
+#set ld path
+LD_LIBRARY_PATH=$PWD/Release:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+#start program
+exec $PWD/Application-x86_64.AppImage "$@"
