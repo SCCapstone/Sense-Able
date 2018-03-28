@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_CaptureThread_t {
-    QByteArrayData data[14];
-    char stringdata0[145];
+    QByteArrayData data[15];
+    char stringdata0[158];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,18 +37,20 @@ QT_MOC_LITERAL(4, 33, 7), // "running"
 QT_MOC_LITERAL(5, 41, 7), // "stopped"
 QT_MOC_LITERAL(6, 49, 6), // "cancel"
 QT_MOC_LITERAL(7, 56, 12), // "StartCapture"
-QT_MOC_LITERAL(8, 69, 11), // "StopCapture"
-QT_MOC_LITERAL(9, 81, 9), // "doCapture"
-QT_MOC_LITERAL(10, 91, 17), // "captureDataPoints"
-QT_MOC_LITERAL(11, 109, 5), // "index"
-QT_MOC_LITERAL(12, 115, 18), // "std::vector<float>"
-QT_MOC_LITERAL(13, 134, 10) // "dataPoints"
+QT_MOC_LITERAL(8, 69, 12), // "cameraNumber"
+QT_MOC_LITERAL(9, 82, 11), // "StopCapture"
+QT_MOC_LITERAL(10, 94, 9), // "doCapture"
+QT_MOC_LITERAL(11, 104, 17), // "captureDataPoints"
+QT_MOC_LITERAL(12, 122, 5), // "index"
+QT_MOC_LITERAL(13, 128, 18), // "std::vector<float>"
+QT_MOC_LITERAL(14, 147, 10) // "dataPoints"
 
     },
     "CaptureThread\0newFrame\0\0cv::Mat*\0"
     "running\0stopped\0cancel\0StartCapture\0"
-    "StopCapture\0doCapture\0captureDataPoints\0"
-    "index\0std::vector<float>\0dataPoints"
+    "cameraNumber\0StopCapture\0doCapture\0"
+    "captureDataPoints\0index\0std::vector<float>\0"
+    "dataPoints"
 };
 #undef QT_MOC_LITERAL
 
@@ -72,10 +74,10 @@ static const uint qt_meta_data_CaptureThread[] = {
        6,    0,   59,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       7,    0,   60,    2, 0x0a /* Public */,
-       8,    0,   61,    2, 0x0a /* Public */,
-       9,    0,   62,    2, 0x08 /* Private */,
-      10,    2,   63,    2, 0x08 /* Private */,
+       7,    1,   60,    2, 0x0a /* Public */,
+       9,    0,   63,    2, 0x0a /* Public */,
+      10,    0,   64,    2, 0x08 /* Private */,
+      11,    2,   65,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
@@ -84,10 +86,10 @@ static const uint qt_meta_data_CaptureThread[] = {
     QMetaType::Void,
 
  // slots: parameters
+    QMetaType::Void, QMetaType::Int,    8,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::Int, 0x80000000 | 12,   11,   13,
+    QMetaType::Void, QMetaType::Int, 0x80000000 | 13,   12,   14,
 
        0        // eod
 };
@@ -102,7 +104,7 @@ void CaptureThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 1: _t->running(); break;
         case 2: _t->stopped(); break;
         case 3: _t->cancel(); break;
-        case 4: _t->StartCapture(); break;
+        case 4: _t->StartCapture((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 5: _t->StopCapture(); break;
         case 6: _t->doCapture(); break;
         case 7: _t->captureDataPoints((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< std::vector<float>(*)>(_a[2]))); break;
