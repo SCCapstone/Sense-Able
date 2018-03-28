@@ -352,38 +352,9 @@ float polynomial_fit(int polynom_degree, vector<float> points, float scaling_err
 
     r = sqrt(r);
 
-
-// LINEAR METHOD
-    // r = sum(xy) / sqrt(sum(x^2) * sum(y^2))
-/*
-    // Calculate Covariance
-    for (unsigned int i = 0; i < distances.size(); i++) {
-      sumxy += int(i) * distances.at(i);
-      sumxx += std::pow(int(i), 2);
-      sumyy += std::pow(distances.at(i), 2);
-    }
-
-    r = sumxy / sqrt(sumxx*sumyy);
-*/
-
-    /***************** r YTILAUQ TIF ETUPMOC ******************/
-
-    /***************** HANDLE SCALING ERROR ******************/
-
     // TODO: Handle scaling error outside of this function, when performing
     // individual tests.  This is not the correct place for checking how
     // steep our curve is.
-
-/*
-    if (GENERATED FIT CURVE EXCEEDS SCALING ERROR) {
-        return -1;
-    }
-*/
-
-    /***************** RORRE GNILACS ELDNAH ******************/
-
-/*************************** SNOGARD EB EREH ***************************************/
-
 }
 
 /*********************************************************************

@@ -229,7 +229,7 @@ public:
         backButtonGo->setFont(font1);
         changeCamera = new QPushButton(page);
         changeCamera->setObjectName(QStringLiteral("changeCamera"));
-        changeCamera->setGeometry(QRect(80, 550, 121, 31));
+        changeCamera->setGeometry(QRect(70, 550, 141, 31));
         QPalette palette4;
         palette4.setBrush(QPalette::Active, QPalette::Button, brush4);
         palette4.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
@@ -253,7 +253,7 @@ public:
         changeOrient->setFont(font1);
         cameraLabel = new QLabel(page);
         cameraLabel->setObjectName(QStringLiteral("cameraLabel"));
-        cameraLabel->setGeometry(QRect(80, 510, 141, 27));
+        cameraLabel->setGeometry(QRect(70, 510, 141, 27));
         QPalette palette6;
         palette6.setBrush(QPalette::Active, QPalette::WindowText, brush2);
         palette6.setBrush(QPalette::Active, QPalette::Base, brush2);
@@ -841,7 +841,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(4);
+        stackedWidget->setCurrentIndex(3);
         obj1_notif_choice->setCurrentIndex(0);
         obj2_notif_choice->setCurrentIndex(1);
         obj3_notif_choice->setCurrentIndex(2);
@@ -895,13 +895,13 @@ public:
         notificationsTitle->setText(QApplication::translate("MainWindow", "Notifications:", 0));
         notificationLabel->setText(QApplication::translate("MainWindow", "Notification", 0));
         objectTypeLabel->setText(QApplication::translate("MainWindow", "Object Type", 0));
-        label->setText(QApplication::translate("MainWindow", "1. Trip Hazard", 0));
-        label_3->setText(QApplication::translate("MainWindow", "3. Stairs Up", 0));
-        label_4->setText(QApplication::translate("MainWindow", "4. Stairs Down", 0));
-        label_7->setText(QApplication::translate("MainWindow", "7. Left Protrusion", 0));
-        label_8->setText(QApplication::translate("MainWindow", "8. Right Protrusion", 0));
-        label_5->setText(QApplication::translate("MainWindow", "5. Cliff / Ledge", 0));
-        label_6->setText(QApplication::translate("MainWindow", "6. Low Hanging", 0));
+        label->setText(QApplication::translate("MainWindow", "1. Wall", 0));
+        label_3->setText(QApplication::translate("MainWindow", "3. Pillar/Post ", 0));
+        label_4->setText(QApplication::translate("MainWindow", "4. Trip Hazard", 0));
+        label_7->setText(QApplication::translate("MainWindow", "7. N/A", 0));
+        label_8->setText(QApplication::translate("MainWindow", "8. N/A", 0));
+        label_5->setText(QApplication::translate("MainWindow", "5. Other Obstacles", 0));
+        label_6->setText(QApplication::translate("MainWindow", "6. N/A", 0));
         obj1_notif_choice->clear();
         obj1_notif_choice->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "1 Short Beep", 0)
@@ -912,7 +912,7 @@ public:
          << QApplication::translate("MainWindow", "2 Short, 1 Long", 0)
          << QApplication::translate("MainWindow", "1 Long, 2 Short", 0)
         );
-        label_2->setText(QApplication::translate("MainWindow", "2. Wall", 0));
+        label_2->setText(QApplication::translate("MainWindow", "2. Wall - Corner", 0));
         obj2_notif_choice->clear();
         obj2_notif_choice->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "1 Short Beep", 0)
