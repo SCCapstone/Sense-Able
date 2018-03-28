@@ -155,7 +155,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="page">
          <widget class="QLabel" name="objectLabel">
@@ -481,9 +481,9 @@
          <widget class="QPushButton" name="changeCamera">
           <property name="geometry">
            <rect>
-            <x>80</x>
+            <x>70</x>
             <y>550</y>
-            <width>121</width>
+            <width>141</width>
             <height>31</height>
            </rect>
           </property>
@@ -645,7 +645,7 @@
          <widget class="QLabel" name="cameraLabel">
           <property name="geometry">
            <rect>
-            <x>80</x>
+            <x>70</x>
             <y>510</y>
             <width>141</width>
             <height>27</height>
@@ -2228,7 +2228,7 @@
            </font>
           </property>
           <property name="text">
-           <string>1. Trip Hazard</string>
+           <string>1. Wall</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2313,7 +2313,7 @@
            </font>
           </property>
           <property name="text">
-           <string>3. Stairs Up</string>
+           <string>3. Pillar/Post </string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2398,7 +2398,7 @@
            </font>
           </property>
           <property name="text">
-           <string>4. Stairs Down</string>
+           <string>4. Trip Hazard</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2483,7 +2483,7 @@
            </font>
           </property>
           <property name="text">
-           <string>7. Left Protrusion</string>
+           <string>7. N/A</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2568,7 +2568,7 @@
            </font>
           </property>
           <property name="text">
-           <string>8. Right Protrusion</string>
+           <string>8. N/A</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2653,7 +2653,7 @@
            </font>
           </property>
           <property name="text">
-           <string>5. Cliff / Ledge</string>
+           <string>5. Other Obstacles</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2738,7 +2738,7 @@
            </font>
           </property>
           <property name="text">
-           <string>6. Low Hanging</string>
+           <string>6. N/A</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2871,7 +2871,7 @@
            </font>
           </property>
           <property name="text">
-           <string>2. Wall</string>
+           <string>2. Wall - Corner</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

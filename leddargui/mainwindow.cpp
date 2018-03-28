@@ -351,12 +351,12 @@ void MainWindow::on_changeCamera_clicked()
    emit stopDetect();
    QThread::usleep(10);
 
-   if(cameraNumber == 0) {
-       cameraNumber = 1;
+   if(cameraNumber == 1) {
+       cameraNumber = 2;
        ui->cameraLabel->setText("Camera: Webcam");
    }
-   else if(cameraNumber == 1){
-        cameraNumber = 0;
+   else if(cameraNumber == 2){
+        cameraNumber = 1;
         ui->cameraLabel->setText("Camera: Built-In");
    }
    QThread::usleep(10);
