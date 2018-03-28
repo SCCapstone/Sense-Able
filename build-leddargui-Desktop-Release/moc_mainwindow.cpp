@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[40];
-    char stringdata0[701];
+    char stringdata0[685];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -59,16 +59,16 @@ QT_MOC_LITERAL(26, 322, 23), // "on_cancelButton_clicked"
 QT_MOC_LITERAL(27, 346, 27), // "on_cancelButtonRead_clicked"
 QT_MOC_LITERAL(28, 374, 29), // "on_settingsPageButton_clicked"
 QT_MOC_LITERAL(29, 404, 28), // "on_actionMain_Menu_triggered"
-QT_MOC_LITERAL(30, 433, 30), // "on_calibratePageButton_clicked"
-QT_MOC_LITERAL(31, 464, 30), // "on_notificationsButton_clicked"
-QT_MOC_LITERAL(32, 495, 29), // "on_readDataPageButton_clicked"
-QT_MOC_LITERAL(33, 525, 21), // "on_backButton_clicked"
-QT_MOC_LITERAL(34, 547, 23), // "on_backButtonGo_clicked"
-QT_MOC_LITERAL(35, 571, 29), // "on_backButtonSettings_clicked"
-QT_MOC_LITERAL(36, 601, 25), // "on_backButtonRead_clicked"
-QT_MOC_LITERAL(37, 627, 32), // "on_backButtonCalibration_clicked"
-QT_MOC_LITERAL(38, 660, 36), // "on_page_2_customContextMenuRe..."
-QT_MOC_LITERAL(39, 697, 3) // "pos"
+QT_MOC_LITERAL(30, 433, 30), // "on_notificationsButton_clicked"
+QT_MOC_LITERAL(31, 464, 29), // "on_readDataPageButton_clicked"
+QT_MOC_LITERAL(32, 494, 21), // "on_backButton_clicked"
+QT_MOC_LITERAL(33, 516, 23), // "on_backButtonGo_clicked"
+QT_MOC_LITERAL(34, 540, 29), // "on_backButtonSettings_clicked"
+QT_MOC_LITERAL(35, 570, 25), // "on_backButtonRead_clicked"
+QT_MOC_LITERAL(36, 596, 23), // "on_changeCamera_clicked"
+QT_MOC_LITERAL(37, 620, 23), // "on_changeOrient_clicked"
+QT_MOC_LITERAL(38, 644, 36), // "on_page_2_customContextMenuRe..."
+QT_MOC_LITERAL(39, 681, 3) // "pos"
 
     },
     "MainWindow\0startCapture\0\0stopCapture\0"
@@ -84,13 +84,12 @@ QT_MOC_LITERAL(39, 697, 3) // "pos"
     "on_cancelButtonRead_clicked\0"
     "on_settingsPageButton_clicked\0"
     "on_actionMain_Menu_triggered\0"
-    "on_calibratePageButton_clicked\0"
     "on_notificationsButton_clicked\0"
     "on_readDataPageButton_clicked\0"
     "on_backButton_clicked\0on_backButtonGo_clicked\0"
     "on_backButtonSettings_clicked\0"
     "on_backButtonRead_clicked\0"
-    "on_backButtonCalibration_clicked\0"
+    "on_changeCamera_clicked\0on_changeOrient_clicked\0"
     "on_page_2_customContextMenuRequested\0"
     "pos"
 };
@@ -110,40 +109,40 @@ static const uint qt_meta_data_MainWindow[] = {
       10,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,  159,    2, 0x06 /* Public */,
-       3,    0,  160,    2, 0x06 /* Public */,
-       4,    0,  161,    2, 0x06 /* Public */,
-       5,    0,  162,    2, 0x06 /* Public */,
-       6,    1,  163,    2, 0x06 /* Public */,
-       7,    0,  166,    2, 0x06 /* Public */,
-       8,    0,  167,    2, 0x06 /* Public */,
-       9,    0,  168,    2, 0x06 /* Public */,
-      10,    0,  169,    2, 0x06 /* Public */,
-      11,    1,  170,    2, 0x06 /* Public */,
+       1,    1,  159,    2, 0x06 /* Public */,
+       3,    0,  162,    2, 0x06 /* Public */,
+       4,    0,  163,    2, 0x06 /* Public */,
+       5,    0,  164,    2, 0x06 /* Public */,
+       6,    1,  165,    2, 0x06 /* Public */,
+       7,    0,  168,    2, 0x06 /* Public */,
+       8,    0,  169,    2, 0x06 /* Public */,
+       9,    0,  170,    2, 0x06 /* Public */,
+      10,    0,  171,    2, 0x06 /* Public */,
+      11,    1,  172,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      13,    0,  173,    2, 0x08 /* Private */,
-      13,    1,  174,    2, 0x08 /* Private */,
-      15,    2,  177,    2, 0x08 /* Private */,
-      19,    1,  182,    2, 0x08 /* Private */,
-      22,    0,  185,    2, 0x08 /* Private */,
-      23,    1,  186,    2, 0x08 /* Private */,
-      26,    0,  189,    2, 0x08 /* Private */,
-      27,    0,  190,    2, 0x08 /* Private */,
-      28,    0,  191,    2, 0x08 /* Private */,
-      29,    0,  192,    2, 0x08 /* Private */,
-      30,    0,  193,    2, 0x08 /* Private */,
-      31,    0,  194,    2, 0x08 /* Private */,
-      32,    0,  195,    2, 0x08 /* Private */,
-      33,    0,  196,    2, 0x08 /* Private */,
-      34,    0,  197,    2, 0x08 /* Private */,
-      35,    0,  198,    2, 0x08 /* Private */,
-      36,    0,  199,    2, 0x08 /* Private */,
-      37,    0,  200,    2, 0x08 /* Private */,
-      38,    1,  201,    2, 0x08 /* Private */,
+      13,    0,  175,    2, 0x08 /* Private */,
+      13,    1,  176,    2, 0x08 /* Private */,
+      15,    2,  179,    2, 0x08 /* Private */,
+      19,    1,  184,    2, 0x08 /* Private */,
+      22,    0,  187,    2, 0x08 /* Private */,
+      23,    1,  188,    2, 0x08 /* Private */,
+      26,    0,  191,    2, 0x08 /* Private */,
+      27,    0,  192,    2, 0x08 /* Private */,
+      28,    0,  193,    2, 0x08 /* Private */,
+      29,    0,  194,    2, 0x08 /* Private */,
+      30,    0,  195,    2, 0x08 /* Private */,
+      31,    0,  196,    2, 0x08 /* Private */,
+      32,    0,  197,    2, 0x08 /* Private */,
+      33,    0,  198,    2, 0x08 /* Private */,
+      34,    0,  199,    2, 0x08 /* Private */,
+      35,    0,  200,    2, 0x08 /* Private */,
+      36,    0,  201,    2, 0x08 /* Private */,
+      37,    0,  202,    2, 0x08 /* Private */,
+      38,    1,  203,    2, 0x08 /* Private */,
 
  // signals: parameters
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,    2,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -184,7 +183,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         MainWindow *_t = static_cast<MainWindow *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->startCapture(); break;
+        case 0: _t->startCapture((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 1: _t->stopCapture(); break;
         case 2: _t->startStream(); break;
         case 3: _t->stopStream(); break;
@@ -204,14 +203,14 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 17: _t->on_cancelButtonRead_clicked(); break;
         case 18: _t->on_settingsPageButton_clicked(); break;
         case 19: _t->on_actionMain_Menu_triggered(); break;
-        case 20: _t->on_calibratePageButton_clicked(); break;
-        case 21: _t->on_notificationsButton_clicked(); break;
-        case 22: _t->on_readDataPageButton_clicked(); break;
-        case 23: _t->on_backButton_clicked(); break;
-        case 24: _t->on_backButtonGo_clicked(); break;
-        case 25: _t->on_backButtonSettings_clicked(); break;
-        case 26: _t->on_backButtonRead_clicked(); break;
-        case 27: _t->on_backButtonCalibration_clicked(); break;
+        case 20: _t->on_notificationsButton_clicked(); break;
+        case 21: _t->on_readDataPageButton_clicked(); break;
+        case 22: _t->on_backButton_clicked(); break;
+        case 23: _t->on_backButtonGo_clicked(); break;
+        case 24: _t->on_backButtonSettings_clicked(); break;
+        case 25: _t->on_backButtonRead_clicked(); break;
+        case 26: _t->on_changeCamera_clicked(); break;
+        case 27: _t->on_changeOrient_clicked(); break;
         case 28: _t->on_page_2_customContextMenuRequested((*reinterpret_cast< const QPoint(*)>(_a[1]))); break;
         default: ;
         }
@@ -219,7 +218,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (MainWindow::*_t)();
+            typedef void (MainWindow::*_t)(int );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MainWindow::startCapture)) {
                 *result = 0;
             }
@@ -318,9 +317,10 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void MainWindow::startCapture()
+void MainWindow::startCapture(int _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 0, Q_NULLPTR);
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1

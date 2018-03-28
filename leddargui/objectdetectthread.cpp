@@ -236,6 +236,127 @@ int objectDetector::detect_wall(std::vector<float> distances, float measure_erro
   return -1;
 }
 
+float apply_polynomial(float coefficients[], int degree, float x_value) {
+    float result = 0;
+
+    for (int i = 0; i < degree; i++) {
+        result += coefficients[i] * x_value;
+    }
+
+    return result;
+}
+
+/*********************************************************************
+ * Function to fit a polynomial onto a set of points.
+ *
+ * TODO: INSTEAD OF INPUTTING A FUNCTION, WE NOW INPUT A 'polynom_degree'!
+ *
+ * This function performs general curve fitting for polynomials.  We
+ * construct the best possible fit of a polynomial 'f(x)' onto a set of
+ * points 'points'.
+ *
+ * Normally, we return the 'correlation coefficient' 'r^2', which
+ * represents the quality of the fit (i.e. whether the curve fits
+ * well).  If the fit is well out of some 'scaling error',
+ * then we return -1 to indicate that there is no fit at all.
+ *
+ * For any polynomial f(x) = c_n x^n + ... + c_0, the 'scaling error'
+ * indicates how lenient we are about the scaling constant 'c_n'.
+ * e.g. If f(x) is linear, the scaling error indicates the range of slope of f(x)
+ * that we are willing to tolerate.
+ * e.g. if f(x) = x^2, the scaling error indicates the steepness of f(x) that we are
+ * willing to tolerate.
+ *
+***/
+float polynomial_fit(int polynom_degree, vector<float> points, float scaling_error) {
+
+    int N = points.size();    // Number of distance points
+    float sumx = 0; // sum of x
+    float sumy = 0; // sum of y
+    float ssy = 0; // Sum of squared difference of x - ux
+    float ssx = 0; // sum of squared differnce of y - uy
+    float mx, my, sdx, sdy; // mean x/y, standard deviation x/y
+
+    float r, intercept, slope; // r value
+    float sumxy = 0; // sum of all x*y
+    float sumxx = 0; // sum of all x*x
+    float sumyy = 0; // sum of all y*y
+
+/*************************** HERE BE DRAGONS ***************************************/
+/* PLAN:
+ *
+ * Generalize this code for general polynomials.
+ *
+ * Compute the polynomial using the Matrix bit (rather than the linear standard deviation bit).
+ * Then compute the r^2 value.
+ * Return the r^2 value, unless the scaling value exceeds the scaling error.
+ *
+ * Reference:
+ * http://mathworld.wolfram.com/LeastSquaresFittingPolynomial.html
+ * http://mathworld.wolfram.com/LeastSquaresFitting.html
+ * http://mathworld.wolfram.com/CorrelationCoefficient.html
+ *
+ * Compute Fourier Transforms ahead of time in order to get a signature for *any*
+ * reasonable function f(x) (i.e. non-polynomials).
+ * http://www.wolframalpha.com/input/?i=fourier+polynomial+for+cos(x)
+ *
+*/
+
+    /***************** COMPUTE OUR POLYNOMIAL ******************/
+    // This calculation follows closely the following:
+    // http://mathworld.wolfram.com/LeastSquaresFittingPolynomial.html
+    //
+    // Please refer to that page if you are confused and you would
+    // like to be even more confused. ;)
+
+    float X[16][polynom_degree];
+    float T[polynom_degree][16];
+    float coefficients[polynom_degree];
+
+    // First, we compute the matrix 'X' as given in the reference.
+    for (int i = 0; i < 16; i++) {
+        for (int k = 0; k < polynom_degree; k++) {
+            // xi happens to be just 'i' in this case.
+            X[i][k] = pow(i, k);
+        }
+    }
+
+    // Next, we compute the transpose 'T' of matrix 'X', as discussed
+    // in the reference.
+    for (int i = 0; i < 16; i++) {
+        for (int k = 0; k < polynom_degree; k++) {
+            T[k][i] = X[i][k];
+        }
+    }
+
+    // Finally, we take the product X*(y1, y2, y3, ..., yn) to obtain
+    // the vector of coefficients (a0, a1, a2, ..., ak).
+    int dotproduct;
+    for (int k = 0; k < polynom_degree; k++) {
+        dotproduct = 0;
+
+        for (int i = 0; i < 16; i++) {
+            dotproduct += T[k][i] * points.at(i);
+        }
+
+        coefficients[k] = dotproduct;
+    }
+
+    /***************** COMPUTE FIT QUALITY r ******************/
+    r = 0;
+
+    for (int i = 0; i < 16; i++) {
+        // Take the difference between outcome and expected (using polynomial f(x)).
+        r += std::pow(points.at(i) - apply_polynomial(coefficients, polynom_degree, i), 2);
+    }
+
+    r = sqrt(r);
+
+    // TODO: Handle scaling error outside of this function, when performing
+    // individual tests.  This is not the correct place for checking how
+    // steep our curve is.
+}
+
 /*********************************************************************
  * Function to project each distance onto the y-axis.
  *
