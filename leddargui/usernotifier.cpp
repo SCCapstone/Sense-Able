@@ -17,14 +17,14 @@ using namespace std;
  * be played back later.
 ***/
 UserNotifier::UserNotifier() {
-    soundFiles.push_back("../Sounds/beep-01.wav");
-    soundFiles.push_back("../Sounds/beep-02.wav");
-    soundFiles.push_back("../Sounds/beep-03.wav");
-    soundFiles.push_back("../Sounds/beep-04.wav");
-    soundFiles.push_back("../Sounds/beep-05.wav");
-    soundFiles.push_back("../Sounds/beep-06.wav");
-    soundFiles.push_back("../Sounds/beep-07.wav");
-    soundFiles.push_back("../Sounds/beep-08.wav");
+    soundFiles.push_back("../Sounds/short.wav");
+    soundFiles.push_back("../Sounds/long.wav");
+    soundFiles.push_back("../Sounds/short-long.wav");
+    soundFiles.push_back("../Sounds/long-short.wav");
+    soundFiles.push_back("../Sounds/short-short.wav");
+    soundFiles.push_back("../Sounds/short-short-long.wav");
+    soundFiles.push_back("../Sounds/long-short-short.wav");
+    soundFiles.push_back("../Sounds/blaster-firing.wav");
 }
 
 /*********************************************************************
