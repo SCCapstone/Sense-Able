@@ -7,4 +7,4 @@ echo $STRING
 LD_LIBRARY_PATH=$PWD/Release:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 #start program
-exec $PWD/Leddar_App-x86_64.AppImage "$@"
+exec $PWD/Application-x86_64.AppImage "$@"
