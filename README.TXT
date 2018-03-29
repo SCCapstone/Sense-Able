@@ -46,7 +46,7 @@ ________________________
   qt5
     Install Tutorial:
     https://wiki.qt.io/Install_Qt_5_on_ubuntu
-    sudo apt-get install qtmultimedia5-dev
+    sudo apt-get install qtmultimedia5-dev libqt5serialport5-dev
   
   libusb
     Using apt-get on Ubuntu:

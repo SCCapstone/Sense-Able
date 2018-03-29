@@ -1,0 +1,21 @@
+System Requirements
+
+Linux - Ubuntu 16
+Architecture - 64
+
+QTt 5.9.4
+
+-----------------
+Install QT
+-----------------
+
+Download QT community version for Linux(64-bit) : https://www.qt.io/download
+
+Make the installer executable and run:
+  > chmod +x qt-unified-linux-x64-3.0.4-online.run
+  > ./qt-unified-linux-x64-3.0.4-online.run
+
+You don't need to have an account, skip.
+On the "Select Components" page check Qt Creator and Qt 5.9.2
+
+

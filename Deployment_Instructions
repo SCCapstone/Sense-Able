@@ -40,6 +40,7 @@ Current Issues:
 
 
 For me: 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/School/TESTSenseAble/Release:~/Documents/School/derp_libs
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/School/TESTSenseAble/Release:~/Documents/
 
-./linuxdeployqt-continuous-x86_64.AppImage build-leddargui-Desktop-Release/leddargui -qmake=/home/jms/Qt5.7.0/5.7/gcc_64/bin/qmake -bundle-non-qt-libs
+
+./linuxdeployqt-continuous-x86_64.AppImage build-leddargui-Desktop-Release/leddargui -qmake=/home/jms/Qt5.7.0/5.7/gcc_64/bin/qmake -bundle-non-qt-libs -verbose=2 -appimage
