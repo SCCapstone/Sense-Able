@@ -162,7 +162,7 @@ cout << "Entering ReplayData" << endl;
         if ( LeddarGetRecordSize( this->gHandle ) != 0 )
         {
             currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
-            cout << currentRecordIndex << endl;
+            cout << "Current Record Index: " << currentRecordIndex << endl;
         }
 
         // Output the detected points to the console.
@@ -182,8 +182,10 @@ cout << "Entering ReplayData" << endl;
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
     }
+    cout << "Exiting ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
+    // TOOD: Clear data points
     return;
 cout << "Exiting ReplayData" << endl;
 }
@@ -424,7 +426,6 @@ cout << "Entering FindAddressByIndex" << endl;
         lConnectionFoundIndex++;
         lCurrentIndex += strlen( aAddresses+lCurrentIndex ) + 1;
     }
-
     return NULL;
 cout << "Exiting FindAddressByIndex" << endl;
 }
@@ -454,9 +455,9 @@ cout << "Entering doStream" << endl;
     ListSensors( lConnectionType, lAddresses, 255 );
     lAddress = FindAddressByIndex( 0, lAddresses );
     if ( lAddress == NULL ) {
+        cout << "NULL ADDRESS" << endl;
         return;
     }
-
     if ( LeddarConnect( this->gHandle, lConnectionType, lAddress ) == LD_SUCCESS )
     {
         if (LeddarGetConnected(this->gHandle) == LD_SUCCESS && isrunning && !isstopped) {

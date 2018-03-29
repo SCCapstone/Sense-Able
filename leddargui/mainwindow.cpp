@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QtWidgets>
 #include <QMetaType>
+#include <QCameraInfo>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
@@ -66,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startCapture(int)), capture, SLOT(StartCapture(int)));
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
-    connect(capture, SIGNAL(cancel()),this,SLOT(on_cancelButton_clicked()));
+    connect(capture, SIGNAL(cancel()), this, SLOT(on_cancelButton_clicked()));
 
     // We then connect the leddar stream and main thread to allow the
     // window to display the data read in from the stream.
@@ -74,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startStream()), stream, SLOT(StartStream()));
     connect(this, SIGNAL(stopStream()), stream, SLOT(StopStream()));
     connect(this, SIGNAL(startRead(QString)), stream, SLOT(StartReplay(QString)));
-    connect(this, SIGNAL(stopRead()), stream, SLOT(StopReplay()));
+    connect(this, SIGNAL(stopRead()), stream, SLOT(StopStream()));
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
                     SLOT(catchDataPoints(int,vector<float>)),
                     Qt::QueuedConnection);
@@ -107,6 +108,10 @@ MainWindow::MainWindow(QWidget *parent) :
     captureThread->start();
     leddarThread->start();
     objdetectThread->start();
+
+    QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
+    foreach (const QCameraInfo &cameraInfo, cameras)
+        qDebug() << cameraInfo.deviceName() << cameraInfo.position();
 }
 
 /*********************************************************************
@@ -361,31 +366,28 @@ void MainWindow::on_backButtonSettings_clicked()
 
 void MainWindow::on_changeCamera_clicked()
 {
+   bool was_playing = this->stream->isrunning;
    emit stopCapture();
    emit stopStream();
    emit stopRead();
    emit stopDetect();
-   QThread::usleep(10);
 
-   if(cameraNumber == 1) {
-       cameraNumber = 2;
+   if(cameraNumber == 0) {
+       cameraNumber = 1;
        ui->cameraLabel->setText("Camera: Webcam");
    }
-   else if(cameraNumber == 2){
-        cameraNumber = 1;
+   else if(cameraNumber == 1){
+        cameraNumber = 0;
         ui->cameraLabel->setText("Camera: Built-In");
    }
-   QThread::usleep(10);
 
-   if (!this->stream->isrunning) {
-       emit startCapture(cameraNumber);
-       emit startStream();
-       emit passNotifier(this->notifier.soundFiles);
-//        emit startDetect();  We should not start detecting until an object
-//                             is actually detected.
+   QThread::usleep(.25);
+
+   if (was_playing) {
+      emit startCapture(cameraNumber);
+      emit startStream();
+      emit passNotifier(this->notifier.soundFiles);
    }
-
-
 }
 
 void MainWindow::on_changeOrient_clicked()
