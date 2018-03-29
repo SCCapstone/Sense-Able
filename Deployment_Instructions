@@ -1,7 +1,10 @@
+NOTE: I SUSPECT HAVING CONDA INSTALLED WILL GREATLY COMPLICATE DEPLOYMENT
+
 App is deployed using shared libraries files bundled with the applicaiton using linuxdeployqt
 
 For full install instructions and documentation see:
-https://github.com/probonopd/linuxdeployqt
+  https://github.com/probonopd/linuxdeployqt
+
 
 Instructions: 
 
@@ -11,36 +14,55 @@ Download linuxdeployqt script:
 Give permissions:
   chmod a+x linuxdeployqt-continuous-x86_64.AppImage
 
-Add Release to the path:
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/PATH/TO/Sense-Able/Release:PATH/TO/Sense-Able/derp_libs
+Add LeddarLibs to the path:
+  export LD_LIBRARY_PATH=/PATH/TO/Sense-Able/LeddarLibs:$LD_LIBRARY_PATH
 
+Update links:
+  sudo ldconfig
 
 Run Script
-  ./linuxdeployqt-continuous-x86_64.AppImage /PATH/TO/leddargui -qmake=PATH/TO/QT/bin/qmake -bundle-non-qt-libs
+  ./linuxdeployqt-continuous-x86_64.AppImage /PATH/TO/leddargui -qmake=PATH/TO/QT/bin/qmake -bundle-non-qt-libs -appimage -verbose=2
 
 
-linuxdeployqt copies all non-linux standard .so files to AppBuild/lib and plugins to AppBuild/plugins
+NOTE: You can determine your QT Path of your leddargui build by going to > QT Creator > Projects > Build Environment > Details and scroll to the PATH variable. The QT path will be there, mine is "/home/jms/Qt/5.9.4/gcc_64/bin"
 
-You can determine your QT Path of your leddargui build by going to > QT Creator > Projects > Build Environment > Details and scroll to the PATH variable. The QT path will be there, mine is "/home/jms/Qt5.7.0/5.7/gcc_64/bin"
 
-https://stackoverflow.com/questions/48306849/lib-x86-64-linux-gnu-libz-so-1-version-zlib-1-2-9-not-found?rq=1
+linuxdeployqt copies all non-linux standard .so files to AppBuild/lib and plugins to AppBuild/plugins. 
+NOTE: The AppRun executable generated DOES NOT WORK. You must use the AppImage executed from within a bash script that adds LeddarLibs/ to the LD_LIBRARY_PATH
 
-Current Issues:
-	- Cannot read Leddar Data
-	- Cannot do Object Detection
-	- Cannot connect to Leddar
-	
-	- When bundling a release build it requires package versions that are inaccesible
-		- zlib 1.2.9
-		- libjpeg 9
+Example Script: 
+    #!/bin/bash
+    #Add LeddarLibs to the ld path
+    export LD_LIBRARY_PATH=YOUR/PATH/TO/LeddarLibs:$LD_LIBRARY_PATH
+    YOUR/PATH/TO/Application-x86_64.AppImage
 
-	
-	- LibQtserialPort.so not found -- Error went away? 
-		- Remake leddar with current QT installation!
+
+Encountered Issues:
+>>>>>> linuxdeployqt bundling fails <<<<<<
+    >> libLeddar* fails -> Add LeddarLibs to LD_LIBRARY_PATH. See above
+
+    >> ^Above fix does not work -> Is ldd looking in usr/xx/anaconda*/? try adding Qt/5.9.4/gcc_64/lib to LD_LIBRARY_PATH
+
+    >> ^Above does not apply or does not fix? Just re-run the command a few times and it will go away.
+
+    >> libjpeg.so.9 not found -> Another conflict with anaconda. I added those libraries to LeddarLibs
+
+    >> libQtserialPort not found -> sudo apt install libqt5serialport5-dev (should have been installed with Qt 5.9??)
+
+
+
+>>>>>> Program Opens but... <<<<<<<
+    >> Cannot Stream BUT CAN Read-> You're not executing script as sudo (Program needs usb access permissions)
+
+    >> Cannot Stream AND Cannot Read-> Are you executing from a script?
+
+    >> Notification sounds not play -> Sounds files are hardcoded in as relative file paths from the Qt Creator build directory. Move AppImage and the script into the build directory. (Double check your script after move it!)
+
 
 
 For me: 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/School/TESTSenseAble/Release:~/Documents/
+export LD_LIBRARY_PATH=$PWD/LeddarLibs:$LD_LIBRARY_PATH
 
 
-./linuxdeployqt-continuous-x86_64.AppImage build-leddargui-Desktop-Release/leddargui -qmake=/home/jms/Qt5.7.0/5.7/gcc_64/bin/qmake -bundle-non-qt-libs -verbose=2 -appimage
+./linuxdeployqt-continuous-x86_64.AppImage build-leddargui-Desktop_Qt_5_9_4_GCC_64bit-Release/leddargui -qmake=/home/jms/Qt/5.9.4/gcc_64/bin/qmake -bundle-non-qt-libs -verbose=2 -appimage
+

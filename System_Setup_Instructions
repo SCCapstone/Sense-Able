@@ -16,6 +16,6 @@ Make the installer executable and run:
   > ./qt-unified-linux-x64-3.0.4-online.run
 
 You don't need to have an account, skip.
-On the "Select Components" page check Qt Creator and Qt 5.9.2
+On the "Select Components" page check Qt Creator and Qt 5.9.4
 
 
