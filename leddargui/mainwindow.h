@@ -58,6 +58,8 @@ private slots:
 
     void on_changeOrient_clicked();
 
+    void on_QuitButton_clicked();
+
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 
 signals:
@@ -69,6 +71,7 @@ signals:
     void stopRead();
     void startDetect();
     void stopDetect();
+    void clicked();
 
     void streamButtonClicked();
     void passNotifier(vector<string>);

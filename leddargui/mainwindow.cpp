@@ -101,6 +101,8 @@ MainWindow::MainWindow(QWidget *parent) :
                     SLOT(catchObjectDetected(string)),
                     Qt::QueuedConnection);
 
+    connect(ui->QuitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
+
     // Start the threads.
     captureThread->start();
     leddarThread->start();
@@ -397,4 +399,9 @@ void MainWindow::on_changeOrient_clicked()
         orientDefault = true;
         ui->orientLabel->setText("Orientation: Horizontal");
     }
+}
+
+void MainWindow::on_QuitButton_clicked()
+{
+    emit clicked();
 }
