@@ -35,6 +35,9 @@ public:
     void ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize );
     char* FindAddressByIndex( unsigned int aIndex, char* aAddresses );
 
+    // Helper function
+    void ClearData(unsigned int count);
+
     LeddarHandle gHandle;
     bool isrunning, isstopped;
 

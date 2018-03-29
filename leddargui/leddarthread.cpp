@@ -182,6 +182,8 @@ cout << "Entering ReplayData" << endl;
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
     }
+    // Emit zeros
+    ClearData(lCount);
     cout << "Exiting ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
@@ -331,6 +333,8 @@ cout << "Entering ReadLiveData" << endl;
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
     }
+    // Emit all zeros
+    ClearData(lCount);
 
     LeddarStopDataTransfer( this->gHandle );
     StopStream();
@@ -547,3 +551,19 @@ cout << "Exiting StopStream" << endl;
 }
 
 // End of file Main.c
+
+/**********************************************************************
+ * Emits a vector of zeros through sendDataPoints so as to "clean up"
+ * the read data page after data is collected.
+ *
+***/
+void LeddarStream::ClearData(unsigned int count)
+{
+    vector<float> zeros(count, 0.0);
+    emit this->sendDataPoints(0, zeros);
+}
+
+
+
+
+

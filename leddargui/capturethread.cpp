@@ -141,14 +141,6 @@ void CaptureThread::doCapture()
             if (distances.size() > 5){
                 overlayDistance(distances, frame);
             }
-/*
-            cv::Point pt1(45,5);
-            cv::Point pt2(45,245);
-            cv::Scalar color = cv::Scalar(255,210,12);
-            cv::line(frame,pt1,pt2,color,5);
-*/
-//            std::cout << distances.size() << std::endl;
-
             emit(newFrame(&frame));
         }
         else{

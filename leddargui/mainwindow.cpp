@@ -284,6 +284,7 @@ void MainWindow::catchObjectDetected(string objectName) {
 ***/
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
+    // TODO: IS THIS REALLY SLOW? I IMAGINE ITS SLOW
     ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
 }
 
@@ -429,7 +430,6 @@ void MainWindow::on_changeOrient_clicked()
 //       emit startStream();
 //       emit passNotifier(this->notifier.soundFiles);
 //    }
- }
 }
 
 void MainWindow::on_QuitButton_clicked()
