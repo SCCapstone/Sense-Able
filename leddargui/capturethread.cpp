@@ -130,8 +130,8 @@ void CaptureThread::doCapture()
 {
     if (!isrunning || isstopped) return;
 
-    cv::HOGDescriptor hog;
-    hog.load("../my_detector.yml");
+//    cv::HOGDescriptor hog;
+//    hog.load("../my_detector.yml");
 
     while(isrunning && !isstopped){
         if(cap.isOpened()){

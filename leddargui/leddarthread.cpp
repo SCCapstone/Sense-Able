@@ -212,7 +212,7 @@ cout << "Entering doReplay" << endl;
     cout << fileName.toUtf8().constData() << endl;
 
     // Initialize the Leddar Handle.
-    this->gHandle = LeddarCreate();
+//    this->gHandle = LeddarCreate();
 
     // TODO
     // We currently use a hard-coded filename.
@@ -245,7 +245,7 @@ cout << "Entering doReplay" << endl;
 
 
     // Destroy the handle, and signal that we are done.
-    LeddarDestroy(this->gHandle);
+//    LeddarDestroy(this->gHandle);
 //    QMetaObject::invokeMethod(this, "doReplay", Qt::QueuedConnection);
     StopStream();
 //    emit this->finished();
@@ -349,6 +349,7 @@ cout << "Exiting ReadLiveData" << endl;
 ***/
 void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize )
 {
+
 cout << "Entering ListSensors" << endl;
     char         lConnectionType[256];
     unsigned int lIndex = 0;
@@ -449,6 +450,7 @@ cout << "Exiting FindAddressByIndex" << endl;
 void LeddarStream::doStream()
 {
 cout << "Entering doStream" << endl;
+
     char lAddresses[256];
     char* lAddress = NULL;
     char lConnectionType[10];
