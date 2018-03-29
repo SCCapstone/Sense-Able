@@ -29,10 +29,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 LIBS += -ggdb
 INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lstdc++ -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio -lopencv_objdetect
-INCLUDEPATH += ../Release/
-LIBS += -L../Release/ -lLeddar -lLeddarC -lLeddarTech
-DEPENDPATH += ../Release
-LIBS += -Wl,-rpath=../Release/
+INCLUDEPATH += ../LeddarLibs/
+LIBS += -L../LeddarLibs/ -lLeddar -lLeddarC -lLeddarTech
+DEPENDPATH += ../LeddarLibs
+LIBS += -Wl,-rpath=../LeddarLibs/
 INCLUDEPATH += googletest/include gtest
 #LIBS += -Wl,-rpath='${ORIGIN}/../'
 
