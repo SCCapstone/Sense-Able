@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void stopAll();
 
 private slots:
     void on_readDataButton_clicked();
@@ -85,6 +86,7 @@ private:
     objectDetector* objdetector;
     QThread* objdetectThread;
 
+    vector<string> cameraFileNames;
     int cameraNumber = 0;
     bool orientDefault = true;
 

@@ -111,7 +111,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
     foreach (const QCameraInfo &cameraInfo, cameras)
-        qDebug() << cameraInfo.deviceName() << cameraInfo.position();
+        this->cameraFileNames.push_back(cameraInfo.deviceName().toUtf8().constData());
+
 }
 
 /*********************************************************************
@@ -120,6 +121,17 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+/*********************************************************************
+ * Stops all threads
+***/
+void MainWindow::stopAll()
+{
+    emit stopCapture();
+    emit stopStream();
+    emit stopRead();
+    emit stopDetect();
 }
 
 /*********************************************************************
@@ -282,10 +294,11 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 ***/
 void MainWindow::on_cancelButton_clicked()
 {
-    emit stopCapture();
-    emit stopStream();
-    emit stopRead();
-    emit stopDetect();
+    stopAll();
+//    emit stopCapture();
+//    emit stopStream();
+//    emit stopRead();
+//    emit stopDetect();
 }
 
 /*********************************************************************
@@ -297,10 +310,11 @@ void MainWindow::on_cancelButton_clicked()
 ***/
 void MainWindow::on_cancelButtonRead_clicked()
 {
-    emit stopCapture();
-    emit stopStream();
-    emit stopRead();
-    emit stopDetect();
+    stopAll();
+//    emit stopCapture();
+//    emit stopStream();
+//    emit stopRead();
+//    emit stopDetect();
 }
 
 /*********************************************************************
@@ -312,19 +326,21 @@ void MainWindow::on_cancelButtonRead_clicked()
 void MainWindow::on_backButtonGo_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    emit stopCapture();
-    emit stopStream();
-    emit stopRead();
-    emit stopDetect();
+    stopAll();
+//    emit stopCapture();
+//    emit stopStream();
+//    emit stopRead();
+//    emit stopDetect();
 }
 
 void MainWindow::on_backButtonRead_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    emit stopCapture();
-    emit stopStream();
-    emit stopRead();
-    emit stopDetect();
+    stopAll();
+//    emit stopCapture();
+//    emit stopStream();
+//    emit stopRead();
+//    emit stopDetect();
 }
 
 //Switching between pages
@@ -367,10 +383,11 @@ void MainWindow::on_backButtonSettings_clicked()
 void MainWindow::on_changeCamera_clicked()
 {
    bool was_playing = this->stream->isrunning;
-   emit stopCapture();
-   emit stopStream();
-   emit stopRead();
-   emit stopDetect();
+   stopAll();
+//   emit stopCapture();
+//   emit stopStream();
+//   emit stopRead();
+//   emit stopDetect();
 
    if(cameraNumber == 0) {
        cameraNumber = 1;
@@ -392,6 +409,9 @@ void MainWindow::on_changeCamera_clicked()
 
 void MainWindow::on_changeOrient_clicked()
 {
+//    bool was_playing = this->stream->isrunning;
+//    stopAll();
+
     if(orientDefault == true) {
         orientDefault = false;
         ui->orientLabel->setText("Orientation: Vertical");
@@ -401,6 +421,15 @@ void MainWindow::on_changeOrient_clicked()
         orientDefault = true;
         ui->orientLabel->setText("Orientation: Horizontal");
     }
+
+    QThread::usleep(.1);
+
+//    if (was_playing) {
+//       emit startCapture(cameraNumber);
+//       emit startStream();
+//       emit passNotifier(this->notifier.soundFiles);
+//    }
+ }
 }
 
 void MainWindow::on_QuitButton_clicked()
