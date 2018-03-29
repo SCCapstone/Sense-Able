@@ -7,11 +7,13 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include <QCoreApplication>
 #include <QObject>
 #include <QtWidgets>
 #include <QMetaType>
 #include <QCameraInfo>
+#include <QFileInfo>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
@@ -164,8 +166,20 @@ void MainWindow::on_readDataButton_clicked()
         QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
                                                         "../LeddarData", tr("Leddar files (*.ltl)"));
         // Given a filename, find the matching recording if there exists one
-
         emit startRead(filename);
+
+        // Remove the file type and look for file of same name of type "mp4"
+        filename.chop(3);
+        QString videoFilename = filename.append("mp4");
+        qDebug() << videoFilename;
+
+        // If the video file exists, then s
+        QFileInfo check_file(videoFilename);
+        if (check_file.exists() && check_file.isFile())
+        {
+//            emit startCapture(videoFilename);
+
+        }
 
 
         // Setup the current notifier based on the notification settings.
@@ -284,7 +298,7 @@ void MainWindow::catchObjectDetected(string objectName) {
 ***/
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
-    // TODO: IS THIS REALLY SLOW? I IMAGINE ITS SLOW
+    // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
     ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
 }
 

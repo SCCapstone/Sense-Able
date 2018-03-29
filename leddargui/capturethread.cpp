@@ -181,6 +181,7 @@ void CaptureThread::captureDataPoints(int index, std::vector<float> points){
 void CaptureThread::StartCapture(int cameraNumber) {
     if (isrunning) return;
     std::string cameraFileName = "/dev/video" + std::to_string(cameraNumber);
+//    cameraFileName = "/home/jms/Documents/School/Sense-Able/LeddarData/video_doorway_1.mp4";
     if(!cap.isOpened()) cap.open(cameraFileName);
     isstopped = false;
     isrunning = true;
