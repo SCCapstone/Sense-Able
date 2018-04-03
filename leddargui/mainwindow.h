@@ -35,8 +35,6 @@ private slots:
 
     void frameCaptured(cv::Mat* frame);
 
-    void on_cancelButton_clicked();
-
     void on_cancelButtonRead_clicked();
 
     void on_settingsPageButton_clicked();
@@ -60,6 +58,8 @@ private slots:
     void on_changeOrient_clicked();
 
     void on_QuitButton_clicked();
+
+    void on_Play_clicked();
 
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 
