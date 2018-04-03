@@ -115,6 +115,10 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach (const QCameraInfo &cameraInfo, cameras)
         this->cameraFileNames.push_back(cameraInfo.deviceName().toUtf8().constData());
 
+    foreach (const QCameraInfo &cameraInfo, cameras)
+        cout << cameraInfo.deviceName().toUtf8().constData();
+
+
 }
 
 /*********************************************************************
