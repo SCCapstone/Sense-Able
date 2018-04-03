@@ -155,7 +155,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="Page_StreamData">
          <widget class="QLabel" name="objectLabel">
@@ -936,6 +936,12 @@
                <layout class="QVBoxLayout" name="verticalLayout_2">
                 <item>
                  <widget class="QLabel" name="titleLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="palette">
                    <palette>
                     <active>
@@ -1008,6 +1014,9 @@
                   <property name="text">
                    <string>Sense-able</string>
                   </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
@@ -1018,6 +1027,9 @@
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_2">
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SetDefaultConstraint</enum>
+                  </property>
                   <item>
                    <spacer name="horizontalSpacer_3">
                     <property name="orientation">
@@ -1048,6 +1060,12 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="streamButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="palette">
                        <palette>
                         <active>
@@ -1151,6 +1169,12 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="readDataPageButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="palette">
                        <palette>
                         <active>
@@ -1267,6 +1291,12 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="settingsPageButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="palette">
                        <palette>
                         <active>
@@ -1343,6 +1373,12 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="QuitButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="palette">
                        <palette>
                         <active>
