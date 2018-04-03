@@ -429,6 +429,7 @@ cout << "Entering StopDetect" << endl;
     isstopped = true;
     isrunning = false;
     emit stopped();
+cout << "Exiting StopDetect" << endl;
 }
 
 /**********************************************************************

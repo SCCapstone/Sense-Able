@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void stopAll();
 
 private slots:
     void on_readDataButton_clicked();
@@ -58,6 +59,8 @@ private slots:
 
     void on_changeOrient_clicked();
 
+    void on_QuitButton_clicked();
+
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 
 signals:
@@ -69,6 +72,7 @@ signals:
     void stopRead();
     void startDetect();
     void stopDetect();
+    void clicked();
 
     void streamButtonClicked();
     void passNotifier(vector<string>);
@@ -82,7 +86,8 @@ private:
     objectDetector* objdetector;
     QThread* objdetectThread;
 
-    int cameraNumber = 1;
+    vector<string> cameraFileNames;
+    int cameraNumber = 0;
     bool orientDefault = true;
 
     QSignalMapper* signalMapper;

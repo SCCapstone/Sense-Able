@@ -1,0 +1,7 @@
+Only .ltl files will be explorable. 
+
+An accompanying video should have the same file name, but with a .mp4 extension.
+If there is no accompanying video, it will not be shown.
+If there is an accompanying video, it will be replayed from beginning.
+A recorded video should have the distance overlay
+

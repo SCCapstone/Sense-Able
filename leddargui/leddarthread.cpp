@@ -162,7 +162,7 @@ cout << "Entering ReplayData" << endl;
         if ( LeddarGetRecordSize( this->gHandle ) != 0 )
         {
             currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
-            cout << currentRecordIndex << endl;
+            cout << "Current Record Index: " << currentRecordIndex << endl;
         }
 
         // Output the detected points to the console.
@@ -182,8 +182,12 @@ cout << "Entering ReplayData" << endl;
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
     }
+    // Emit zeros
+    ClearData(lCount);
+    cout << "Exiting ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
+    // TOOD: Clear data points
     return;
 cout << "Exiting ReplayData" << endl;
 }
@@ -208,7 +212,7 @@ cout << "Entering doReplay" << endl;
     cout << fileName.toUtf8().constData() << endl;
 
     // Initialize the Leddar Handle.
-    this->gHandle = LeddarCreate();
+//    this->gHandle = LeddarCreate();
 
     // TODO
     // We currently use a hard-coded filename.
@@ -241,7 +245,7 @@ cout << "Entering doReplay" << endl;
 
 
     // Destroy the handle, and signal that we are done.
-    LeddarDestroy(this->gHandle);
+//    LeddarDestroy(this->gHandle);
 //    QMetaObject::invokeMethod(this, "doReplay", Qt::QueuedConnection);
     StopStream();
 //    emit this->finished();
@@ -329,6 +333,8 @@ cout << "Entering ReadLiveData" << endl;
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
     }
+    // Emit all zeros
+    ClearData(lCount);
 
     LeddarStopDataTransfer( this->gHandle );
     StopStream();
@@ -343,6 +349,7 @@ cout << "Exiting ReadLiveData" << endl;
 ***/
 void LeddarStream::ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize )
 {
+
 cout << "Entering ListSensors" << endl;
     char         lConnectionType[256];
     unsigned int lIndex = 0;
@@ -424,7 +431,6 @@ cout << "Entering FindAddressByIndex" << endl;
         lConnectionFoundIndex++;
         lCurrentIndex += strlen( aAddresses+lCurrentIndex ) + 1;
     }
-
     return NULL;
 cout << "Exiting FindAddressByIndex" << endl;
 }
@@ -444,6 +450,7 @@ cout << "Exiting FindAddressByIndex" << endl;
 void LeddarStream::doStream()
 {
 cout << "Entering doStream" << endl;
+
     char lAddresses[256];
     char* lAddress = NULL;
     char lConnectionType[10];
@@ -454,9 +461,9 @@ cout << "Entering doStream" << endl;
     ListSensors( lConnectionType, lAddresses, 255 );
     lAddress = FindAddressByIndex( 0, lAddresses );
     if ( lAddress == NULL ) {
+        cout << "NULL ADDRESS" << endl;
         return;
     }
-
     if ( LeddarConnect( this->gHandle, lConnectionType, lAddress ) == LD_SUCCESS )
     {
         if (LeddarGetConnected(this->gHandle) == LD_SUCCESS && isrunning && !isstopped) {
@@ -546,3 +553,19 @@ cout << "Exiting StopStream" << endl;
 }
 
 // End of file Main.c
+
+/**********************************************************************
+ * Emits a vector of zeros through sendDataPoints so as to "clean up"
+ * the read data page after data is collected.
+ *
+***/
+void LeddarStream::ClearData(unsigned int count)
+{
+    vector<float> zeros(count, 0.0);
+    emit this->sendDataPoints(0, zeros);
+}
+
+
+
+
+

@@ -7,10 +7,13 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include <QCoreApplication>
 #include <QObject>
 #include <QtWidgets>
 #include <QMetaType>
+#include <QCameraInfo>
+#include <QFileInfo>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
@@ -45,14 +48,14 @@ MainWindow::MainWindow(QWidget *parent) :
     this->objdetector = new objectDetector();
 
     this->notifier = UserNotifier();
-    this->defaultSoundOrder.push_back("../Sounds/beep-01.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-02.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-03.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-04.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-05.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-06.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-07.wav");
-    this->defaultSoundOrder.push_back("../Sounds/beep-08.wav");
+    this->defaultSoundOrder.push_back("../Sounds/short.wav");
+    this->defaultSoundOrder.push_back("../Sounds/long.wav");
+    this->defaultSoundOrder.push_back("../Sounds/short-long.wav");
+    this->defaultSoundOrder.push_back("../Sounds/long-short.wav");
+    this->defaultSoundOrder.push_back("../Sounds/short-short.wav");
+    this->defaultSoundOrder.push_back("../Sounds/short-short-long.wav");
+    this->defaultSoundOrder.push_back("../Sounds/long-short-short.wav");
+    this->defaultSoundOrder.push_back("../Sounds/blaster-firing.wav");
 
 //    this->signalMapper = new QSignalMapper(this);
 
@@ -66,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startCapture(int)), capture, SLOT(StartCapture(int)));
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
-    connect(capture, SIGNAL(cancel()),this,SLOT(on_cancelButton_clicked()));
+    connect(capture, SIGNAL(cancel()), this, SLOT(on_cancelButton_clicked()));
 
     // We then connect the leddar stream and main thread to allow the
     // window to display the data read in from the stream.
@@ -74,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startStream()), stream, SLOT(StartStream()));
     connect(this, SIGNAL(stopStream()), stream, SLOT(StopStream()));
     connect(this, SIGNAL(startRead(QString)), stream, SLOT(StartReplay(QString)));
-    connect(this, SIGNAL(stopRead()), stream, SLOT(StopReplay()));
+    connect(this, SIGNAL(stopRead()), stream, SLOT(StopStream()));
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
                     SLOT(catchDataPoints(int,vector<float>)),
                     Qt::QueuedConnection);
@@ -101,10 +104,17 @@ MainWindow::MainWindow(QWidget *parent) :
                     SLOT(catchObjectDetected(string)),
                     Qt::QueuedConnection);
 
+    connect(ui->QuitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
+
     // Start the threads.
     captureThread->start();
     leddarThread->start();
     objdetectThread->start();
+
+    QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
+    foreach (const QCameraInfo &cameraInfo, cameras)
+        this->cameraFileNames.push_back(cameraInfo.deviceName().toUtf8().constData());
+
 }
 
 /*********************************************************************
@@ -113,6 +123,17 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+/*********************************************************************
+ * Stops all threads
+***/
+void MainWindow::stopAll()
+{
+    emit stopCapture();
+    emit stopStream();
+    emit stopRead();
+    emit stopDetect();
 }
 
 /*********************************************************************
@@ -145,8 +166,20 @@ void MainWindow::on_readDataButton_clicked()
         QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
                                                         "../LeddarData", tr("Leddar files (*.ltl)"));
         // Given a filename, find the matching recording if there exists one
-
         emit startRead(filename);
+
+        // Remove the file type and look for file of same name of type "mp4"
+        filename.chop(3);
+        QString videoFilename = filename.append("mp4");
+        qDebug() << videoFilename;
+
+        // If the video file exists, then s
+        QFileInfo check_file(videoFilename);
+        if (check_file.exists() && check_file.isFile())
+        {
+//            emit startCapture(videoFilename);
+
+        }
 
 
         // Setup the current notifier based on the notification settings.
@@ -186,6 +219,20 @@ void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
     emit streamButtonClicked();
+
+    QComboBox* notif_choices[] = {ui->obj1_notif_choice,
+        ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
+        ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
+        ui->obj8_notif_choice};
+
+    for(int i = 0; i < 8; i++) {
+        cout << "i=" << i << " CHOICE " << notif_choices[i]->currentIndex() << endl;
+        cout << "i=" << i << " SOUND " << defaultSoundOrder.at((notif_choices[i])->currentIndex()) << endl;
+
+        notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
+        cout << "i=" << i << " AFTER MODIFY "<< notifier.soundFiles.at(i) << endl;
+
+    }
 
     if (!this->stream->isrunning) {
         emit startCapture(cameraNumber);
@@ -251,6 +298,7 @@ void MainWindow::catchObjectDetected(string objectName) {
 ***/
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
+    // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
     ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
 }
 
@@ -261,10 +309,11 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 ***/
 void MainWindow::on_cancelButton_clicked()
 {
-    emit stopCapture();
-    emit stopStream();
-    emit stopRead();
-    emit stopDetect();
+    stopAll();
+//    emit stopCapture();
+//    emit stopStream();
+//    emit stopRead();
+//    emit stopDetect();
 }
 
 /*********************************************************************
@@ -276,10 +325,11 @@ void MainWindow::on_cancelButton_clicked()
 ***/
 void MainWindow::on_cancelButtonRead_clicked()
 {
-    emit stopCapture();
-    emit stopStream();
-    emit stopRead();
-    emit stopDetect();
+    stopAll();
+//    emit stopCapture();
+//    emit stopStream();
+//    emit stopRead();
+//    emit stopDetect();
 }
 
 /*********************************************************************
@@ -291,19 +341,21 @@ void MainWindow::on_cancelButtonRead_clicked()
 void MainWindow::on_backButtonGo_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    emit stopCapture();
-    emit stopStream();
-    emit stopRead();
-    emit stopDetect();
+    stopAll();
+//    emit stopCapture();
+//    emit stopStream();
+//    emit stopRead();
+//    emit stopDetect();
 }
 
 void MainWindow::on_backButtonRead_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    emit stopCapture();
-    emit stopStream();
-    emit stopRead();
-    emit stopDetect();
+    stopAll();
+//    emit stopCapture();
+//    emit stopStream();
+//    emit stopRead();
+//    emit stopDetect();
 }
 
 //Switching between pages
@@ -345,35 +397,36 @@ void MainWindow::on_backButtonSettings_clicked()
 
 void MainWindow::on_changeCamera_clicked()
 {
-   emit stopCapture();
-   emit stopStream();
-   emit stopRead();
-   emit stopDetect();
-   QThread::usleep(10);
+   bool was_playing = this->stream->isrunning;
+   stopAll();
+//   emit stopCapture();
+//   emit stopStream();
+//   emit stopRead();
+//   emit stopDetect();
 
-   if(cameraNumber == 1) {
-       cameraNumber = 2;
+   if(cameraNumber == 0) {
+       cameraNumber = 1;
        ui->cameraLabel->setText("Camera: Webcam");
    }
-   else if(cameraNumber == 2){
-        cameraNumber = 1;
+   else if(cameraNumber == 1){
+        cameraNumber = 0;
         ui->cameraLabel->setText("Camera: Built-In");
    }
-   QThread::usleep(10);
 
-   if (!this->stream->isrunning) {
-       emit startCapture(cameraNumber);
-       emit startStream();
-       emit passNotifier(this->notifier.soundFiles);
-//        emit startDetect();  We should not start detecting until an object
-//                             is actually detected.
+   QThread::usleep(.25);
+
+   if (was_playing) {
+      emit startCapture(cameraNumber);
+      emit startStream();
+      emit passNotifier(this->notifier.soundFiles);
    }
-
-
 }
 
 void MainWindow::on_changeOrient_clicked()
 {
+//    bool was_playing = this->stream->isrunning;
+//    stopAll();
+
     if(orientDefault == true) {
         orientDefault = false;
         ui->orientLabel->setText("Orientation: Vertical");
@@ -383,4 +436,17 @@ void MainWindow::on_changeOrient_clicked()
         orientDefault = true;
         ui->orientLabel->setText("Orientation: Horizontal");
     }
+
+    QThread::usleep(.1);
+
+//    if (was_playing) {
+//       emit startCapture(cameraNumber);
+//       emit startStream();
+//       emit passNotifier(this->notifier.soundFiles);
+//    }
+}
+
+void MainWindow::on_QuitButton_clicked()
+{
+    emit clicked();
 }

@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io/api/c,qt,c++,opencv,qtcreator
 
+#Jonathan Added
+build_deploy
+
 ### C ###
 # Prerequisites
 *.d

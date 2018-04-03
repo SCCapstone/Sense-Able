@@ -130,8 +130,8 @@ void CaptureThread::doCapture()
 {
     if (!isrunning || isstopped) return;
 
-    cv::HOGDescriptor hog;
-    hog.load("../my_detector.yml");
+//    cv::HOGDescriptor hog;
+//    hog.load("../my_detector.yml");
 
     while(isrunning && !isstopped){
         if(cap.isOpened()){
@@ -141,14 +141,6 @@ void CaptureThread::doCapture()
             if (distances.size() > 5){
                 overlayDistance(distances, frame);
             }
-/*
-            cv::Point pt1(45,5);
-            cv::Point pt2(45,245);
-            cv::Scalar color = cv::Scalar(255,210,12);
-            cv::line(frame,pt1,pt2,color,5);
-*/
-//            std::cout << distances.size() << std::endl;
-
             emit(newFrame(&frame));
         }
         else{
@@ -188,8 +180,9 @@ void CaptureThread::captureDataPoints(int index, std::vector<float> points){
 ***/
 void CaptureThread::StartCapture(int cameraNumber) {
     if (isrunning) return;
-
-    if(!cap.isOpened()) cap.open(cameraNumber);
+    std::string cameraFileName = "/dev/video" + std::to_string(cameraNumber);
+//    cameraFileName = "/home/jms/Documents/School/Sense-Able/LeddarData/video_doorway_1.mp4";
+    if(!cap.isOpened()) cap.open(cameraFileName);
     isstopped = false;
     isrunning = true;
 
