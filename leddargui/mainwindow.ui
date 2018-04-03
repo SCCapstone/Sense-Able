@@ -1580,41 +1580,6 @@
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
-         <widget class="QComboBox" name="notification_distance_slider">
-          <property name="geometry">
-           <rect>
-            <x>220</x>
-            <y>130</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <item>
-           <property name="text">
-            <string>1 meter</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>2 meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>3 meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>4 meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>5 meters</string>
-           </property>
-          </item>
-         </widget>
          <widget class="Line" name="line_3">
           <property name="geometry">
            <rect>
@@ -2056,6 +2021,19 @@
           </property>
           <property name="text">
            <string>Back</string>
+          </property>
+         </widget>
+         <widget class="QSlider" name="horizontalSlider">
+          <property name="geometry">
+           <rect>
+            <x>220</x>
+            <y>140</y>
+            <width>181</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </widget>
