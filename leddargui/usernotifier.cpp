@@ -44,6 +44,7 @@ UserNotifier::~UserNotifier() {
  * the 'vector' 'soundFiles' at the given 'index'.
 ***/
 void UserNotifier::playSound(int index) {
+
     if(index < soundFiles.size() - 1) {
         QSound::play(QString::fromStdString(soundFiles.at(index)));
     }
