@@ -40,6 +40,8 @@ private:
     bool isrunning, isstopped;
     std::vector<float> distances;
 
+    void emitEmptyFrame();
+
 };
 
 #endif // CAPTURETHREAD_H
