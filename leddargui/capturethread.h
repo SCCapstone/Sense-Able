@@ -23,7 +23,7 @@ public slots:
 
 private slots:
     void doCapture();
-    void captureDataPoints(int index, std::vector<float> dataPoints);
+    void captureDataPoints(int index, std::vector<float> dataPoints, bool aOrientation);
 
 signals:
     void newFrame(cv::Mat*);

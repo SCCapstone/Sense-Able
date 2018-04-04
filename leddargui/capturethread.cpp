@@ -160,7 +160,7 @@ void CaptureThread::doCapture()
  *
  * Set class variable distances to the newly received dataPoints.
  ****/
-void CaptureThread::captureDataPoints(int index, std::vector<float> points){
+void CaptureThread::captureDataPoints(int index, std::vector<float> points, bool aOrientation){
     if(isrunning && !isstopped){
         //Draw stuff on frame
         distances.empty();
@@ -201,6 +201,8 @@ void CaptureThread::StopCapture() {
 
     isstopped = true;
     isrunning = false;
+
+    // Emit an empty frame
     emit stopped();
     cap.release();
 }
