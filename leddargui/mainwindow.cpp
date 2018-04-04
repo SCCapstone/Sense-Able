@@ -476,7 +476,10 @@ void MainWindow::on_Play_clicked()
 }
 
 //Sets notification distance and sends value to objectdetectthead
-void MainWindow::on_notificationDistanceSlider_valueChanged(int newDistance)
+void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
 {
+    float newDistance = value/2.0;
+    QString displayDist = QString::number(newDistance);
+    ui->notifDistanceLabel->setText(displayDist);
     emit setSigDist(newDistance);
 }
