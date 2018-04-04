@@ -83,6 +83,7 @@ public:
     QComboBox *comboBox_2;
     QPushButton *backButtonSettings;
     QSlider *notificationDistanceSlider;
+    QLabel *notifDistanceLabel;
     QWidget *Page_Notifications;
     QLabel *notificationsTitle;
     QFrame *line_6;
@@ -532,6 +533,7 @@ public:
         speechCheckBox->setGeometry(QRect(170, 260, 301, 41));
         speechCheckBox->setFont(font4);
         speechCheckBox->setLayoutDirection(Qt::RightToLeft);
+        speechCheckBox->setTristate(false);
         beepCheckBox = new QCheckBox(Page_Settings);
         beepCheckBox->setObjectName(QStringLiteral("beepCheckBox"));
         beepCheckBox->setGeometry(QRect(170, 300, 301, 41));
@@ -598,7 +600,12 @@ public:
         notificationDistanceSlider = new QSlider(Page_Settings);
         notificationDistanceSlider->setObjectName(QStringLiteral("notificationDistanceSlider"));
         notificationDistanceSlider->setGeometry(QRect(220, 140, 181, 20));
+        notificationDistanceSlider->setMinimum(1);
+        notificationDistanceSlider->setMaximum(100);
         notificationDistanceSlider->setOrientation(Qt::Horizontal);
+        notifDistanceLabel = new QLabel(Page_Settings);
+        notifDistanceLabel->setObjectName(QStringLiteral("notifDistanceLabel"));
+        notifDistanceLabel->setGeometry(QRect(550, 130, 89, 23));
         stackedWidget->addWidget(Page_Settings);
         Page_Notifications = new QWidget();
         Page_Notifications->setObjectName(QStringLiteral("Page_Notifications"));
@@ -1013,6 +1020,7 @@ public:
          << QApplication::translate("MainWindow", "US customary systems", 0)
         );
         backButtonSettings->setText(QApplication::translate("MainWindow", "Back", 0));
+        notifDistanceLabel->setText(QApplication::translate("MainWindow", "0", 0));
         notificationsTitle->setText(QApplication::translate("MainWindow", "Notifications:", 0));
         notificationLabel->setText(QApplication::translate("MainWindow", "Notification", 0));
         objectTypeLabel->setText(QApplication::translate("MainWindow", "Object Type", 0));

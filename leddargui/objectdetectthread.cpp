@@ -1,9 +1,9 @@
 /*********************************************************************
  * Class for detecting objects from a vector of points.
  *
- * Date last modified: 8 December 2017
- * Author: Jonathan Senn
- * Modified by Caleb Kisby
+ * Date last modified: 3 April 2018
+ * Author: Jonathan Senn and Caleb Kisby
+ *
 ***/
 
 #include <vector>
@@ -86,216 +86,6 @@ cout << "Entering doDetect" << endl;
 //cout << "Exiting doDetect" << endl;
 }
 
-/*********************************************************************
- * Function to detect different classes of obstacles.
- *
- * Currently we do this only for types of walls.  We take a 'float' 'vector'
- * of distances and pass them through a function for detecting walls.
- * The resulting 'detectCode' may be interpreted as follows:
- *
- * 1  - Flat wall detected (Currently the only implemented class)
- * 2  - Flat wall, at a left slant angle
- * 3  - Flat wall, at a right slant angle
- * 4  - Hallway
- * -1 - Nothing detected.
- *
- * We then emit that the obstacle was detected, and issue a notification sound.
- * If no obstacle was detected, we emit this as well, but play no
- * notification sound.
- *
- * When we close this function, we stop the thread for doing detections
- * so that it may be started later.
-***/
-/*
-void objectDetector::doDetect(vector<float> distances) {
-cout << "Entering doDetect" << endl;
-    int detectCode;
-    float measure_err = .3;
-    float flat_err = 100;
-//    float sig_dist = 2;
-
-    if (!isrunning || isstopped) return;
-
-    bool close = false;
-    for (unsigned i=0; i<distances.size(); i++) {
-        if (distances.at(i) < sig_dist + .1 * sig_dist) {
-            close = true;
-        }
-    }
-
-    try{
-        detectCode = detect_wall(yaxis_projection(distances), measure_err, flat_err);
-    }
-    catch (const std::exception& e){
-        // TODO:: Change to log
-        std::cout << e.what() << std::endl;
-        detectCode = -1;
-    }
-
-//    float closest_point = 0;
-//    for (int i = 0; i < distances.size(); i++) {
-//        if (distances.at(i) > closest_point) {
-//              closest_point = distances.at(i);
-//        }
-//    }
-
-    if (detectCode == 1) {
-        emit sendObjectDetected("Wall");
-//        if ( closest_point - .5 < sig_dist ) {
-        currentNotifier.playSound(0);
-//        }
-    } else if (detectCode == 2) {
-        emit sendObjectDetected("Left Slant");
-        currentNotifier.playSound(1);
-    } else if (detectCode == 3) {
-        emit sendObjectDetected("Right Slant");
-        currentNotifier.playSound(2);
-    } else if (detectCode == 4) {
-        emit sendObjectDetected("Hallway");
-        currentNotifier.playSound(3);
-    } else if (detectCode == -1) {
-        emit sendObjectDetected("NONE");
-    } else {
-        cout << "ERROR: detectCode has an invalid value." << endl;
-    }
-
-    StopDetect();
-//cout << "Exiting doDetect" << endl;
-}
-*/
-
-/*********************************************************************
- * Function to detect classes of flat walls.
- *
- * This function takes a 'float' 'vector' of distances, along with tolerance
- * 'measure_error' and 'flat_error', and determines whether a wall or hallway
- * is present.
- *
- * Input:
- *   distances - The distances 'vector' given
- *   measure_error - A parameter for tolerance - deviation of individual measurements to the mean
- *   flat_error - A parameter for tolerance - deviation of slope
- *
- * Returns:
- *  -1 if invalid input
- *   0 if no wall
- *   1 if a flat wall is detected
- *   2 if a left slant (/) wall detected
- *   3 if a right slant (\) wall detected
- *   4 if a hallway (/\) detected
- *
- * Note to self:
- * y = a + bx
- * a = My - b(Mx)
- * b = r * (sdy/sdx)
- *
-***/
-/*
-int objectDetector::detect_wall(std::vector<float> distances, float measure_error, float flat_error) {
-  std::cout << "Entering detect_wall" << std::endl;
-
-  if (distances.size() != 16) {
-      return -1;
-  }
-
-  int n = 0;    // Size of distances
-  float sumx = 0; // sum of x
-  float sumy = 0; // sum of y
-  float ssy = 0; // Sum of squared difference of x - ux
-  float ssx = 0; // sum of squared differnce of y - uy
-  float mx, my, sdx, sdy; // mean x/y, standard deviation x/y
-
-
-  // Calculate Mean
-  for (unsigned int i = 0; i < distances.size(); i++) {
-    sumx += int(i);
-    sumy += distances.at(i);
-    n += 1;
-  }
-  mx = sumx / n;
-  my = sumy / n;
-
-  // Calculate Standard Deviation for X's and Y's
-  for (unsigned int i = 0; i < distances.size(); i++) {
-    ssy += std::pow(distances.at(i) - my, 2);
-    ssx += std::pow(int(i) - mx, 2);
-  }
-  sdy = std::sqrt(ssy/n);
-  sdx = std::sqrt(ssx/n);
-
-//  std::cout << "sdy" << sdy << std::endl;
-//  std::cout << "sdx" << sdx << std::endl;
-
-  // Calculate R - sum(xy)/ swrt(sum(x^2) * sum(y^2))
-  // Calculate Covariance
-  float r, intercept, slope; // R value
-  float sumxy = 0; // sum of all x*y
-  float sumxx = 0; // sum of all x*x
-  float sumyy = 0; // sum of all y*y
-
-
-  for (unsigned int i = 0; i < distances.size(); i++) {
-    sumxy += int(i) * distances.at(i);
-    sumxx += std::pow(int(i), 2);
-    sumyy += std::pow(distances.at(i), 2);
-  }
-
-  r = sumxy / sqrt(sumxx*sumyy);
-
-  // Calculate slope and intercept
-  slope = r * (sdy/sdx);
-  // TODO: This assumes even number of beams
-  intercept = (distances.at( n/2 - 1) + distances.at( n/2 )) / 2;
-//  std::cout << "SLope " << slope << "  Intercept: " << intercept << std::endl;
-//  std::cout << "MEANX, MEANY " << mx << " " << my << std::endl;
-
-  // If any of the segments exceed tolerated measurement error -
-  // A wall is not considered to exist across the field of vision
-  bool wall = true;
-  for ( unsigned int i = 0; i < distances.size(); i++ ){
-    float errori = std::abs( (slope*int(i) + intercept) - distances.at(i) );
-    if ( errori > measure_error )  {
-//       std::cout << "error: " << (slope*int(i)+intercept) - distances.at(i) << std::endl;
-//       std::cout << "Distance: " << distances.at(i) << std::endl;
-//       std::cout << "Slope: " << slope << std::endl;
-//       std::cout << "Intercept: " << intercept << std::endl;
-      wall = false;
-    }
-  }
-
-  // If a wall exists, check if flat, left slant, or right slant
-  if (wall) {
-    // flat wall
-    if (std::abs(slope) < flat_error) {
-      return 1;
-    }
-    //left slant (/)
-    else if (slope > 0) {
-      return 2;
-    }
-    //right slant (\)
-    else { // b < 0
-      return 3;
-    }
-  }
-  // Check left and right fields of vision for hall way
-  // TODO: EXPAND CASES TO CHECK FOR LEFT/RIGHT OBSTRUCTION
-  else if (distances.size() == 16) {
-    std::vector<float> left_v(distances.begin(), distances.begin() + 8);
-    std::vector<float> right_v(distances.end() - 8, distances.end());
-
-    int left_wall = detect_wall(left_v, measure_error, flat_error);
-    int right_wall = detect_wall(right_v, measure_error, flat_error);
-
-    if ((left_wall == 2) && (right_wall == 3)) {
-      return 4;
-    }
-  }
-  // No Wall
-  return -1;
-}
-*/
-
 float objectDetector::detectWall(vector<float> distances) {
     vector<float> coefficients;
     float fit;
@@ -306,6 +96,25 @@ float objectDetector::detectWall(vector<float> distances) {
 
     // TODO: If the linear curve is too steep, we want to return '0' to
     // indicate that the wall is not detected!  This should be handled here.
+
+    // Essentially, we just check if the slope exceeds a certain error around our
+    // expected slope.
+    // Jonathan's old, helpful code, for just linear curves:
+
+    // If any of the segments exceed tolerated measurement error -
+    // A wall is not considered to exist across the field of vision
+/*    bool wall = true;
+    for ( unsigned int i = 0; i < distances.size(); i++ ){
+      float errori = std::abs( (slope*int(i) + intercept) - distances.at(i) );
+      if ( errori > measure_error )  {
+  //       std::cout << "error: " << (slope*int(i)+intercept) - distances.at(i) << std::endl;
+  //       std::cout << "Distance: " << distances.at(i) << std::endl;
+  //       std::cout << "Slope: " << slope << std::endl;
+  //       std::cout << "Intercept: " << intercept << std::endl;
+        wall = false;
+      }
+    }
+*/
 
     return fit;
 }
