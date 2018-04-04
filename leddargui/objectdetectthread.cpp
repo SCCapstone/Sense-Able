@@ -28,6 +28,62 @@ cout << "Entering objectDetector" << endl;
     isrunning = false;
 
     currentNotifier = UserNotifier();
+
+    obstacleTypes.push_back("Wall");
+    obstacleTypes.push_back("Wall Corner");
+    obstacleTypes.push_back("Pillar");
+    obstacleTypes.push_back("Trip Hazard");
+    obstacleTypes.push_back("Unidentified Obstacle");
+    obstacleTypes.push_back("None");
+}
+
+void objectDetector::doDetect(vector<float> distances) {
+cout << "Entering doDetect" << endl;
+    map<string, float> obstacle_fits;
+    string obstacle_type = "None";
+    int running_fit = 0;
+
+    if (!isrunning || isstopped) return;
+
+    // Check if there are any obstacles within range, whatsoever.
+    bool close = false;
+    for (int i = 0; i < distances.size(); i++) {
+        if (distances.at(i) < sig_dist + .1 * sig_dist) {
+            close = true;
+        }
+    }
+
+    if (close) {
+        // There is an obstacle in range.  We need to identify it.
+
+        // Compute each obstacle fit value.
+        obstacle_fits.at("Wall") = detectWall(distances);
+        obstacle_fits.at("Wall Corner") = detectCorner(distances);
+        obstacle_fits.at("Pillar") = detectPillar(distances);
+        obstacle_fits.at("Trip Hazard") = detectTripHazard(distances);
+        obstacle_fits.at("Unidentified Obstacle") = 0;
+        obstacle_fits.at("None") = -1;
+
+        // Determine the obstacle type with the maximum fit value.
+        for (map<string, float>::iterator it = obstacle_fits.begin();
+             it != obstacle_fits.end(); ++it) {
+
+            if (it->second >= running_fit) {
+                obstacle_type = it->first;
+            }
+        }
+
+    } else {
+        // There is no obstacle in range.
+        obstacle_type = "None";
+    }
+
+    emit sendObjectDetected(obstacle_type);
+// TODO: How do we refer to the sound we need to play?
+    // currentNotifier.playSound(0);
+
+    StopDetect();
+//cout << "Exiting doDetect" << endl;
 }
 
 /*********************************************************************
@@ -50,6 +106,7 @@ cout << "Entering objectDetector" << endl;
  * When we close this function, we stop the thread for doing detections
  * so that it may be started later.
 ***/
+/*
 void objectDetector::doDetect(vector<float> distances) {
 cout << "Entering doDetect" << endl;
     int detectCode;
@@ -105,6 +162,7 @@ cout << "Entering doDetect" << endl;
     StopDetect();
 //cout << "Exiting doDetect" << endl;
 }
+*/
 
 /*********************************************************************
  * Function to detect classes of flat walls.
@@ -132,6 +190,7 @@ cout << "Entering doDetect" << endl;
  * b = r * (sdy/sdx)
  *
 ***/
+/*
 int objectDetector::detect_wall(std::vector<float> distances, float measure_error, float flat_error) {
   std::cout << "Entering detect_wall" << std::endl;
 
@@ -235,12 +294,39 @@ int objectDetector::detect_wall(std::vector<float> distances, float measure_erro
   // No Wall
   return -1;
 }
+*/
 
-float apply_polynomial(float coefficients[], int degree, float x_value) {
+float objectDetector::detectWall(vector<float> distances) {
+    vector<float> coefficients;
+    float fit;
+
+    // Fit a linear curve y = a1 * x + a0 to the distances.
+    coefficients = polynomial_fit(1, distances);
+    fit = fit_quality(coefficients, 1, distances);
+
+    // TODO: If the linear curve is too steep, we want to return '0' to
+    // indicate that the wall is not detected!  This should be handled here.
+
+    return fit;
+}
+
+float objectDetector::detectCorner(vector<float> distances) {
+    return 0.0;
+}
+
+float objectDetector::detectPillar(vector<float> distances) {
+    return 0.0;
+}
+
+float objectDetector::detectTripHazard(vector<float> distances) {
+    return 0.0;
+}
+
+float apply_polynomial(vector<float> coefficients, int degree, float x_value) {
     float result = 0;
 
     for (int i = 0; i < degree; i++) {
-        result += coefficients[i] * x_value;
+        result += coefficients.at(i) * x_value;
     }
 
     return result;
@@ -294,14 +380,14 @@ float apply_polynomial(float coefficients[], int degree, float x_value) {
  * not scaled correctly.  We can handle this error individually for each
  * new obstacle.
 **/
-float* polynomial_fit(int polynom_degree, vector<float> points) {
-    float X[points.size()][polynom_degree];
-    float T[polynom_degree][points.size()];
-    float coefficients[polynom_degree];
+vector<float> objectDetector::polynomial_fit(int polynom_degree, vector<float> points) {
+    float X[points.size()][polynom_degree + 1];
+    float T[polynom_degree + 1][points.size()];
+    vector<float> coefficients;
 
     // First, we compute the matrix 'X' as given in the reference.
     for (int i = 0; i < points.size(); i++) {
-        for (int k = 0; k < polynom_degree; k++) {
+        for (int k = 0; k < polynom_degree + 1; k++) {
             // xi happens to be just 'i' in this case.
             X[i][k] = pow(i, k);
         }
@@ -310,7 +396,7 @@ float* polynomial_fit(int polynom_degree, vector<float> points) {
     // Next, we compute the transpose 'T' of matrix 'X', as discussed
     // in the reference.
     for (int i = 0; i < points.size(); i++) {
-        for (int k = 0; k < polynom_degree; k++) {
+        for (int k = 0; k < polynom_degree + 1; k++) {
             T[k][i] = X[i][k];
         }
     }/* TODO TODO TODO
@@ -321,14 +407,14 @@ Credit Jinyu for helping with this function.
     // Finally, we take the product X*(y1, y2, y3, ..., yn) to obtain
     // the vector of coefficients (a0, a1, a2, ..., ak).
     int dotproduct;
-    for (int k = 0; k < polynom_degree; k++) {
+    for (int k = 0; k < polynom_degree + 1; k++) {
         dotproduct = 0;
 
         for (int i = 0; i < points.size(); i++) {
             dotproduct += T[k][i] * points.at(i);
         }
 
-        coefficients[k] = dotproduct;
+        coefficients.push_back(dotproduct);
     }
 
     return coefficients;
@@ -346,7 +432,7 @@ Credit Jinyu for helping with this function.
     // individual tests.  This is not the correct place for checking how
     // steep our curve is.
 **/
-float fit_quality(float coefficients[], int polynom_degree, vector<float> points) {
+float objectDetector::fit_quality(vector<float> coefficients, int polynom_degree, vector<float> points) {
     int r = 0;
     for (int i = 0; i < points.size(); i++) {
         // Take the difference between outcome and expected (using polynomial with 'coefficients').
