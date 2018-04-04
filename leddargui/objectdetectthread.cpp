@@ -398,7 +398,7 @@ cout << "Entering yaxis_projection" << endl;
  * emit that this thread has started running, and then begin detecting
  * objects among the 'dataPoints' caught by the slot.
 ***/
-void objectDetector::StartDetect(int index, vector<float> dataPoints) {
+void objectDetector::StartDetect(int index, vector<float> dataPoints, bool aOrientation) {
 cout << "Entering StartDetect" << endl;
     if (isrunning) return;
     isstopped = false;
