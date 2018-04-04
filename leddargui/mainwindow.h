@@ -27,15 +27,13 @@ private slots:
 
     void on_readDataButton_clicked(bool checked);
 
-    void catchDataPoints(int index, vector<float> dataPoints);
+    void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
 
     void catchObjectDetected(string objectName);
 
     void on_streamButton_clicked();
 
     void frameCaptured(cv::Mat* frame);
-
-    void on_cancelButton_clicked();
 
     void on_cancelButtonRead_clicked();
 
@@ -61,7 +59,11 @@ private slots:
 
     void on_QuitButton_clicked();
 
+    void on_Play_clicked();
+
     void on_page_2_customContextMenuRequested(const QPoint &pos);
+
+    void on_notificationDistanceSlider_valueChanged(int value);
 
 signals:
     void startCapture(int);
@@ -76,6 +78,8 @@ signals:
 
     void streamButtonClicked();
     void passNotifier(vector<string>);
+    void setSigDist(float);
+    void setLeddarOrientation(bool);
 
 private:
     Ui::MainWindow *ui;
@@ -88,7 +92,7 @@ private:
 
     vector<string> cameraFileNames;
     int cameraNumber = 0;
-    bool orientDefault = true;
+    int leddarOrientation = true;
 
     QSignalMapper* signalMapper;
     UserNotifier notifier;

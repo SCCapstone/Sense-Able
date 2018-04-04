@@ -29,7 +29,7 @@ public:
     float detectTripHazard(vector<float> distances);
 
 public slots:
-    void StartDetect(int index, vector<float> distances);
+    void StartDetect(int index, vector<float> distances, bool aOrientation);
     void StopDetect();
     void getCurrentNotifier(vector<string> someOrderedSounds);
     //void objDetect(int i);

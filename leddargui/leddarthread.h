@@ -26,6 +26,9 @@ public:
     LeddarStream();
     ~LeddarStream();
 
+    static const bool VERTICAL = true; // Beam across x-axis --
+    static const bool HORIZONTAL = false; // Beam across y-axis |
+
     static void CheckError(int aCode);
     char WaitKey(void);
     /*static void DataCallback(void *aHandle);*/
@@ -40,6 +43,7 @@ public:
 
     LeddarHandle gHandle;
     bool isrunning, isstopped;
+    bool orientation = VERTICAL;
 
 public slots:
 //    void StartReplay(QString filename);
@@ -47,6 +51,7 @@ public slots:
 //    void StopReplay();
     void StartStream();
     void StopStream();
+    void setOrientation(bool aOrientation);
 
 private slots:
     void doReplay(QString fileName);
@@ -54,7 +59,7 @@ private slots:
 
 signals:
     void finished();
-    void sendDataPoints(int index, vector<float> dataPoints);
+    void sendDataPoints(int index, vector<float> dataPoints, bool aOrientation);
     void running();
     void stopped();
 

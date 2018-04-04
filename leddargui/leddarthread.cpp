@@ -176,7 +176,7 @@ cout << "Entering ReplayData" << endl;
 
         // Signal the detected points to the GUI.
         if (dataPoints.size() != 0) {
-            emit this->sendDataPoints(currentRecordIndex, dataPoints);
+            emit this->sendDataPoints(currentRecordIndex, dataPoints, orientation);
             QThread::msleep(200);
         }
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
@@ -187,7 +187,7 @@ cout << "Entering ReplayData" << endl;
     cout << "Exiting ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
-    // TODO: Clear data points
+
     return;
 cout << "Exiting ReplayData" << endl;
 }
@@ -328,7 +328,7 @@ cout << "Entering ReadLiveData" << endl;
         cout << endl;
 
         // Signal the detected points to the GUI.
-        emit this->sendDataPoints(currentRecordIndex, dataPoints);
+        emit this->sendDataPoints(currentRecordIndex, dataPoints, orientation);
 
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
@@ -368,7 +368,8 @@ cout << "Entering ListSensors" << endl;
 
     CheckError( LeddarListSensors( aAddresses, &aSize ) );
 
-    std::cout << "Found " << aSize << "sensors of type " << lConnectionType << endl;
+    std::cout << "Found " << aSize << " sensors of type " << lConnectionType << endl;
+    std::cout << aAddresses << std::endl;
 
     int lConnectionFoundIndex = 0;
     while( strlen( aAddresses+lIndex ) > 0 )
@@ -562,10 +563,29 @@ cout << "Exiting StopStream" << endl;
 void LeddarStream::ClearData(unsigned int count)
 {
     vector<float> zeros(count, 0.0);
-    emit this->sendDataPoints(0, zeros);
+    emit this->sendDataPoints(0, zeros, orientation);
 }
 
+/**********************************************************************
+ * Set the orientation of the Leddar. Default orientation is Vertical
+ *
+***/
+void LeddarStream::setOrientation(bool aOrientation)
+{
+    cout << "EMISSION RECEIVED " << aOrientation << endl;
+    if (aOrientation == VERTICAL) {
+        this->orientation = VERTICAL;
+        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
+    }
+    else if (aOrientation == HORIZONTAL) {
+        this->orientation = HORIZONTAL;
+        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
 
+    }
+    else{
+        std::cout << "INVALID ORIENTATION VALUE" << std::endl;
+    }
+}
 
 
 

@@ -78,11 +78,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(stopStream()), stream, SLOT(StopStream()));
     connect(this, SIGNAL(startRead(QString)), stream, SLOT(StartReplay(QString)));
     connect(this, SIGNAL(stopRead()), stream, SLOT(StopStream()));
-    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
-                    SLOT(catchDataPoints(int,vector<float>)),
+    connect(this, SIGNAL(setLeddarOrientation(bool)), stream, SLOT(setOrientation(bool)));
+
+
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
+                    SLOT(catchDataPoints(int,vector<float>, bool)),
                     Qt::QueuedConnection);
-    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
-                    capture, SLOT(captureDataPoints(int,std::vector<float>)),
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
+                    objdetector, SLOT(StartDetect(int, vector<float>, bool)),
+                    Qt::QueuedConnection);
+
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
+                    capture, SLOT(captureDataPoints(int,vector<float>,bool)),
                     Qt::QueuedConnection);
 
     // We then connect the leddar stream and the object detector so that
@@ -91,10 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // whenever an object is detected.
     this->objdetector->moveToThread(objdetectThread);
     connect(this, SIGNAL(stopDetect()), objdetector, SLOT(StopDetect()));
-    connect(stream, SIGNAL(sendDataPoints(int,vector<float>)),
-                    objdetector,
-                    SLOT(StartDetect(int, vector<float>)),
-                    Qt::QueuedConnection);
+
     connect(this, SIGNAL(passNotifier(vector<string>)),
                     objdetector,
                     SLOT(getCurrentNotifier(vector<string>)),
@@ -103,6 +107,7 @@ MainWindow::MainWindow(QWidget *parent) :
                     this,
                     SLOT(catchObjectDetected(string)),
                     Qt::QueuedConnection);
+    connect(this, SIGNAL(setSigDist(float)), objdetector, SLOT(SetSignalDist(float)));
 
     connect(ui->QuitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 
@@ -222,7 +227,7 @@ void MainWindow::on_readDataButton_clicked()
 void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
-    emit streamButtonClicked();
+    //emit streamButtonClicked();
 
     QComboBox* notif_choices[] = {ui->obj1_notif_choice,
         ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
@@ -238,13 +243,13 @@ void MainWindow::on_streamButton_clicked()
 
     }
 
-    if (!this->stream->isrunning) {
+    /*if (!this->stream->isrunning) {
         emit startCapture(cameraNumber);
         emit startStream();
         emit passNotifier(this->notifier.soundFiles);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
-    }
+    }*/
 }
 
 /*********************************************************************
@@ -266,7 +271,7 @@ void MainWindow::on_readDataButton_clicked(bool checked)
  * of 'dataPoints' emmitted.  We then display these data points as
  * Window 'labels'.
 ***/
-void MainWindow::catchDataPoints(int index, vector<float> dataPoints) {
+void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrientation) {
     QLabel* labels[] = {ui->pt1, ui->pt2,  ui->pt3,
                        ui->pt4,  ui->pt5,  ui->pt6,
                        ui->pt7,  ui->pt8,  ui->pt9,
@@ -304,20 +309,6 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 {
     // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
     ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
-}
-
-/*********************************************************************
- * Function to run when the cancelButton is clicked.
- *
- * We stop all threads from executing processes, except the main thread.
-***/
-void MainWindow::on_cancelButton_clicked()
-{
-    stopAll();
-//    emit stopCapture();
-//    emit stopStream();
-//    emit stopRead();
-//    emit stopDetect();
 }
 
 /*********************************************************************
@@ -392,6 +383,7 @@ void MainWindow::on_readDataPageButton_clicked()
 void MainWindow::on_backButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
+
 }
 
 void MainWindow::on_backButtonSettings_clicked()
@@ -431,15 +423,18 @@ void MainWindow::on_changeOrient_clicked()
 //    bool was_playing = this->stream->isrunning;
 //    stopAll();
 
-    if(orientDefault == true) {
-        orientDefault = false;
+    if(leddarOrientation == false) {
+        leddarOrientation = true;
         ui->orientLabel->setText("Orientation: Vertical");
 
     }
-    else if (orientDefault == false) {
-        orientDefault = true;
+    else if (leddarOrientation == true) {
+        leddarOrientation = false;
         ui->orientLabel->setText("Orientation: Horizontal");
     }
+
+    cout << "emitting: " << leddarOrientation << endl;
+    emit setLeddarOrientation(leddarOrientation);
 
     QThread::usleep(.1);
 
@@ -453,4 +448,35 @@ void MainWindow::on_changeOrient_clicked()
 void MainWindow::on_QuitButton_clicked()
 {
     emit clicked();
+}
+
+void MainWindow::on_Play_clicked()
+{
+    if(this->stream->isrunning)
+    {
+        stopAll();
+        QThread::usleep(.25);
+        ui->Play->setText("Play");
+    }
+    else if (this->stream->isstopped)
+    {
+       emit startCapture(cameraNumber);
+       emit startStream();
+       emit passNotifier(this->notifier.soundFiles);
+       ui->Play->setText("Stop");
+    }
+    else if (!this->stream->isrunning)
+    {
+        emit streamButtonClicked();
+        emit startCapture(cameraNumber);
+        emit startStream();
+        emit passNotifier(this->notifier.soundFiles);
+        ui->Play->setText("Stop");
+    }
+}
+
+//Sets notification distance and sends value to objectdetectthead
+void MainWindow::on_notificationDistanceSlider_valueChanged(int newDistance)
+{
+    emit setSigDist(newDistance);
 }
