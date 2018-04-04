@@ -1697,7 +1697,7 @@
            <rect>
             <x>220</x>
             <y>210</y>
-            <width>231</width>
+            <width>331</width>
             <height>41</height>
            </rect>
           </property>
@@ -1708,48 +1708,6 @@
           </property>
           <property name="text">
            <string>Notification Type:</string>
-          </property>
-         </widget>
-         <widget class="QCheckBox" name="speechCheckBox">
-          <property name="geometry">
-           <rect>
-            <x>170</x>
-            <y>260</y>
-            <width>301</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>17</pointsize>
-           </font>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::RightToLeft</enum>
-          </property>
-          <property name="text">
-           <string>Speech                        </string>
-          </property>
-         </widget>
-         <widget class="QCheckBox" name="beepCheckBox">
-          <property name="geometry">
-           <rect>
-            <x>170</x>
-            <y>300</y>
-            <width>301</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>17</pointsize>
-           </font>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::RightToLeft</enum>
-          </property>
-          <property name="text">
-           <string>Beep                            </string>
           </property>
          </widget>
          <widget class="Line" name="line_4">
@@ -1964,7 +1922,7 @@
            <rect>
             <x>220</x>
             <y>80</y>
-            <width>291</width>
+            <width>331</width>
             <height>41</height>
            </rect>
           </property>
@@ -2079,18 +2037,112 @@
            <string>Back</string>
           </property>
          </widget>
-         <widget class="QSlider" name="notificationDistanceSlider">
+         <widget class="QWidget" name="">
           <property name="geometry">
            <rect>
             <x>220</x>
-            <y>140</y>
-            <width>181</width>
-            <height>20</height>
+            <y>130</y>
+            <width>401</width>
+            <height>41</height>
            </rect>
           </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QSlider" name="notificationDistanceSlider">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>331</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>331</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+            <widget class="QLabel" name="notifDistanceLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>40</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string> 0 m</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="">
+          <property name="geometry">
+           <rect>
+            <x>170</x>
+            <y>260</y>
+            <width>308</width>
+            <height>92</height>
+           </rect>
           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QCheckBox" name="speechCheckBox">
+             <property name="font">
+              <font>
+               <pointsize>17</pointsize>
+              </font>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="text">
+              <string>Speech                        </string>
+             </property>
+             <property name="tristate">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="beepCheckBox">
+             <property name="font">
+              <font>
+               <pointsize>17</pointsize>
+              </font>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="text">
+              <string>Beep                            </string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </widget>
         <widget class="QWidget" name="Page_Notifications">

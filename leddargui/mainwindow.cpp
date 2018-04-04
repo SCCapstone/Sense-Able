@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach (const QCameraInfo &cameraInfo, cameras)
         cout << cameraInfo.deviceName().toUtf8().constData();
 
+    ui->beepCheckBox->setChecked(true);
 
 }
 
@@ -228,6 +229,8 @@ void MainWindow::on_streamButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);
     //emit streamButtonClicked();
 
+    if(ui->beepCheckBox->isChecked()) {
+
     QComboBox* notif_choices[] = {ui->obj1_notif_choice,
         ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
         ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
@@ -239,6 +242,11 @@ void MainWindow::on_streamButton_clicked()
 
         notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
         cout << "i=" << i << " AFTER MODIFY "<< notifier.soundFiles.at(i) << endl;
+
+        }
+    }
+    else if(ui->speechCheckBox->isChecked()) {
+
 
     }
 
@@ -355,7 +363,12 @@ void MainWindow::on_backButtonRead_clicked()
 //Switching between pages
 void MainWindow::on_settingsPageButton_clicked()
 {
+    //if no notification was checked then default to beep notifiers
+    if((ui->speechCheckBox->isChecked() == false) && (ui->beepCheckBox->isChecked() == false)) {
+        ui->beepCheckBox->setChecked(true);
+    }
     ui->stackedWidget->setCurrentIndex(2);
+
 }
 
 void MainWindow::on_actionMain_Menu_triggered()
@@ -470,7 +483,24 @@ void MainWindow::on_Play_clicked()
 }
 
 //Sets notification distance and sends value to objectdetectthead
-void MainWindow::on_notificationDistanceSlider_valueChanged(int newDistance)
+void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
 {
+    float newDistance = value/2.0;
+    QString displayDist = QString::number(newDistance);
+    ui->notifDistanceLabel->setText(displayDist + " m");
     emit setSigDist(newDistance);
+}
+
+void MainWindow::on_speechCheckBox_stateChanged()
+{
+    if(ui->beepCheckBox->isChecked()) {
+        ui->beepCheckBox->setChecked(false);
+    }
+}
+
+void MainWindow::on_beepCheckBox_stateChanged()
+{
+    if(ui->speechCheckBox->isChecked()) {
+        ui->speechCheckBox->setChecked(false);
+    }
 }

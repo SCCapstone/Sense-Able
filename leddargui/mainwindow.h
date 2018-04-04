@@ -63,6 +63,10 @@ private slots:
 
     void on_notificationDistanceSlider_valueChanged(int value);
 
+    void on_speechCheckBox_stateChanged();
+
+    void on_beepCheckBox_stateChanged();
+
 signals:
     void startCapture(int);
     void stopCapture();

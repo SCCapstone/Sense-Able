@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_CaptureThread_t {
-    QByteArrayData data[15];
-    char stringdata0[158];
+    QByteArrayData data[16];
+    char stringdata0[171];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,14 +43,15 @@ QT_MOC_LITERAL(10, 94, 9), // "doCapture"
 QT_MOC_LITERAL(11, 104, 17), // "captureDataPoints"
 QT_MOC_LITERAL(12, 122, 5), // "index"
 QT_MOC_LITERAL(13, 128, 18), // "std::vector<float>"
-QT_MOC_LITERAL(14, 147, 10) // "dataPoints"
+QT_MOC_LITERAL(14, 147, 10), // "dataPoints"
+QT_MOC_LITERAL(15, 158, 12) // "aOrientation"
 
     },
     "CaptureThread\0newFrame\0\0cv::Mat*\0"
     "running\0stopped\0cancel\0StartCapture\0"
     "cameraNumber\0StopCapture\0doCapture\0"
     "captureDataPoints\0index\0std::vector<float>\0"
-    "dataPoints"
+    "dataPoints\0aOrientation"
 };
 #undef QT_MOC_LITERAL
 
@@ -77,7 +78,7 @@ static const uint qt_meta_data_CaptureThread[] = {
        7,    1,   60,    2, 0x0a /* Public */,
        9,    0,   63,    2, 0x0a /* Public */,
       10,    0,   64,    2, 0x08 /* Private */,
-      11,    2,   65,    2, 0x08 /* Private */,
+      11,    3,   65,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
@@ -89,7 +90,7 @@ static const uint qt_meta_data_CaptureThread[] = {
     QMetaType::Void, QMetaType::Int,    8,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int, 0x80000000 | 13,   12,   14,
+    QMetaType::Void, QMetaType::Int, 0x80000000 | 13, QMetaType::Bool,   12,   14,   15,
 
        0        // eod
 };
@@ -107,7 +108,7 @@ void CaptureThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 4: _t->StartCapture((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 5: _t->StopCapture(); break;
         case 6: _t->doCapture(); break;
-        case 7: _t->captureDataPoints((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< std::vector<float>(*)>(_a[2]))); break;
+        case 7: _t->captureDataPoints((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< std::vector<float>(*)>(_a[2])),(*reinterpret_cast< bool(*)>(_a[3]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
