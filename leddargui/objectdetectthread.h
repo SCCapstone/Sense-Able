@@ -20,6 +20,14 @@ public:
     int detect_wall(vector<float> v, float measure_error, float flat_error);
     vector<float> yaxis_projection(vector<float> distances);
 
+    vector<float> polynomial_fit(int polynom_degree, vector<float> points);
+    float fit_quality(vector<float> coefficients, int polynom_degree, vector<float> points);
+
+    float detectWall(vector<float> distances);
+    float detectCorner(vector<float> distances);
+    float detectPillar(vector<float> distances);
+    float detectTripHazard(vector<float> distances);
+
 public slots:
     void StartDetect(int index, vector<float> distances);
     void StopDetect();
@@ -38,6 +46,7 @@ signals:
 
 private:
     bool isrunning, isstopped;
+    vector<string> obstacleTypes;
 
     UserNotifier currentNotifier;
 

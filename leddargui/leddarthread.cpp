@@ -187,7 +187,7 @@ cout << "Entering ReplayData" << endl;
     cout << "Exiting ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
-    // TOOD: Clear data points
+    // TODO: Clear data points
     return;
 cout << "Exiting ReplayData" << endl;
 }
