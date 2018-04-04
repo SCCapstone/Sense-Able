@@ -120,6 +120,17 @@ float objectDetector::detectWall(vector<float> distances) {
 }
 
 float objectDetector::detectCorner(vector<float> distances) {
+    vector<float> coefficients;
+    float fit;
+
+    // Fit a degree 2 parabola to the distances.
+    coefficients = polynomial_fit(2, distances);
+    fit = fit_quality(coefficients, 2, distances);
+
+    // TODO: If the parabola is too steep, or not sharp enough, we want to
+    // return '0' to indicate that no parabola is detected!  This should
+    // be handled here.
+
     return 0.0;
 }
 
