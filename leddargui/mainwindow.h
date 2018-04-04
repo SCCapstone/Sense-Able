@@ -20,7 +20,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void stopAll();
 
 private slots:
     void on_readDataButton_clicked();
@@ -29,7 +28,7 @@ private slots:
 
     void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
 
-    void catchObjectDetected(string objectName);
+    void catchDetectedObject(int object);
 
     void on_streamButton_clicked();
 
@@ -99,6 +98,10 @@ private:
     QSignalMapper* signalMapper;
     UserNotifier notifier;
     vector<string> defaultSoundOrder;
+
+    //Helper functions
+    void stopAll();
+    void updateSoundFiles();
 };
 
 #endif // MAINWINDOW_H

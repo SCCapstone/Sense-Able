@@ -12,14 +12,13 @@ public:
     UserNotifier();
     ~UserNotifier();
 
-    void playSound(string object);
+    void playSound(int index);
 
     bool fileType = SOUNDFILES;
 
-    map<string, string> soundFiles;
-    map<string, string> voiceFiles;
-
-private:
+    vector<string> soundFiles;
+    vector<string> voiceFiles;
+    vector<string> defaultSoundFiles;
 
 };
 

@@ -48,14 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->objdetector = new objectDetector();
 
     this->notifier = UserNotifier();
-    this->defaultSoundOrder.push_back("../Sounds/short.wav");
-    this->defaultSoundOrder.push_back("../Sounds/long.wav");
-    this->defaultSoundOrder.push_back("../Sounds/short-long.wav");
-    this->defaultSoundOrder.push_back("../Sounds/long-short.wav");
-    this->defaultSoundOrder.push_back("../Sounds/short-short.wav");
-    this->defaultSoundOrder.push_back("../Sounds/short-short-long.wav");
-    this->defaultSoundOrder.push_back("../Sounds/long-short-short.wav");
-    this->defaultSoundOrder.push_back("../Sounds/blaster-firing.wav");
+
 
 //    this->signalMapper = new QSignalMapper(this);
 
@@ -86,7 +79,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
                     objdetector, SLOT(StartDetect(int, vector<float>, bool)),
                     Qt::QueuedConnection);
-
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
                     capture, SLOT(captureDataPoints(int,vector<float>,bool)),
                     Qt::QueuedConnection);
@@ -97,18 +89,18 @@ MainWindow::MainWindow(QWidget *parent) :
     // whenever an object is detected.
     this->objdetector->moveToThread(objdetectThread);
     connect(this, SIGNAL(stopDetect()), objdetector, SLOT(StopDetect()));
-
-    connect(this, SIGNAL(passNotifier(vector<string>)),
-                    objdetector,
-                    SLOT(getCurrentNotifier(vector<string>)),
-                    Qt::QueuedConnection);
-    connect(objdetector, SIGNAL(sendObjectDetected(string)),
-                    this,
-                    SLOT(catchObjectDetected(string)),
-                    Qt::QueuedConnection);
     connect(this, SIGNAL(setSigDist(float)), objdetector, SLOT(SetSignalDist(float)));
-
     connect(ui->QuitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
+
+//    connect(this, SIGNAL(passNotifier(vector<string>)),
+//                    objdetector, SLOT(getCurrentNotifier(vector<string>)),
+//                    Qt::QueuedConnection);
+    connect(objdetector, SIGNAL(emitDetectedObject(int)),
+                    this, SLOT(catchDetectedObject(int)),
+                    Qt::QueuedConnection);
+
+
+
 
     // Start the threads.
     captureThread->start();
@@ -156,21 +148,6 @@ void MainWindow::stopAll()
 ***/
 void MainWindow::on_readDataButton_clicked()
 {
-
-    // Setup the current notifier based on the notification settings.
-    QComboBox* notif_choices[] = {ui->obj1_notif_choice,
-        ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
-        ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
-        ui->obj8_notif_choice};
-
-    for(int i = 0; i < 8; i++) {
-        notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
-    }
-
-    cout << endl;
-    cout << "GEY: " << notifier.soundFiles[0] << endl;
-    cout << endl;
-
     if (!this->stream->isrunning) {
         QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
                                                         "../LeddarData", tr("Leddar files (*.ltl)"));
@@ -190,27 +167,8 @@ void MainWindow::on_readDataButton_clicked()
 
         }
 
+        this->updateSoundFiles();
 
-        // Setup the current notifier based on the notification settings.
-        QComboBox* notif_choices[] = {ui->obj1_notif_choice,
-            ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
-            ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
-            ui->obj8_notif_choice};
-
-        for(int i = 0; i < 8; i++) {
-            cout << "i=" << i << " CHOICE " << notif_choices[i]->currentIndex() << endl;
-            cout << "i=" << i << " SOUND " << defaultSoundOrder.at((notif_choices[i])->currentIndex()) << endl;
-
-            notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
-            cout << "i=" << i << " AFTER MODIFY "<< notifier.soundFiles.at(i) << endl;
-
-        }
-
-        cout << endl;
-        cout << "GEY: " << ui->obj1_notif_choice->currentIndex() << endl;
-        cout << endl;
-
-        emit passNotifier(this->notifier.soundFiles);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
     }
@@ -229,34 +187,50 @@ void MainWindow::on_streamButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);
     //emit streamButtonClicked();
 
-    if(ui->beepCheckBox->isChecked()) {
+    this->updateSoundFiles();
 
-    QComboBox* notif_choices[] = {ui->obj1_notif_choice,
-        ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
-        ui->obj5_notif_choice, ui->obj6_notif_choice, ui->obj7_notif_choice,
-        ui->obj8_notif_choice};
-
-    for(int i = 0; i < 8; i++) {
-        cout << "i=" << i << " CHOICE " << notif_choices[i]->currentIndex() << endl;
-        cout << "i=" << i << " SOUND " << defaultSoundOrder.at((notif_choices[i])->currentIndex()) << endl;
-
-        notifier.soundFiles[i] = defaultSoundOrder.at((notif_choices[i])->currentIndex());
-        cout << "i=" << i << " AFTER MODIFY "<< notifier.soundFiles.at(i) << endl;
-
-        }
-    }
-    else if(ui->speechCheckBox->isChecked()) {
-
-
-    }
-
-    /*if (!this->stream->isrunning) {
+    if (!this->stream->isrunning) {
         emit startCapture(cameraNumber);
         emit startStream();
-        emit passNotifier(this->notifier.soundFiles);
+//        emit passNotifier(this->notifier.soundFiles);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
-    }*/
+    }
+}
+/*********************************************************************
+ * Changes the UserNotifier sound Mapping according to the ui
+ *
+ *
+ * This is pretty hacky. Two facts
+ *     1: The ui->objX corresponds to an object as defined in globalconstants.h
+ *         obj1 = WALL, obj2 = WALL_CORNER, etc/
+ *     2: The currentIndex() of the choice corresponds to the index of of a sound
+ *        file in the defaultSoundFiles vector.
+ *
+ * So, we map the index of the choice of an objX to the value of the defaulSoundFiles
+ * vector.
+***/
+void MainWindow::updateSoundFiles()
+{
+    if ( ui->beepCheckBox->isChecked() ) {
+        notifier.fileType = SOUNDFILES;
+    }
+    else { // if (ui->speechCheckBox->isChecked())
+        notifier.fileType = VOICEFILES;
+    }
+
+    // Grab the selected object -> sound associations
+    vector<int> newSoundFiles = {
+        ui->obj1_notif_choice->currentIndex(), ui->obj2_notif_choice->currentIndex(),
+        ui->obj3_notif_choice->currentIndex(), ui->obj4_notif_choice->currentIndex(),
+        ui->obj5_notif_choice->currentIndex(), ui->obj6_notif_choice->currentIndex(),
+        ui->obj7_notif_choice->currentIndex(), ui->obj8_notif_choice->currentIndex()
+    };
+
+    for (unsigned int i=0; i < newSoundFiles.size(); i++) {
+        notifier.soundFiles.at(i) = notifier.defaultSoundFiles.at(newSoundFiles.at(i));
+    }
+
 }
 
 /*********************************************************************
@@ -298,8 +272,18 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrie
  * This function displays the name of the object detected onto a
  * Window 'label', e.g. "Wall," "Stairs," etc.
 ***/
-void MainWindow::catchObjectDetected(string objectName) {
-    ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));
+void MainWindow::catchDetectedObject(int object) {
+    cout << "Received " << object << endl;
+    string objectName = "None";
+
+    if ( object != NONE ) {
+        // Look up object name
+        objectName = OBJECT_MAP[object];
+        // Play Sound
+        notifier.playSound(object);
+    }
+
+    ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));    
 }
 
 /*********************************************************************

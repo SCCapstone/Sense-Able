@@ -27,20 +27,18 @@ cout << "Entering objectDetector" << endl;
     isstopped = false;
     isrunning = false;
 
-    currentNotifier = UserNotifier();
-
-    obstacleTypes.push_back("Wall");
-    obstacleTypes.push_back("Wall Corner");
-    obstacleTypes.push_back("Pillar");
-    obstacleTypes.push_back("Trip Hazard");
-    obstacleTypes.push_back("Unidentified Obstacle");
-    obstacleTypes.push_back("None");
+//    obstacleTypes.push_back("Wall");
+//    obstacleTypes.push_back("Wall Corner");
+//    obstacleTypes.push_back("Pillar");
+//    obstacleTypes.push_back("Trip Hazard");
+//    obstacleTypes.push_back("Unidentified Obstacle");
+//    obstacleTypes.push_back("None");
 }
 
 void objectDetector::doDetect(vector<float> distances) {
 cout << "Entering doDetect" << endl;
-    map<string, float> obstacle_fits;
-    string obstacle_type = "None";
+    map<int, float> obstacle_fits;
+    int obstacle_type = NONE;
     int running_fit = 0;
 
     if (!isrunning || isstopped) return;
@@ -57,15 +55,15 @@ cout << "Entering doDetect" << endl;
         // There is an obstacle in range.  We need to identify it.
 
         // Compute each obstacle fit value.
-        obstacle_fits.emplace("Wall", detectWall(distances));
-        obstacle_fits.emplace("Wall Corner", detectCorner(distances));
-        obstacle_fits.emplace("Pillar", detectPillar(distances));
-        obstacle_fits.emplace("Trip Hazard", detectTripHazard(distances));
-        obstacle_fits.emplace("Unidentified Obstacle", 0);
-        obstacle_fits.emplace("None", -1);
+        obstacle_fits.emplace(WALL, detectWall(distances));
+        obstacle_fits.emplace(WALL_CORNER, detectCorner(distances));
+        obstacle_fits.emplace(PILLAR, detectPillar(distances));
+        obstacle_fits.emplace(TRIP_HAZARD, detectTripHazard(distances));
+        obstacle_fits.emplace(UNIDENTIFIED_OBSTACLE, 0.0);
+        obstacle_fits.emplace(NONE, -1.0);
 
         // Determine the obstacle type with the maximum fit value.
-        for (map<string, float>::iterator it = obstacle_fits.begin();
+        for (map<int, float>::iterator it = obstacle_fits.begin();
              it != obstacle_fits.end(); ++it) {
 
             if (it->second >= running_fit) {
@@ -75,12 +73,10 @@ cout << "Entering doDetect" << endl;
 
     } else {
         // There is no obstacle in range.
-        obstacle_type = "None";
+        obstacle_type = NONE;
     }
 
-    emit sendObjectDetected(obstacle_type);
-// TODO: How do we refer to the sound we need to play?
-    // currentNotifier.playSound(0);
+    emit emitDetectedObject(obstacle_type);
 
     StopDetect();
 //cout << "Exiting doDetect" << endl;
@@ -311,15 +307,6 @@ cout << "Entering StartDetect" << endl;
     isrunning = true;
     emit running();
     doDetect(dataPoints);
-}
-
-void objectDetector::getCurrentNotifier(vector<string> someOrderedSounds) {
-    this->currentNotifier.soundFiles = someOrderedSounds;
-//    this->currentNotifier = someNotifier;
-
-    for (int i = 0; i < 8; i++) {
-        cout << "i=" << i << "AFTER SIGNAL, ASSIGN: " << currentNotifier.soundFiles.at(i) << endl;
-    }
 }
 
 /*********************************************************************

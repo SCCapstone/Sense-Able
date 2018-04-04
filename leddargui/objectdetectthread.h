@@ -31,25 +31,19 @@ public:
 public slots:
     void StartDetect(int index, vector<float> distances, bool aOrientation);
     void StopDetect();
-    void getCurrentNotifier(vector<string> someOrderedSounds);
-    //void objDetect(int i);
     void SetSignalDist(float sig_dist);
 
 private slots:
     void doDetect(vector<float> dataPoints);
 
 signals:
-    void sendObjectDetected(string objectName);
+    void emitDetectedObject(int object);
     void finished();
     void running();
     void stopped();
 
 private:
     bool isrunning, isstopped;
-    vector<string> obstacleTypes;
-
-    UserNotifier currentNotifier;
-
     float sig_dist;
 };
 

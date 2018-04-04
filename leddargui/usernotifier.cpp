@@ -18,26 +18,37 @@ using namespace std;
 ***/
 UserNotifier::UserNotifier() {
 
-    soundFiles.emplace(WALL, "../Sounds/short.wav");
-    soundFiles.emplace(WALL_CORNER, "../Sounds/short.wav");
-    soundFiles.emplace(PILLAR, "../Sounds/long.wav");
-    soundFiles.emplace(TRIP_HAZARD, "../Sounds/short-long.wav");
-    soundFiles.emplace(UNIDENTIFIED_OBSTACLE, "../Sounds/long-short.wav");
+    // Objects Map to the index of the vector via
 
-    voiceFiles.emplace(WALL, "../Sounds/blaster-firing.wav");
-    voiceFiles.emplace(WALL_CORNER, "../Sounds/blaster-firing.wav");
-    voiceFiles.emplace(PILLAR, "../Sounds/blaster-firing.wav");
-    voiceFiles.emplace(TRIP_HAZARD, "../Sounds/blaster-firing.wav");
-    voiceFiles.emplace(UNIDENTIFIED_OBSTACLE, "../Sounds/blaster-firing.wav");
-//    soundFiles.push_back("../Sounds/short-short.wav");
-//    soundFiles.push_back("../Sounds/short-short-long.wav");
-//    soundFiles.push_back("../Sounds/long-short-short.wav");
-//    soundFiles.push_back("../Sounds/blaster-firing.wav");
+    // Populate vectors with default values
+    defaultSoundFiles = {
+        "../Sounds/short.wav",
+        "../Sounds/long.wav",
+        "../Sounds/short-long.wav",
+        "../Sounds/long-short.wav",
+        "../Sounds/short-short.wav",
+        "../Sounds/short-short-long.wav",
+        "../Sounds/long-short-short.wav",
+        "../Sounds/blaster-firing.wav"
+    };
 
+    soundFiles = defaultSoundFiles;
+
+    voiceFiles = {
+        "../Sounds/blaster-firing.wav",
+        "../Sounds/blaster-firing.wav",
+        "../Sounds/blaster-firing.wav",
+        "../Sounds/blaster-firing.wav",
+        "../Sounds/blaster-firing.wav",
+        "../Sounds/blaster-firing.wav",
+        "../Sounds/blaster-firing.wav",
+        "../Sounds/blaster-firing.wav"
+    };
 
 }
 
-/*********************************************************************
+/********************************************************
+*************
  * The usual destructor.
 ***/
 UserNotifier::~UserNotifier() {
@@ -53,17 +64,17 @@ UserNotifier::~UserNotifier() {
  * If the 'index' is valid, this function plays the sound stored in
  * the 'vector' 'soundFiles' at the given 'index'.
 ***/
-void UserNotifier::playSound(string object) {
-    if (fileType == SOUNDFILES) {
-        if( soundFiles.size() - 1) {
+void UserNotifier::playSound(int object) {
+
+    if ( object != NONE && object < soundFiles.size() - 1) {
+
+        if (fileType == SOUNDFILES) {
             QSound::play(QString::fromStdString(soundFiles.at(object)));
         }
-    }
-    else if ( fileType == VOICEFILES) {
-        if(index < soundFiles.size() - 1) {
+
+        else { // fileType == VOICEFILES
             QSound::play(QString::fromStdString(voiceFiles.at(object)));
+
         }
     }
-
-    return;
 }
