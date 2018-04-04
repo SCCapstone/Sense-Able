@@ -222,7 +222,7 @@ void MainWindow::on_readDataButton_clicked()
 void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
-    emit streamButtonClicked();
+    //emit streamButtonClicked();
 
     QComboBox* notif_choices[] = {ui->obj1_notif_choice,
         ui->obj2_notif_choice, ui->obj3_notif_choice, ui->obj4_notif_choice,
@@ -238,13 +238,13 @@ void MainWindow::on_streamButton_clicked()
 
     }
 
-    if (!this->stream->isrunning) {
+    /*if (!this->stream->isrunning) {
         emit startCapture(cameraNumber);
         emit startStream();
         emit passNotifier(this->notifier.soundFiles);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
-    }
+    }*/
 }
 
 /*********************************************************************
@@ -378,6 +378,7 @@ void MainWindow::on_readDataPageButton_clicked()
 void MainWindow::on_backButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
+
 }
 
 void MainWindow::on_backButtonSettings_clicked()
@@ -447,10 +448,21 @@ void MainWindow::on_Play_clicked()
     {
         stopAll();
         QThread::usleep(.25);
+        ui->Play->setText("Play");
     }
-    else if (this->stream->isstopped) {
+    else if (this->stream->isstopped)
+    {
        emit startCapture(cameraNumber);
        emit startStream();
        emit passNotifier(this->notifier.soundFiles);
+       ui->Play->setText("Stop");
+    }
+    else if (!this->stream->isrunning)
+    {
+        emit streamButtonClicked();
+        emit startCapture(cameraNumber);
+        emit startStream();
+        emit passNotifier(this->notifier.soundFiles);
+        ui->Play->setText("Stop");
     }
 }
