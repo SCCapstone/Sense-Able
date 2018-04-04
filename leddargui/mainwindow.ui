@@ -155,7 +155,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="Page_StreamData">
          <widget class="QLabel" name="objectLabel">
@@ -2059,7 +2059,7 @@
            <string>Back</string>
           </property>
          </widget>
-         <widget class="QSlider" name="horizontalSlider">
+         <widget class="QSlider" name="notificationDistanceSlider">
           <property name="geometry">
            <rect>
             <x>220</x>

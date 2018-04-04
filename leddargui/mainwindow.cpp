@@ -103,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
                     this,
                     SLOT(catchObjectDetected(string)),
                     Qt::QueuedConnection);
+    connect(this, SIGNAL(setSigDist(float)), objdetector, SLOT(SetSignalDist(float)));
 
     connect(ui->QuitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 
@@ -453,4 +454,10 @@ void MainWindow::on_Play_clicked()
        emit startStream();
        emit passNotifier(this->notifier.soundFiles);
     }
+}
+
+//Sets notification distance and sends value to objectdetectthead
+void MainWindow::on_notificationDistanceSlider_valueChanged(int newDistance)
+{
+    emit setSigDist(newDistance);
 }

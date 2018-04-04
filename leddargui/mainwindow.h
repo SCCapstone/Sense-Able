@@ -63,6 +63,8 @@ private slots:
 
     void on_page_2_customContextMenuRequested(const QPoint &pos);
 
+    void on_notificationDistanceSlider_valueChanged(int value);
+
 signals:
     void startCapture(int);
     void stopCapture();
@@ -76,6 +78,7 @@ signals:
 
     void streamButtonClicked();
     void passNotifier(vector<string>);
+    void setSigDist(float);
 
 private:
     Ui::MainWindow *ui;
