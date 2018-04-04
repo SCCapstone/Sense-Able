@@ -27,7 +27,7 @@ private slots:
 
     void on_readDataButton_clicked(bool checked);
 
-    void catchDataPoints(int index, vector<float> dataPoints);
+    void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
 
     void catchObjectDetected(string objectName);
 
@@ -76,6 +76,7 @@ signals:
 
     void streamButtonClicked();
     void passNotifier(vector<string>);
+    void setLeddarOrientation(bool);
 
 private:
     Ui::MainWindow *ui;
@@ -88,7 +89,7 @@ private:
 
     vector<string> cameraFileNames;
     int cameraNumber = 0;
-    bool orientDefault = true;
+    int leddarOrientation = true;
 
     QSignalMapper* signalMapper;
     UserNotifier notifier;
