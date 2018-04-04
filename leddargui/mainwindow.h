@@ -61,9 +61,11 @@ private slots:
 
     void on_Play_clicked();
 
-    void on_page_2_customContextMenuRequested(const QPoint &pos);
-
     void on_notificationDistanceSlider_valueChanged(int value);
+
+    void on_speechCheckBox_stateChanged();
+
+    void on_beepCheckBox_stateChanged();
 
 signals:
     void startCapture(int);

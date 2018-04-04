@@ -1730,6 +1730,9 @@
           <property name="text">
            <string>Speech                        </string>
           </property>
+          <property name="tristate">
+           <bool>false</bool>
+          </property>
          </widget>
          <widget class="QCheckBox" name="beepCheckBox">
           <property name="geometry">
@@ -2088,8 +2091,27 @@
             <height>20</height>
            </rect>
           </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+         <widget class="QLabel" name="notifDistanceLabel">
+          <property name="geometry">
+           <rect>
+            <x>550</x>
+            <y>130</y>
+            <width>89</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0</string>
           </property>
          </widget>
         </widget>
