@@ -69,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startCapture(int)), capture, SLOT(StartCapture(int)));
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
-    connect(capture, SIGNAL(cancel()), this, SLOT(on_cancelButton_clicked()));
 
     // We then connect the leddar stream and main thread to allow the
     // window to display the data read in from the stream.
