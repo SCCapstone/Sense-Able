@@ -364,12 +364,6 @@ void MainWindow::on_actionMain_Menu_triggered()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-
-void MainWindow::on_page_2_customContextMenuRequested(const QPoint &pos)
-{
-
-}
-
 void MainWindow::on_notificationsButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(3);
@@ -452,6 +446,7 @@ void MainWindow::on_QuitButton_clicked()
 
 void MainWindow::on_Play_clicked()
 {
+    // TODO: Add logic for ReadData
     if(this->stream->isrunning)
     {
         stopAll();

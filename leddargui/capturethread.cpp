@@ -145,7 +145,6 @@ void CaptureThread::doCapture()
         }
         else{
             qDebug()<<"\nCamera not detected or is already in use. \nClose any other applications using the camera and try again.";
-            emit(cancel());
             StopCapture();
         }
         QCoreApplication::processEvents();
@@ -178,7 +177,8 @@ void CaptureThread::captureDataPoints(int index, std::vector<float> points, bool
  *
  * We then proceed with performing the camera capture.
 ***/
-void CaptureThread::StartCapture(int cameraNumber) {
+void CaptureThread::StartCapture(int cameraNumber)
+{
     if (isrunning) return;
     std::string cameraFileName = "/dev/video" + std::to_string(cameraNumber);
 //    cameraFileName = "/home/jms/Documents/School/Sense-Able/LeddarData/video_doorway_1.mp4";
@@ -196,13 +196,21 @@ void CaptureThread::StartCapture(int cameraNumber) {
  * We establish that this thread is not running, and has been stopped.
  * We emit that it has been stopped to the main thread.
 ***/
-void CaptureThread::StopCapture() {
+void CaptureThread::StopCapture()
+{
     if (!isrunning || isstopped) return;
 
     isstopped = true;
     isrunning = false;
 
     // Emit an empty frame
+    emitEmptyFrame();
     emit stopped();
     cap.release();
+}
+
+void CaptureThread::emitEmptyFrame()
+{
+    cv::Mat emptyFrame;
+    emit(newFrame(&emptyFrame));
 }
