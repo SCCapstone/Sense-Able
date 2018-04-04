@@ -17,14 +17,24 @@ using namespace std;
  * be played back later.
 ***/
 UserNotifier::UserNotifier() {
-    soundFiles.push_back("../Sounds/short.wav");
-    soundFiles.push_back("../Sounds/long.wav");
-    soundFiles.push_back("../Sounds/short-long.wav");
-    soundFiles.push_back("../Sounds/long-short.wav");
-    soundFiles.push_back("../Sounds/short-short.wav");
-    soundFiles.push_back("../Sounds/short-short-long.wav");
-    soundFiles.push_back("../Sounds/long-short-short.wav");
-    soundFiles.push_back("../Sounds/blaster-firing.wav");
+
+    soundFiles.emplace(WALL, "../Sounds/short.wav");
+    soundFiles.emplace(WALL_CORNER, "../Sounds/short.wav");
+    soundFiles.emplace(PILLAR, "../Sounds/long.wav");
+    soundFiles.emplace(TRIP_HAZARD, "../Sounds/short-long.wav");
+    soundFiles.emplace(UNIDENTIFIED_OBSTACLE, "../Sounds/long-short.wav");
+
+    voiceFiles.emplace(WALL, "../Sounds/blaster-firing.wav");
+    voiceFiles.emplace(WALL_CORNER, "../Sounds/blaster-firing.wav");
+    voiceFiles.emplace(PILLAR, "../Sounds/blaster-firing.wav");
+    voiceFiles.emplace(TRIP_HAZARD, "../Sounds/blaster-firing.wav");
+    voiceFiles.emplace(UNIDENTIFIED_OBSTACLE, "../Sounds/blaster-firing.wav");
+//    soundFiles.push_back("../Sounds/short-short.wav");
+//    soundFiles.push_back("../Sounds/short-short-long.wav");
+//    soundFiles.push_back("../Sounds/long-short-short.wav");
+//    soundFiles.push_back("../Sounds/blaster-firing.wav");
+
+
 }
 
 /*********************************************************************
@@ -43,10 +53,17 @@ UserNotifier::~UserNotifier() {
  * If the 'index' is valid, this function plays the sound stored in
  * the 'vector' 'soundFiles' at the given 'index'.
 ***/
-void UserNotifier::playSound(int index) {
-
-    if(index < soundFiles.size() - 1) {
-        QSound::play(QString::fromStdString(soundFiles.at(index)));
+void UserNotifier::playSound(string object) {
+    if (fileType == SOUNDFILES) {
+        if( soundFiles.size() - 1) {
+            QSound::play(QString::fromStdString(soundFiles.at(object)));
+        }
     }
+    else if ( fileType == VOICEFILES) {
+        if(index < soundFiles.size() - 1) {
+            QSound::play(QString::fromStdString(voiceFiles.at(object)));
+        }
+    }
+
     return;
 }

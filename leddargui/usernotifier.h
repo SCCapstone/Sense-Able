@@ -4,6 +4,7 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include "globalconstants.h"
 
 class UserNotifier
 {
@@ -11,9 +12,12 @@ public:
     UserNotifier();
     ~UserNotifier();
 
-    void playSound(int index);
-    vector<string> soundFiles;
-    vector<string> voiceFiles;
+    void playSound(string object);
+
+    bool fileType = SOUNDFILES;
+
+    map<string, string> soundFiles;
+    map<string, string> voiceFiles;
 
 private:
 

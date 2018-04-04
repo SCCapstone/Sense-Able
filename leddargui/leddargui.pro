@@ -55,7 +55,8 @@ HEADERS += \
     capturethread.h \
     QtBehaviorTestSuite.h \
     leddarthread.h \
-    objectdetectthread.h
+    objectdetectthread.h \
+    globalconstants.h
 
 FORMS += \
     mainwindow.ui
