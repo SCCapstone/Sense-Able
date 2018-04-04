@@ -155,7 +155,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="Page_StreamData">
          <widget class="QLabel" name="objectLabel">
@@ -312,88 +312,6 @@
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="cancelButton">
-          <property name="geometry">
-           <rect>
-            <x>730</x>
-            <y>620</y>
-            <width>121</width>
-            <height>31</height>
-           </rect>
-          </property>
-          <property name="palette">
-           <palette>
-            <active>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>245</red>
-                <green>36</green>
-                <blue>54</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>255</red>
-                <green>255</green>
-                <blue>255</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </active>
-            <inactive>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>245</red>
-                <green>36</green>
-                <blue>54</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>255</red>
-                <green>255</green>
-                <blue>255</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </inactive>
-            <disabled>
-             <colorrole role="Button">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>245</red>
-                <green>36</green>
-                <blue>54</blue>
-               </color>
-              </brush>
-             </colorrole>
-             <colorrole role="ButtonText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>190</red>
-                <green>190</green>
-                <blue>190</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </disabled>
-           </palette>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Cancel</string>
           </property>
          </widget>
          <widget class="QPushButton" name="backButtonGo">
@@ -904,14 +822,96 @@
            <string>Orientation: Horizontal</string>
           </property>
          </widget>
+         <widget class="QPushButton" name="Play">
+          <property name="geometry">
+           <rect>
+            <x>720</x>
+            <y>620</y>
+            <width>141</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="palette">
+           <palette>
+            <active>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>54</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </active>
+            <inactive>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>54</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </inactive>
+            <disabled>
+             <colorrole role="Button">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>245</red>
+                <green>36</green>
+                <blue>54</blue>
+               </color>
+              </brush>
+             </colorrole>
+             <colorrole role="ButtonText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>190</red>
+                <green>190</green>
+                <blue>190</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </disabled>
+           </palette>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Play</string>
+          </property>
+         </widget>
          <zorder>cameraView</zorder>
          <zorder>objectLabel</zorder>
-         <zorder>cancelButton</zorder>
          <zorder>backButtonGo</zorder>
          <zorder>changeCamera</zorder>
          <zorder>changeOrient</zorder>
          <zorder>cameraLabel</zorder>
          <zorder>orientLabel</zorder>
+         <zorder>Play</zorder>
         </widget>
         <widget class="QWidget" name="Page_Home">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -936,6 +936,12 @@
                <layout class="QVBoxLayout" name="verticalLayout_2">
                 <item>
                  <widget class="QLabel" name="titleLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="palette">
                    <palette>
                     <active>
@@ -1008,6 +1014,9 @@
                   <property name="text">
                    <string>Sense-able</string>
                   </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
@@ -1018,6 +1027,9 @@
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_2">
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SetDefaultConstraint</enum>
+                  </property>
                   <item>
                    <spacer name="horizontalSpacer_3">
                     <property name="orientation">
@@ -1048,6 +1060,12 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="streamButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="palette">
                        <palette>
                         <active>
@@ -1151,6 +1169,12 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="readDataPageButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="palette">
                        <palette>
                         <active>
@@ -1267,6 +1291,12 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="settingsPageButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="palette">
                        <palette>
                         <active>
@@ -1343,6 +1373,12 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="QuitButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="palette">
                        <palette>
                         <active>
@@ -1579,41 +1615,6 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-         </widget>
-         <widget class="QComboBox" name="notification_distance_slider">
-          <property name="geometry">
-           <rect>
-            <x>220</x>
-            <y>130</y>
-            <width>181</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <item>
-           <property name="text">
-            <string>1 meter</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>2 meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>3 meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>4 meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>5 meters</string>
-           </property>
-          </item>
          </widget>
          <widget class="Line" name="line_3">
           <property name="geometry">
@@ -2056,6 +2057,19 @@
           </property>
           <property name="text">
            <string>Back</string>
+          </property>
+         </widget>
+         <widget class="QSlider" name="horizontalSlider">
+          <property name="geometry">
+           <rect>
+            <x>220</x>
+            <y>140</y>
+            <width>181</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </widget>

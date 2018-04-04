@@ -311,20 +311,6 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 }
 
 /*********************************************************************
- * Function to run when the cancelButton is clicked.
- *
- * We stop all threads from executing processes, except the main thread.
-***/
-void MainWindow::on_cancelButton_clicked()
-{
-    stopAll();
-//    emit stopCapture();
-//    emit stopStream();
-//    emit stopRead();
-//    emit stopDetect();
-}
-
-/*********************************************************************
  * Function to run when the cancelButtonRead is clicked.
  *
  * We stop all threads from executing processes, except the main thread.
@@ -460,4 +446,18 @@ void MainWindow::on_changeOrient_clicked()
 void MainWindow::on_QuitButton_clicked()
 {
     emit clicked();
+}
+
+void MainWindow::on_Play_clicked()
+{
+    if(this->stream->isrunning)
+    {
+        stopAll();
+        QThread::usleep(.25);
+    }
+    else if (this->stream->isstopped) {
+       emit startCapture(cameraNumber);
+       emit startStream();
+       emit passNotifier(this->notifier.soundFiles);
+    }
 }

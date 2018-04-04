@@ -13,6 +13,7 @@ public:
 
     void playSound(int index);
     vector<string> soundFiles;
+    vector<string> voiceFiles;
 
 private:
 
