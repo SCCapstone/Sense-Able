@@ -487,7 +487,7 @@ void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
 {
     float newDistance = value/2.0;
     QString displayDist = QString::number(newDistance);
-    ui->notifDistanceLabel->setText(displayDist);
+    ui->notifDistanceLabel->setText(displayDist + " m");
     emit setSigDist(newDistance);
 }
 
