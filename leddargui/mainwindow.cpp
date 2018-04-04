@@ -69,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startCapture(int)), capture, SLOT(StartCapture(int)));
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
-    connect(capture, SIGNAL(cancel()), this, SLOT(on_cancelButton_clicked()));
 
     // We then connect the leddar stream and main thread to allow the
     // window to display the data read in from the stream.
@@ -377,12 +376,6 @@ void MainWindow::on_actionMain_Menu_triggered()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-
-void MainWindow::on_page_2_customContextMenuRequested(const QPoint &pos)
-{
-
-}
-
 void MainWindow::on_notificationsButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(3);
@@ -465,6 +458,7 @@ void MainWindow::on_QuitButton_clicked()
 
 void MainWindow::on_Play_clicked()
 {
+    // TODO: Add logic for ReadData
     if(this->stream->isrunning)
     {
         stopAll();

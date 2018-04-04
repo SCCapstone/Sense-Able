@@ -572,14 +572,14 @@ void LeddarStream::ClearData(unsigned int count)
 ***/
 void LeddarStream::setOrientation(bool aOrientation)
 {
-    cout << "EMISSION RECEIVED " << aOrientation << endl;
+//    cout << "EMISSION RECEIVED " << aOrientation << endl;
     if (aOrientation == VERTICAL) {
         this->orientation = VERTICAL;
-        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
+//        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
     }
     else if (aOrientation == HORIZONTAL) {
         this->orientation = HORIZONTAL;
-        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
+//        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
 
     }
     else{
