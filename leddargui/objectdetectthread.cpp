@@ -57,12 +57,12 @@ cout << "Entering doDetect" << endl;
         // There is an obstacle in range.  We need to identify it.
 
         // Compute each obstacle fit value.
-        obstacle_fits.at("Wall") = detectWall(distances);
-        obstacle_fits.at("Wall Corner") = detectCorner(distances);
-        obstacle_fits.at("Pillar") = detectPillar(distances);
-        obstacle_fits.at("Trip Hazard") = detectTripHazard(distances);
-        obstacle_fits.at("Unidentified Obstacle") = 0;
-        obstacle_fits.at("None") = -1;
+        obstacle_fits.emplace("Wall", detectWall(distances));
+        obstacle_fits.emplace("Wall Corner", detectCorner(distances));
+        obstacle_fits.emplace("Pillar", detectPillar(distances));
+        obstacle_fits.emplace("Trip Hazard", detectTripHazard(distances));
+        obstacle_fits.emplace("Unidentified Obstacle", 0);
+        obstacle_fits.emplace("None", -1);
 
         // Determine the obstacle type with the maximum fit value.
         for (map<string, float>::iterator it = obstacle_fits.begin();
