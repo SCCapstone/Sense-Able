@@ -51,7 +51,7 @@ LeddarStream::LeddarStream() {
 
     this->gHandle = new LeddarHandle();
     qRegisterMetaType<vector<float> >("vector<float>");
-    isstopped = false;
+    isstopped = true;
     isrunning = false;
 
     // Initialize the Leddar Handle.
