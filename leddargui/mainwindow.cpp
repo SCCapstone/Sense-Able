@@ -59,7 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<vector<string> >("vector<string>");
 
     this->capture->moveToThread(captureThread);
-    connect(this, SIGNAL(startCapture(int)), capture, SLOT(StartCapture(int)));
+    connect(this, SIGNAL(startCapture(string)), capture, SLOT(StartCapture(string)));
+    connect(this, SIGNAL(startRecord(string,string)), capture, SLOT(StartRecord(string,string)));
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
 
@@ -68,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->stream->moveToThread(leddarThread);
     connect(this, SIGNAL(startStream()), stream, SLOT(StartStream()));
     connect(this, SIGNAL(stopStream()), stream, SLOT(StopStream()));
-    connect(this, SIGNAL(startRead(QString)), stream, SLOT(StartReplay(QString)));
+    connect(this, SIGNAL(startRead(string)), stream, SLOT(StartReplay(string)));
     connect(this, SIGNAL(stopRead()), stream, SLOT(StopStream()));
     connect(this, SIGNAL(setLeddarOrientation(bool)), stream, SLOT(setOrientation(bool)));
 
@@ -109,13 +110,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
     foreach (const QCameraInfo &cameraInfo, cameras)
-        this->cameraFileNames.push_back(cameraInfo.deviceName().toUtf8().constData());
+        this->cameraFileNames.push_back(cameraInfo.deviceName().toStdString());
 
     foreach (const QCameraInfo &cameraInfo, cameras)
-        cout << cameraInfo.deviceName().toUtf8().constData();
+        cout << cameraInfo.deviceName().toStdString();
 
+    // UI
     ui->beepCheckBox->setChecked(true);
 
+    // Hide some buttons
+//    ui->orientLabel->setHidden(true);
+//    ui->changeOrient->setHidden(true);
+//    ui->cameraLabel->setHidden(true);
+//    ui->changeCamera->setHidden(true);
 }
 
 /*********************************************************************
@@ -135,6 +142,16 @@ void MainWindow::stopAll()
     emit stopStream();
     emit stopRead();
     emit stopDetect();
+    QThread::usleep(.35);
+}
+/*********************************************************************
+ * Takes a *.ltl file and returns a the same basename with a .mp4
+ *  extension
+***/
+string MainWindow::ltlToAVI(string leddarFile)
+{
+    QFileInfo file(QString::fromStdString(leddarFile));
+    return (file.absolutePath() +"/"+ file.baseName() + ".avi").toStdString();
 }
 
 /*********************************************************************
@@ -149,28 +166,23 @@ void MainWindow::stopAll()
 void MainWindow::on_readDataButton_clicked()
 {
     if (!this->stream->isrunning) {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
-                                                        "../LeddarData", tr("Leddar files (*.ltl)"));
-        // Given a filename, find the matching recording if there exists one
-        emit startRead(filename);
+        string leddarFileName = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
+                                                        "../LeddarData", tr("Leddar files (*.ltl)")).toStdString();
+        string videoFilename = ltlToAVI(leddarFileName);
 
-        // Remove the file type and look for file of same name of type "mp4"
-        filename.chop(3);
-        QString videoFilename = filename.append("mp4");
-        qDebug() << videoFilename;
+        cout << "Reading Leddar File: " << leddarFileName << endl;
+        cout << "Readnig Video File: " << videoFilename << endl;
 
-        // If the video file exists, then s
-        QFileInfo check_file(videoFilename);
+        this->updateSoundFiles();
+
+        // Given a filename, find the matching recording if there exists one start replay
+        QFileInfo check_file(QString::fromStdString(videoFilename));
         if (check_file.exists() && check_file.isFile())
         {
 //            emit startCapture(videoFilename);
 
         }
-
-        this->updateSoundFiles();
-
-//        emit startDetect();  We should not start detecting until an object
-//                             is actually detected.
+        emit startRead(leddarFileName);
     }
 }
 
@@ -189,13 +201,13 @@ void MainWindow::on_streamButton_clicked()
 
     this->updateSoundFiles();
 
-    if (!this->stream->isrunning) {
-        emit startCapture(cameraNumber);
-        emit startStream();
+//    if (!this->stream->isrunning) {
+//        emit startCapture(cameraNumber);
+//        emit startStream();
 //        emit passNotifier(this->notifier.soundFiles);
 //        emit startDetect();  We should not start detecting until an object
 //                             is actually detected.
-    }
+//    }
 }
 /*********************************************************************
  * Changes the UserNotifier sound Mapping according to the ui
@@ -273,7 +285,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrie
  * Window 'label', e.g. "Wall," "Stairs," etc.
 ***/
 void MainWindow::catchDetectedObject(int object) {
-    cout << "Received " << object << endl;
+    cout << "Object Detected: " << object << endl;
     string objectName = "None";
 
     if ( object != NONE ) {
@@ -299,7 +311,16 @@ void MainWindow::catchDetectedObject(int object) {
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
     // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
-    ui->cameraView->setPixmap(QPixmap::fromImage(QImage(frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped()));
+//    cout << frame->empty()  << "  " << frame->cols << "  " << frame->rows;
+    ui->cameraView->setPixmap(
+                QPixmap::fromImage(
+                    QImage(
+                        frame->data, frame->cols, frame->rows,
+                        frame->step, QImage::Format_RGB888).rgbSwapped()
+                    )
+                );
+//    cout << "  >314 is not crashing" << endl;
+
 }
 
 /*********************************************************************
@@ -312,10 +333,6 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 void MainWindow::on_cancelButtonRead_clicked()
 {
     stopAll();
-//    emit stopCapture();
-//    emit stopStream();
-//    emit stopRead();
-//    emit stopDetect();
 }
 
 /*********************************************************************
@@ -326,22 +343,14 @@ void MainWindow::on_cancelButtonRead_clicked()
 ***/
 void MainWindow::on_backButtonGo_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(1);
     stopAll();
-//    emit stopCapture();
-//    emit stopStream();
-//    emit stopRead();
-//    emit stopDetect();
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::on_backButtonRead_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(1);
     stopAll();
-//    emit stopCapture();
-//    emit stopStream();
-//    emit stopRead();
-//    emit stopDetect();
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 //Switching between pages
@@ -384,25 +393,27 @@ void MainWindow::on_backButtonSettings_clicked()
 void MainWindow::on_changeCamera_clicked()
 {
    bool was_playing = this->stream->isrunning;
-   stopAll();
-//   emit stopCapture();
-//   emit stopStream();
-//   emit stopRead();
-//   emit stopDetect();
+   bool was_recording = this->capture->isvideoWriter;
 
-   if(cameraNumber == 0) {
-       cameraNumber = 1;
+   // We cant change the video stream input of a recorded file,
+   // so don't stop stream.
+   if ( !stream->isReplay ) {
+       stopAll();
+   }
+
+   if(videoStream == "/dev/video0") {
+       videoStream = "/dev/video1";
        ui->cameraLabel->setText("Camera: Webcam");
    }
-   else if(cameraNumber == 1){
-        cameraNumber = 0;
+   else if(videoStream == "/dev/video1"){
+        videoStream = "/dev/video0";
         ui->cameraLabel->setText("Camera: Built-In");
    }
 
-   QThread::usleep(.25);
-
-   if (was_playing) {
-      emit startCapture(cameraNumber);
+   // We cant stop and then restart while recording
+   if (was_playing && !was_recording) {
+       QThread::usleep(.15);
+      emit startCapture(videoStream);
       emit startStream();
       emit passNotifier(this->notifier.soundFiles);
    }
@@ -410,25 +421,26 @@ void MainWindow::on_changeCamera_clicked()
 
 void MainWindow::on_changeOrient_clicked()
 {
-//    bool was_playing = this->stream->isrunning;
+//    bool was_playing = stream->isrunning;
+//    bool was_recording = capture->isvideoWriter;
+//    bool was_replay = stream->isReplay;
 //    stopAll();
 
-    if(leddarOrientation == false) {
-        leddarOrientation = true;
-        ui->orientLabel->setText("Orientation: Vertical");
+    leddarOrientation = !leddarOrientation;
 
+    if (leddarOrientation == VERTICAL) {
+       ui->orientLabel->setText("Orientation: Vertical");
     }
-    else if (leddarOrientation == true) {
-        leddarOrientation = false;
+    else { // HORIZONTAL
         ui->orientLabel->setText("Orientation: Horizontal");
     }
 
-    cout << "emitting: " << leddarOrientation << endl;
     emit setLeddarOrientation(leddarOrientation);
 
-    QThread::usleep(.1);
+    QThread::usleep(.15);
 
-//    if (was_playing) {
+    // We cant stop then start a recording or reading from a file
+//    if (was_playing && !was_recording && !was_replay) {
 //       emit startCapture(cameraNumber);
 //       emit startStream();
 //       emit passNotifier(this->notifier.soundFiles);
@@ -446,22 +458,19 @@ void MainWindow::on_Play_clicked()
     if(this->stream->isrunning)
     {
         stopAll();
-        QThread::usleep(.25);
         ui->Play->setText("Play");
     }
     else if (this->stream->isstopped)
     {
-       emit startCapture(cameraNumber);
+       emit startCapture(videoStream);
        emit startStream();
-       emit passNotifier(this->notifier.soundFiles);
        ui->Play->setText("Stop");
     }
     else if (!this->stream->isrunning)
     {
         emit streamButtonClicked();
-        emit startCapture(cameraNumber);
+        emit startCapture(videoStream);
         emit startStream();
-        emit passNotifier(this->notifier.soundFiles);
         ui->Play->setText("Stop");
     }
 }
@@ -487,4 +496,97 @@ void MainWindow::on_beepCheckBox_stateChanged()
     if(ui->speechCheckBox->isChecked()) {
         ui->speechCheckBox->setChecked(false);
     }
+}
+
+void MainWindow::on_go_ReadFromFile_button_clicked()
+{
+
+    if (!this->stream->isrunning) {
+
+//        ui->cameraLabel->setHidden(true);
+//        ui->changeCamera->setEnabled(false);
+
+        string leddarFileName = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
+                                                        "../LeddarData", tr("Leddar files (*.ltl)")).toStdString();
+        string videoFilename = ltlToAVI(leddarFileName);
+
+        cout << "Reading Leddar File: " << leddarFileName << endl;
+        cout << "Readnig Video File: " << videoFilename << endl;
+
+        this->updateSoundFiles();
+
+        // Given a filename, find the matching recording if there exists one start replay
+        QFileInfo check_file(QString::fromStdString(videoFilename));
+        if (check_file.exists() && check_file.isFile())
+        {
+            emit startCapture(videoFilename);
+
+        }
+        emit startRead(leddarFileName);
+    }
+}
+
+void MainWindow::on_go_StreamFromDevice_button_clicked()
+{
+    // TODO: Add logic for ReadData
+    // Check that LeddarStream is stopped
+    if (!this->stream->isrunning && this->stream->isstopped) {
+        updateSoundFiles();
+
+        emit startCapture(videoStream);
+        emit startStream();
+    }
+}
+
+void MainWindow::on_go_Record_button_clicked()
+{
+    stopAll();
+    // Check that stream is stopped
+//    cout << this->stream->isrunning << endl;
+//    cout << this->stream->isstopped << endl;
+    if (!stream->isrunning && stream->isstopped) {
+
+        // Open File dialog, get save name
+        QFileDialog dialog;
+        string leddarFileName = dialog.getSaveFileName(NULL,
+                                                 "Select or Create a new save file",
+                                                 "../LeddarData/",
+                                                 "Leddar Files (*.ltl)").toStdString();
+
+        if ( leddarFileName.length() > 0 ) {
+
+            // Check that the Leddar filename is valid
+            QFileInfo file(QString::fromStdString(leddarFileName));
+
+            // If no prefix, add one
+            if ( file.suffix().isEmpty() ) {
+                leddarFileName += ".ltl";
+            }
+
+            // Any other extension is invalid
+            else if ( file.completeSuffix() != "ltl") {
+                QMessageBox::information(this, tr("Invalid Extension"),
+                                         tr("Invalid file extension specified! .ltl files only!"));
+                cout << "File Extension should be .ltl!" << endl;
+                return;
+            }
+
+            // Video file has identical path, but different extension
+            string videoFileName = ltlToAVI(leddarFileName);
+            cout << "\nLeddar File Name: " << leddarFileName << endl;
+            cout << "Video Filename: " <<  videoFileName << endl;
+
+
+
+            this->updateSoundFiles();
+
+            emit startRecord(videoStream, videoFileName);
+            emit startStream();
+        } // if ( leddarFileName.length() > 0 ) {
+    } // if (!stream->isrunning && stream->isstopped) {
+}
+
+void MainWindow::on_go_StopAll_button_clicked()
+{
+    stopAll();
 }

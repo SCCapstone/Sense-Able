@@ -204,12 +204,12 @@ cout << "Exiting ReplayData" << endl;
  * We create a leddar handle and try to connect to a Leddar record file.
  * We close up by disconnecting and destroying our handle.
 ***/
-void LeddarStream::doReplay(QString fileName)
+void LeddarStream::doReplay(string fileName)
 {
 cout << "Entering doReplay" << endl;
     if (!isrunning || isstopped) return;
 
-    cout << fileName.toUtf8().constData() << endl;
+    cout << fileName<< endl;
 
     // Initialize the Leddar Handle.
 //    this->gHandle = LeddarCreate();
@@ -221,7 +221,9 @@ cout << "Entering doReplay" << endl;
     //std::copy(inputString.begin(), inputString.end(), lName);
     //lName[inputString.size()] = '\0';
 
-    char* lName = const_cast<char*>(fileName.toUtf8().constData());
+    char* lName = const_cast<char*>(fileName.c_str());
+            //fileName.c_str();
+//            <char*>(fileName);
 
     // Load the file record.
     if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
@@ -491,11 +493,12 @@ cout << "Exiting doStream" << endl;
  *
  * We then perform the reading from a file.
 ***/
-void LeddarStream::StartReplay(QString filename) {
+void LeddarStream::StartReplay(string filename) {
 cout << "Entering StartReplay" << endl;
     if (isrunning) return;
     isstopped = false;
     isrunning = true;
+    isReplay = true;
     emit running();
     doReplay(filename);
 cout << "Exiting StartReplay" << endl;
@@ -533,6 +536,7 @@ cout << "Entering StartStream" << endl;
     if (isrunning) return;
     isstopped = false;
     isrunning = true;
+    isReplay = false;
     emit running();
     doStream();
 cout << "Exiting StartStream" << endl;
@@ -549,6 +553,7 @@ cout << "Entering StopStream" << endl;
     if (!isrunning || isstopped) return;
     isstopped = true;
     isrunning = false;
+    isReplay = false;
     emit stopped();
 cout << "Exiting StopStream" << endl;
 }

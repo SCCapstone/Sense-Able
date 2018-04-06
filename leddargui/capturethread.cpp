@@ -125,24 +125,69 @@ void CaptureThread::overlayDistance(std::vector<float> distances, cv::Mat frame)
  * every frame of the camera feed.  The results are also emitted to
  * the main thread for display.
 ***/
-void CaptureThread::doCapture()
-
+void CaptureThread::doCapture(string videoFileName)
 {
+//    cout << "DO CAPTURE: " << isrunning << isstopped << endl;
     if (!isrunning || isstopped) return;
 
+    int fps = cap.get(CV_CAP_PROP_FPS);
+    long msdelay = 1.0/cap.get(CV_CAP_PROP_FPS) * 1000;
+    msdelay += 5;
+
+    cout << "CaptureThread::doCapture -> FPS: " << fps << endl;
+    cout << "CaptureThread::doCapture -> Delay: " << msdelay << endl;
+
 //    cv::HOGDescriptor hog;
-//    hog.load("../my_detector.yml");
+//    hog.load("../my_detector.yml"); 
 
+    // If save file is specified, construct a writing video stream.
+    if ( isvideoWriter  && cap.isOpened()) {
+        int frame_width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+        int frame_height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+//        ('H', '2', '6', '4')
+//        ('X', '2', '6', '4')
+        videoWriter.open(videoFileName, CV_FOURCC('M', 'J', 'P', 'G'),
+                         fps, cv::Size(frame_width, frame_height));
+    }
+
+    long lastFrameTime = getCurrentTime() - msdelay;
+    long nextFrameTime = lastFrameTime + msdelay + msdelay;
     while(isrunning && !isstopped){
-        if(cap.isOpened()){
+//        lastFrameTime = chrono::system_clock.now();
+        // Check that Video Stream is open
+        if( cap.isOpened() ) {
+            // Get the next frame
             cap >> frame;
-//            int a = imagedetect(hog, frame);
+            // Check that frame is not empty
+            if ( !frame.empty() ) {
+                // Write to file if file is specified
+                if ( isvideoWriter ) {
+                    // save frame to file
+                    videoWriter.write(frame);
+                }
+    //            int a = imagedetect(hog, frame);
 
-            if (distances.size() > 5){
-                overlayDistance(distances, frame);
+                if (distances.size() > 0){
+                    overlayDistance(distances, frame);
+                }
+                emit(newFrame(&frame));
+
+                // Set and check timer
+                long thisFrameTime = getCurrentTime();
+                if (thisFrameTime < nextFrameTime){
+                    // force wait (lastFrameTime + fps - thisFrameTime);
+                    QThread::msleep( nextFrameTime - thisFrameTime);
+//                    cout << "time to delay: " << (nextFrameTime - thisFrameTime) << endl;
+                }
+                lastFrameTime = getCurrentTime();
+                nextFrameTime = lastFrameTime + msdelay;
             }
-            emit(newFrame(&frame));
-        }
+            else {
+                // Lets start emiting a default frame
+                cout << "Empty Frame" << endl;
+                StopCapture();
+            }
+        } // if ( !frame.empty() ) {
         else{
             qDebug()<<"\nCamera not detected or is already in use. \nClose any other applications using the camera and try again.";
             StopCapture();
@@ -177,17 +222,39 @@ void CaptureThread::captureDataPoints(int index, std::vector<float> points, bool
  *
  * We then proceed with performing the camera capture.
 ***/
-void CaptureThread::StartCapture(int cameraNumber)
+void CaptureThread::StartCapture(string videoStream)
 {
     if (isrunning) return;
-    std::string cameraFileName = "/dev/video" + std::to_string(cameraNumber);
-//    cameraFileName = "/home/jms/Documents/School/Sense-Able/LeddarData/video_doorway_1.mp4";
-    if(!cap.isOpened()) cap.open(cameraFileName);
     isstopped = false;
     isrunning = true;
 
     emit running();
+
+    isvideoWriter = false;
+    cap.open(videoStream);
     doCapture();
+}
+
+/*********************************************************************
+ * Slot to start this thread.
+ *
+ * We establish that this thread is running, has not stopped, and emit that
+ * it is running to the main thread. If the camera has not been opened, we
+ * also open the camera.
+ *
+ * We then proceed with performing the camera capture.
+***/
+void CaptureThread::StartRecord(string videoStream, string videoFileName)
+{
+    if (isrunning) return;
+    isstopped = false;
+    isrunning = true;
+    emit running();
+
+    isvideoWriter = true;
+
+    cap.open(videoStream);
+    doCapture(videoFileName);
 }
 
 /*********************************************************************
@@ -198,19 +265,36 @@ void CaptureThread::StartCapture(int cameraNumber)
 ***/
 void CaptureThread::StopCapture()
 {
-    if (!isrunning || isstopped) return;
-
+    if (!isrunning ) return;
     isstopped = true;
     isrunning = false;
 
     // Emit an empty frame
-    emitEmptyFrame();
-    emit stopped();
+//    emitEmptyFrame();
     cap.release();
+    if (isvideoWriter) {
+        videoWriter.release();
+        cout << "videowriter = " << 1 << endl;
+    }
+    emit stopped();
+
+
+
 }
 
+/*********************************************************************
+ * Emits and empty frame
+ */
+// TODO:: Change from empty frame to default image. Empty frame crashes
 void CaptureThread::emitEmptyFrame()
 {
     cv::Mat emptyFrame;
     emit(newFrame(&emptyFrame));
+}
+
+long CaptureThread::getCurrentTime()
+{
+    long ms = chrono::duration_cast< chrono::milliseconds> (
+                chrono::system_clock::now().time_since_epoch()).count();
+    return ms;
 }

@@ -172,7 +172,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="Page_StreamData">
          <widget class="QLabel" name="objectLabel">
@@ -921,6 +921,58 @@
            <string>Play</string>
           </property>
          </widget>
+         <widget class="QPushButton" name="go_StreamFromDevice_button">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>160</y>
+            <width>181</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Stream From Device</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="go_ReadFromFile_button">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>200</y>
+            <width>161</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Read From File</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="go_Record_button">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>240</y>
+            <width>111</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Record</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="go_StopAll_button">
+          <property name="geometry">
+           <rect>
+            <x>470</x>
+            <y>610</y>
+            <width>121</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Stop</string>
+          </property>
+         </widget>
          <zorder>cameraView</zorder>
          <zorder>objectLabel</zorder>
          <zorder>backButtonGo</zorder>
@@ -929,6 +981,10 @@
          <zorder>cameraLabel</zorder>
          <zorder>orientLabel</zorder>
          <zorder>Play</zorder>
+         <zorder>go_StreamFromDevice_button</zorder>
+         <zorder>go_ReadFromFile_button</zorder>
+         <zorder>go_Record_button</zorder>
+         <zorder>go_StopAll_button</zorder>
         </widget>
         <widget class="QWidget" name="Page_Home">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -2037,7 +2093,7 @@
            <string>Back</string>
           </property>
          </widget>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>220</x>
@@ -2099,7 +2155,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>170</x>

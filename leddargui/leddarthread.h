@@ -43,18 +43,19 @@ public:
 
     LeddarHandle gHandle;
     bool isrunning, isstopped;
+    bool isReplay;
     bool orientation = VERTICAL;
 
 public slots:
 //    void StartReplay(QString filename);
-    void StartReplay(QString fileName);
+    void StartReplay(string fileName);
 //    void StopReplay();
     void StartStream();
     void StopStream();
     void setOrientation(bool aOrientation);
 
 private slots:
-    void doReplay(QString fileName);
+    void doReplay(string fileName);
     void doStream();
 
 signals:

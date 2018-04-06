@@ -5,7 +5,9 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
-#include <QTimer>
+
+#include <chrono>
+using namespace std;
 
 class CaptureThread : public QObject
 {
@@ -17,12 +19,22 @@ public:
     int imagedetect(cv::HOGDescriptor, cv::Mat);
     void overlayDistance(std::vector<float> distances, cv::Mat frame);
 
+    cv::VideoCapture cap;
+    cv::VideoWriter videoWriter;
+    cv::Mat frame;
+
+    bool isrunning, isstopped;
+    bool isvideoWriter;
+    std::vector<float> distances;
+
 public slots:
-    void StartCapture(int cameraNumber);
+    void StartCapture(string videoStream);
     void StopCapture();
 
+    void StartRecord(string videoStream, string videFileName);
+
 private slots:
-    void doCapture();
+    void doCapture(string videoFileName = "");
     void captureDataPoints(int index, std::vector<float> dataPoints, bool aOrientation);
 
 signals:
@@ -33,14 +45,9 @@ signals:
 //    void finished();
 
 private:
-    QTimer* timr;
-    cv::VideoCapture cap;
-    cv::Mat frame;
-
-    bool isrunning, isstopped;
-    std::vector<float> distances;
-
+    // Helper Functions
     void emitEmptyFrame();
+    long getCurrentTime();
 
 };
 

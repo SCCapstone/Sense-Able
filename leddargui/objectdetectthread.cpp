@@ -22,7 +22,7 @@
 ***/
 objectDetector::objectDetector()
 {
-cout << "Entering objectDetector" << endl;
+//cout << "Entering objectDetector" << endl;
     qRegisterMetaType<string>("string");
     isstopped = false;
     isrunning = false;
@@ -36,7 +36,7 @@ cout << "Entering objectDetector" << endl;
 }
 
 void objectDetector::doDetect(vector<float> distances) {
-cout << "Entering doDetect" << endl;
+//cout << "Entering doDetect" << endl;
     map<int, float> obstacle_fits;
     int obstacle_type = NONE;
     int running_fit = 0;
@@ -301,12 +301,13 @@ cout << "Entering yaxis_projection" << endl;
  * objects among the 'dataPoints' caught by the slot.
 ***/
 void objectDetector::StartDetect(int index, vector<float> dataPoints, bool aOrientation) {
-cout << "Entering StartDetect" << endl;
+//cout << "Entering StartDetect" << endl;
     if (isrunning) return;
     isstopped = false;
     isrunning = true;
     emit running();
     doDetect(dataPoints);
+//cout << "Exiting StartDetect" << endl;
 }
 
 /*********************************************************************
@@ -316,13 +317,13 @@ cout << "Entering StartDetect" << endl;
  * and emit that this thread has stopped.
 ***/
 void objectDetector::StopDetect() {
-cout << "Entering StopDetect" << endl;
+//cout << "Entering StopDetect" << endl;
     if (!isrunning || isstopped) return;
 
     isstopped = true;
     isrunning = false;
     emit stopped();
-cout << "Exiting StopDetect" << endl;
+//cout << "Exiting StopDetect" << endl;
 }
 
 /**********************************************************************
@@ -331,6 +332,6 @@ cout << "Exiting StopDetect" << endl;
  * Overwrite whatever the previous signal distance
 ***/
 void objectDetector::SetSignalDist(float new_dist) {
-cout << "Entering SetsignalDist" << endl;
+//cout << "Entering SetsignalDist" << endl;
     sig_dist = new_dist;
 }

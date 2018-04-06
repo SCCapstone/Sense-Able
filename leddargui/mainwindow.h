@@ -66,12 +66,21 @@ private slots:
 
     void on_beepCheckBox_stateChanged();
 
+    void on_go_ReadFromFile_button_clicked();
+
+    void on_go_StreamFromDevice_button_clicked();
+
+    void on_go_Record_button_clicked();
+
+    void on_go_StopAll_button_clicked();
+
 signals:
-    void startCapture(int);
+    void startCapture(string);
+    void startRecord(string, string);
     void stopCapture();
     void startStream();
     void stopStream();
-    void startRead(QString);
+    void startRead(string);
     void stopRead();
     void startDetect();
     void stopDetect();
@@ -92,7 +101,8 @@ private:
     QThread* objdetectThread;
 
     vector<string> cameraFileNames;
-    int cameraNumber = 0;
+    //TODO: FIND A BETTER DEFAULT
+    string videoStream = "/dev/video0";
     int leddarOrientation = true;
 
     QSignalMapper* signalMapper;
@@ -102,6 +112,7 @@ private:
     //Helper functions
     void stopAll();
     void updateSoundFiles();
+    string ltlToAVI(string leddarFile);
 };
 
 #endif // MAINWINDOW_H

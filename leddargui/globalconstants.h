@@ -5,7 +5,6 @@ using namespace std;
 
 #include <string>
 
-
 const static bool VERTICAL = true;
 const static bool HORIZONTAL = false;
 
