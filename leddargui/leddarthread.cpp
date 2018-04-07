@@ -147,6 +147,10 @@ cout << "Entering ReplayData" << endl;
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
 
+//    double *fps = 0;
+//    LeddarGetProperty(this->gHandle, PID_MEASUREMENT_RATE, 0, fps);
+//    cout << *fps << endl;
+
     while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE && isrunning && !isstopped)
     {
         lCount = LeddarGetDetectionCount( this->gHandle );
@@ -158,6 +162,7 @@ cout << "Entering ReplayData" << endl;
         CheckError(LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ) ));
 
         // When replaying a record, display the current index
+        cout << "Current Record size: "  << endl;
 
         if ( LeddarGetRecordSize( this->gHandle ) != 0 )
         {
@@ -183,7 +188,7 @@ cout << "Entering ReplayData" << endl;
         QCoreApplication::processEvents();
     }
     // Emit zeros
-    ClearData(lCount);
+    ClearData();
     cout << "Exiting ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
@@ -438,6 +443,52 @@ cout << "Entering FindAddressByIndex" << endl;
 cout << "Exiting FindAddressByIndex" << endl;
 }
 
+
+/*********************************************************************
+ * Function to record data captured by the Leddar into the given file
+ *
+ * input: fileName - Absolute filepath and name e.g. /home/x/y.ltl
+ *
+***/
+void LeddarStream::RecordLiveData(string fileName)
+{
+    cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
+    // Get the index marking the end of the Path to the file
+    int last_slash = fileName.find_last_of('/');
+
+    // Get the path and cast to char*
+    // Ascii or utf 8 char *
+    char* fileDir = const_cast<char*>(fileName.substr(0, last_slash).c_str());
+
+    // Set the save directory.
+    LeddarConfigureRecording(fileDir, 0, 0);
+
+    // Leddar recording does not allow us to specify
+//    char* temp_file = const_cast<char*>(fileName.substr(last_slash+1).c_str());
+    LeddarChar temp_file[255];
+
+    cout << "LeddarStream::RecordLiveData -> file_dir: " << fileDir << endl;
+//    cout << "LeddarStream::RecordLiveData -> temp_file: " << temp_file << endl;
+//    cout << "LeddarStream::RecordLiveData -> fileName: " << fileName << endl;
+//    cout << "LeddarStream::RecordLiveData -> fileOnly: " << fileName.substr(last_slash + 1) << endl;
+
+
+
+    cout << "LeddarStream::RecordLiveData -> Entering LeddarStartRecording" << endl;
+    CheckError( LeddarStartRecording( this->gHandle, temp_file ) );
+    cout << "LeddarStream::RecordLiveData -> Exiting LeddarStartRecording" << endl;
+
+    // Throw the thread into a sleeping loop until leddar device fails
+//    while ( isrunning && !isstopped
+//                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
+//    //        cout << "LeddarStream::RecordLiveData -> GOING TO SLEEP" << endl;
+//        }
+    QThread::sleep(10);
+    LeddarStopRecording(this->gHandle);
+    cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
+
+
+}
 /*********************************************************************
  * Function to stream from the LIDAR sensor.
  *
@@ -450,9 +501,9 @@ cout << "Exiting FindAddressByIndex" << endl;
  * NOTE: This connection will only work if there is exactly 1 USB sensor
  * plugged into the PC.
 ***/
-void LeddarStream::doStream()
+void LeddarStream::doStream(string fileName)
 {
-cout << "Entering doStream" << endl;
+cout << "LeddarStream::doStream -> Entering doStream" << endl;
 
     char lAddresses[256];
     char* lAddress = NULL;
@@ -469,8 +520,15 @@ cout << "Entering doStream" << endl;
     }
     if ( LeddarConnect( this->gHandle, lConnectionType, lAddress ) == LD_SUCCESS )
     {
+        cout << "LeddarStream::doStream -> LeddarConnection Successful" << endl;
         if (LeddarGetConnected(this->gHandle) == LD_SUCCESS && isrunning && !isstopped) {
-            ReadLiveData();
+            if ( isRecording ) {
+                cout << "LeddarStream::doStream -> We are Recording" << endl;
+                RecordLiveData(fileName);
+            }
+            else {
+                ReadLiveData();
+            }
         }
     }
     else
@@ -482,7 +540,7 @@ cout << "Entering doStream" << endl;
 
     QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
 //    emit this->finished();
-cout << "Exiting doStream" << endl;
+cout << "LeddarStream::doStream -> Exiting doStream" << endl;
 }
 
 /*********************************************************************
@@ -543,6 +601,28 @@ cout << "Exiting StartStream" << endl;
 }
 
 /*********************************************************************
+ * Slot to start streaming data from the LIDAR.
+ *
+ * We establish that this thread is running, has not been stopped,
+ * and emit that it is running to the main thread.
+ *
+ * We then perform the streaming from the LIDAR sensor.
+***/
+void LeddarStream::StartRecord(string fileName) {
+cout << "Entering StartRecord" << endl;
+    if (isrunning) return;
+    isstopped = false;
+    isrunning = true;
+    emit running();
+
+    isReplay = false;
+    isRecording = true;
+    doStream(fileName);
+cout << "Exiting StartRecord" << endl;
+}
+
+
+/*********************************************************************
  * Slot to stop streaming data from the LIDAR.
  *
  * We establish that this thread is not running, has been stopped,
@@ -553,8 +633,10 @@ cout << "Entering StopStream" << endl;
     if (!isrunning || isstopped) return;
     isstopped = true;
     isrunning = false;
+
     isReplay = false;
     emit stopped();
+    ClearData();
 cout << "Exiting StopStream" << endl;
 }
 
@@ -578,18 +660,20 @@ void LeddarStream::ClearData(unsigned int count)
 void LeddarStream::setOrientation(bool aOrientation)
 {
 //    cout << "EMISSION RECEIVED " << aOrientation << endl;
-    if (aOrientation == VERTICAL) {
-        this->orientation = VERTICAL;
-//        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
-    }
-    else if (aOrientation == HORIZONTAL) {
-        this->orientation = HORIZONTAL;
-//        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
+    orientation = aOrientation;
 
-    }
-    else{
-        std::cout << "INVALID ORIENTATION VALUE" << std::endl;
-    }
+//    if (aOrientation == VERTICAL) {
+//        this->orientation = VERTICAL;
+////        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
+//    }
+//    else if (aOrientation == HORIZONTAL) {
+//        this->orientation = HORIZONTAL;
+////        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
+
+//    }
+//    else{
+//        std::cout << "INVALID ORIENTATION VALUE" << std::endl;
+//    }
 }
 
 

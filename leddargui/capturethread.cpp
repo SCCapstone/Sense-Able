@@ -127,7 +127,6 @@ void CaptureThread::overlayDistance(std::vector<float> distances, cv::Mat frame)
 ***/
 void CaptureThread::doCapture(string videoFileName)
 {
-//    cout << "DO CAPTURE: " << isrunning << isstopped << endl;
     if (!isrunning || isstopped) return;
 
     int fps = cap.get(CV_CAP_PROP_FPS);
@@ -141,7 +140,10 @@ void CaptureThread::doCapture(string videoFileName)
 //    hog.load("../my_detector.yml"); 
 
     // If save file is specified, construct a writing video stream.
-    if ( isvideoWriter  && cap.isOpened()) {
+    if ( isRecording  && cap.isOpened()) {
+
+        cout << "CaptureThread::doCapture -> CaptureThread is recording" << endl;
+
         int frame_width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
         int frame_height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
 //        ('H', '2', '6', '4')
@@ -161,7 +163,7 @@ void CaptureThread::doCapture(string videoFileName)
             // Check that frame is not empty
             if ( !frame.empty() ) {
                 // Write to file if file is specified
-                if ( isvideoWriter ) {
+                if ( isRecording ) {
                     // save frame to file
                     videoWriter.write(frame);
                 }
@@ -230,7 +232,7 @@ void CaptureThread::StartCapture(string videoStream)
 
     emit running();
 
-    isvideoWriter = false;
+    isRecording = false;
     cap.open(videoStream);
     doCapture();
 }
@@ -251,7 +253,7 @@ void CaptureThread::StartRecord(string videoStream, string videoFileName)
     isrunning = true;
     emit running();
 
-    isvideoWriter = true;
+    isRecording = true;
 
     cap.open(videoStream);
     doCapture(videoFileName);
@@ -269,27 +271,35 @@ void CaptureThread::StopCapture()
     isstopped = true;
     isrunning = false;
 
+    cap.release();
+    if (isRecording) {
+        videoWriter.release();
+    }
     // Emit an empty frame
 //    emitEmptyFrame();
-    cap.release();
-    if (isvideoWriter) {
-        videoWriter.release();
-        cout << "videowriter = " << 1 << endl;
-    }
     emit stopped();
-
-
 
 }
 
 /*********************************************************************
  * Emits and empty frame
  */
-// TODO:: Change from empty frame to default image. Empty frame crashes
+// TODO:: Change from empty frame to default image. Empty frame crashes. Default image also crashes
 void CaptureThread::emitEmptyFrame()
 {
-    cv::Mat emptyFrame;
-    emit(newFrame(&emptyFrame));
+
+//    cv::Mat emptyFrame;
+//    emit(newFrame(&emptyFrame));
+    cv::Mat emptyFrame = cv::imread(defaultImage);
+//    cout << emptyFrame.data << endl;
+//    cout << emptyFrame.cols << endl;
+//    cout << emptyFrame.rows << endl;
+//    cout << emptyFrame.step << endl;
+    if ( ! emptyFrame.empty()){
+        cout << "emitting" << endl;
+        emit(newFrame(&emptyFrame));
+
+    }
 }
 
 long CaptureThread::getCurrentTime()

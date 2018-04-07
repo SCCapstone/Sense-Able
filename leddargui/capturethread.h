@@ -22,9 +22,10 @@ public:
     cv::VideoCapture cap;
     cv::VideoWriter videoWriter;
     cv::Mat frame;
+    string defaultImage = "/home/jms/Documents/School/Sense-Able/LeddarData/default.jpg";
 
     bool isrunning, isstopped;
-    bool isvideoWriter;
+    bool isRecording;
     std::vector<float> distances;
 
 public slots:

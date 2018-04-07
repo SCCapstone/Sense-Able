@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->capture->moveToThread(captureThread);
     connect(this, SIGNAL(startCapture(string)), capture, SLOT(StartCapture(string)));
-    connect(this, SIGNAL(startRecord(string,string)), capture, SLOT(StartRecord(string,string)));
+    connect(this, SIGNAL(emitStartVideoRecord(string,string)), capture, SLOT(StartRecord(string,string)));
     connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
     connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
 
@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(stopStream()), stream, SLOT(StopStream()));
     connect(this, SIGNAL(startRead(string)), stream, SLOT(StartReplay(string)));
     connect(this, SIGNAL(stopRead()), stream, SLOT(StopStream()));
+    connect(this, SIGNAL(emitStartLeddarRecord(string)), stream, SLOT(StartRecord(string)));
     connect(this, SIGNAL(setLeddarOrientation(bool)), stream, SLOT(setOrientation(bool)));
 
 
@@ -285,7 +286,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrie
  * Window 'label', e.g. "Wall," "Stairs," etc.
 ***/
 void MainWindow::catchDetectedObject(int object) {
-    cout << "Object Detected: " << object << endl;
+    cout << "MainWindow::catchDetectedObject -> Object Detected: " << object << endl;
     string objectName = "None";
 
     if ( object != NONE ) {
@@ -393,7 +394,7 @@ void MainWindow::on_backButtonSettings_clicked()
 void MainWindow::on_changeCamera_clicked()
 {
    bool was_playing = this->stream->isrunning;
-   bool was_recording = this->capture->isvideoWriter;
+   bool was_recording = this->capture->isRecording;
 
    // We cant change the video stream input of a recorded file,
    // so don't stop stream.
@@ -553,36 +554,41 @@ void MainWindow::on_go_Record_button_clicked()
                                                  "../LeddarData/",
                                                  "Leddar Files (*.ltl)").toStdString();
 
-        if ( leddarFileName.length() > 0 ) {
-
-            // Check that the Leddar filename is valid
-            QFileInfo file(QString::fromStdString(leddarFileName));
-
-            // If no prefix, add one
-            if ( file.suffix().isEmpty() ) {
-                leddarFileName += ".ltl";
-            }
-
-            // Any other extension is invalid
-            else if ( file.completeSuffix() != "ltl") {
-                QMessageBox::information(this, tr("Invalid Extension"),
-                                         tr("Invalid file extension specified! .ltl files only!"));
-                cout << "File Extension should be .ltl!" << endl;
-                return;
-            }
-
-            // Video file has identical path, but different extension
-            string videoFileName = ltlToAVI(leddarFileName);
-            cout << "\nLeddar File Name: " << leddarFileName << endl;
-            cout << "Video Filename: " <<  videoFileName << endl;
+        // User exited file dialog. No File selected
+        if (leddarFileName.length() == 0 ) {
+            return;
+        }
 
 
+        // Check that the Leddar filename is valid
+        QFileInfo file(QString::fromStdString(leddarFileName));
 
-            this->updateSoundFiles();
+        // If no prefix, add one
+        if ( file.suffix().isEmpty() ) {
+            leddarFileName += ".ltl";
+        }
+        // Any other extension is invalid
+        else if ( file.completeSuffix() != "ltl") {
+            QMessageBox::information(this, tr("Invalid Extension"),
+                                     tr("Invalid file extension specified! .ltl files only!"));
+            cout << "File Extension should be .ltl!" << endl;
+            return;
+        }
 
-            emit startRecord(videoStream, videoFileName);
-            emit startStream();
-        } // if ( leddarFileName.length() > 0 ) {
+        // Video file has identical path, but different extension
+        string videoFileName = ltlToAVI(leddarFileName);
+
+        cout << "\nLeddar File Name: " << leddarFileName << endl;
+        cout << "Video Filename: " <<  videoFileName << endl;
+
+
+
+        this->updateSoundFiles();
+
+        emit emitStartVideoRecord(videoStream, videoFileName);
+//        emit startStream();
+        emit emitStartLeddarRecord(leddarFileName);
+
     } // if (!stream->isrunning && stream->isstopped) {
 }
 

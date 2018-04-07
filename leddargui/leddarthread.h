@@ -35,15 +35,16 @@ public:
     void ReplayData(void);
     //void DataCallback( void *aHandle );
     void ReadLiveData( void );
+    void RecordLiveData(string fileName);
     void ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize );
     char* FindAddressByIndex( unsigned int aIndex, char* aAddresses );
 
     // Helper function
-    void ClearData(unsigned int count);
+    void ClearData(unsigned int count = 16);
 
     LeddarHandle gHandle;
     bool isrunning, isstopped;
-    bool isReplay;
+    bool isReplay, isRecording;
     bool orientation = VERTICAL;
 
 public slots:
@@ -52,11 +53,12 @@ public slots:
 //    void StopReplay();
     void StartStream();
     void StopStream();
+    void StartRecord(string fileName);
     void setOrientation(bool aOrientation);
 
 private slots:
     void doReplay(string fileName);
-    void doStream();
+    void doStream(string fileName = "");
 
 signals:
     void finished();

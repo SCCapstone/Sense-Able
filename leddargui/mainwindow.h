@@ -75,21 +75,29 @@ private slots:
     void on_go_StopAll_button_clicked();
 
 signals:
+    // Signals to capturethread.cpp
     void startCapture(string);
-    void startRecord(string, string);
+    void emitStartVideoRecord(string, string);
     void stopCapture();
+
+    // Signals to leddarthread.cpp
     void startStream();
     void stopStream();
     void startRead(string);
-    void stopRead();
-    void startDetect();
-    void stopDetect();
-    void clicked();
-
-    void streamButtonClicked();
-    void passNotifier(vector<string>);
-    void setSigDist(float);
+    void stopRead(); // Deprecated?
+    void emitStartLeddarRecord(string);
     void setLeddarOrientation(bool);
+
+    // Signals to ObjectDetect
+    void startDetect(); // Deprecated?
+    void stopDetect();  // Deprecated?
+    void setSigDist(float);
+
+    // Signals to Usernotifier
+    void passNotifier(vector<string>); // Deprecrated?
+
+    void clicked(); // deprecated?
+    void streamButtonClicked(); // deprecated?
 
 private:
     Ui::MainWindow *ui;
