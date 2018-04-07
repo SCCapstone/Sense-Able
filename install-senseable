@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Script to install all necessary packages for the Leddar Gui
+
+# install necesasry packages
+apt update
+apt upgrade -y
+apt install libqt5serialport5-dev
+
+# Create Clean rules file
+rm /etc/udev/rules.d/50-leddargui.rules
+touch /etc/udev/rules.d/50-leddargui.rules
+
+# Give the Leddar Device USB permissions
+# NOTE: IF YOU USE A NEW DEVICE YOU WILL NEED TO ADJUST THIS COMMAND
+# Check Leddar Vendor and idProduct number using lsusb -vvv
+echo 'SUBSYSTEMS=="usb", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", GROUP="users", MODE="0776"' >> /etc/udev/rules.d/50-leddargui.rules
+
+# Reload
+udevadm control --reload
