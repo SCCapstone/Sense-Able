@@ -39,6 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //Will eventually start on the Landing Page.
     //Index has been changed so it now starts on the Landing page
     ui->stackedWidget->setCurrentIndex(1);
+    //Set distance slider default. The value is divided
+    //by 2 to get fractions of meters from 1.0m to 50.0m.
+    ui->notificationDistanceSlider->setValue(50.0);
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
     this->captureThread = new QThread();

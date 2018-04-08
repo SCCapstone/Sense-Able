@@ -172,7 +172,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="Page_StreamData">
          <widget class="QLabel" name="objectLabel">
@@ -2149,7 +2149,7 @@
               </size>
              </property>
              <property name="text">
-              <string> 0 m</string>
+              <string> 1 m</string>
              </property>
             </widget>
            </item>
