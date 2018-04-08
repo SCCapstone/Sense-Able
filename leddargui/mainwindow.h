@@ -22,11 +22,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_readDataButton_clicked();
+    //void on_readDataButton_clicked();
 
-    void on_readDataButton_clicked(bool checked);
+    //void on_readDataButton_clicked(bool checked);
 
-    void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
+    //void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
 
     void catchDetectedObject(int object);
 
@@ -34,7 +34,7 @@ private slots:
 
     void frameCaptured(cv::Mat* frame);
 
-    void on_cancelButtonRead_clicked();
+    //void on_cancelButtonRead_clicked();
 
     void on_settingsPageButton_clicked();
 
@@ -42,7 +42,7 @@ private slots:
 
     void on_notificationsButton_clicked();
 
-    void on_readDataPageButton_clicked();
+    //void on_readDataPageButton_clicked();
 
     void on_backButton_clicked();
 
@@ -50,15 +50,13 @@ private slots:
 
     void on_backButtonSettings_clicked();
 
-    void on_backButtonRead_clicked();
+    //void on_backButtonRead_clicked();
 
     void on_changeCamera_clicked();
 
     void on_changeOrient_clicked();
 
     void on_QuitButton_clicked();
-
-    void on_Play_clicked();
 
     void on_notificationDistanceSlider_valueChanged(int value);
 

@@ -39,6 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //Will eventually start on the Landing Page.
     //Index has been changed so it now starts on the Landing page
     ui->stackedWidget->setCurrentIndex(1);
+    //Set distance slider default. The value is divided
+    //by 2 to get fractions of meters from 1.0m to 50.0m.
+    ui->notificationDistanceSlider->setValue(50.0);
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
     this->captureThread = new QThread();
@@ -164,7 +167,7 @@ string MainWindow::ltlToAVI(string leddarFile)
  *
  * If data is already streaming, this button does nothing.
 ***/
-void MainWindow::on_readDataButton_clicked()
+/*void MainWindow::on_readDataButton_clicked()
 {
     if (!this->stream->isrunning) {
         string leddarFileName = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
@@ -185,7 +188,7 @@ void MainWindow::on_readDataButton_clicked()
         }
         emit startRead(leddarFileName);
     }
-}
+}*/
 
 /*********************************************************************
  * Function to run when the streamButton is clicked.
@@ -251,12 +254,12 @@ void MainWindow::updateSoundFiles()
  *
  * Required; won't go away.
 ***/
-void MainWindow::on_readDataButton_clicked(bool checked)
+/*void MainWindow::on_readDataButton_clicked(bool checked)
 {
     if(checked) {
         // do nothing
     }
-}
+}/*
 
 /*********************************************************************
  * Slot to catch leddar data.
@@ -265,7 +268,7 @@ void MainWindow::on_readDataButton_clicked(bool checked)
  * of 'dataPoints' emmitted.  We then display these data points as
  * Window 'labels'.
 ***/
-void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrientation) {
+/*void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrientation) {
     QLabel* labels[] = {ui->pt1, ui->pt2,  ui->pt3,
                        ui->pt4,  ui->pt5,  ui->pt6,
                        ui->pt7,  ui->pt8,  ui->pt9,
@@ -277,7 +280,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrie
     for (int i = 0; i <= 15; i++) {
         (labels[i])->setText(QString::number(dataPoints.at(i)));
     }
-}
+} */
 
 /*********************************************************************
  * Slot to catch the object detected.
@@ -325,30 +328,12 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 }
 
 /*********************************************************************
- * Function to run when the cancelButtonRead is clicked.
- *
- * We stop all threads from executing processes, except the main thread.
- * Does the same as the above button but is used for a different page of
- * the application
-***/
-void MainWindow::on_cancelButtonRead_clicked()
-{
-    stopAll();
-}
-
-/*********************************************************************
  * Function to run when the back Button on the go page is clicked.
  *
  * We stop all threads from executing processes, except the main thread.
  * and then we go back to the main page of the app
 ***/
 void MainWindow::on_backButtonGo_clicked()
-{
-    stopAll();
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
-void MainWindow::on_backButtonRead_clicked()
 {
     stopAll();
     ui->stackedWidget->setCurrentIndex(1);
@@ -373,11 +358,6 @@ void MainWindow::on_actionMain_Menu_triggered()
 void MainWindow::on_notificationsButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(3);
-}
-
-void MainWindow::on_readDataPageButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(4);
 }
 
 void MainWindow::on_backButton_clicked()
@@ -451,29 +431,6 @@ void MainWindow::on_changeOrient_clicked()
 void MainWindow::on_QuitButton_clicked()
 {
     emit clicked();
-}
-
-void MainWindow::on_Play_clicked()
-{
-    // TODO: Add logic for ReadData
-    if(this->stream->isrunning)
-    {
-        stopAll();
-        ui->Play->setText("Play");
-    }
-    else if (this->stream->isstopped)
-    {
-       emit startCapture(videoStream);
-       emit startStream();
-       ui->Play->setText("Stop");
-    }
-    else if (!this->stream->isrunning)
-    {
-        emit streamButtonClicked();
-        emit startCapture(videoStream);
-        emit startStream();
-        ui->Play->setText("Stop");
-    }
 }
 
 //Sets notification distance and sends value to objectdetectthead
