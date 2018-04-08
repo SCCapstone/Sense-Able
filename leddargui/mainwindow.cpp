@@ -78,9 +78,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setLeddarOrientation(bool)), stream, SLOT(setOrientation(bool)));
 
 
-    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
-                    SLOT(catchDataPoints(int,vector<float>, bool)),
-                    Qt::QueuedConnection);
+//    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
+//                    SLOT(catchDataPoints(int,vector<float>, bool)),
+//                    Qt::QueuedConnection);
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
                     objdetector, SLOT(StartDetect(int, vector<float>, bool)),
                     Qt::QueuedConnection);
