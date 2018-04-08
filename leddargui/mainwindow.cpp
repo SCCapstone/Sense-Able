@@ -541,10 +541,7 @@ void MainWindow::on_go_StreamFromDevice_button_clicked()
 
 void MainWindow::on_go_Record_button_clicked()
 {
-    stopAll();
     // Check that stream is stopped
-//    cout << this->stream->isrunning << endl;
-//    cout << this->stream->isstopped << endl;
     if (!stream->isrunning && stream->isstopped) {
 
         // Open File dialog, get save name
@@ -586,7 +583,6 @@ void MainWindow::on_go_Record_button_clicked()
         this->updateSoundFiles();
 
         emit emitStartVideoRecord(videoStream, videoFileName);
-//        emit startStream();
         emit emitStartLeddarRecord(leddarFileName);
 
     } // if (!stream->isrunning && stream->isstopped) {

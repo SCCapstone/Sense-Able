@@ -32,6 +32,7 @@
 #include <QCoreApplication>
 #include <QThread>
 #include <QObject>
+#include <QFile>
 #include <functional>
 
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
@@ -452,42 +453,53 @@ cout << "Exiting FindAddressByIndex" << endl;
 ***/
 void LeddarStream::RecordLiveData(string fileName)
 {
-    cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
+cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
+
+    // Redundant Code
+    if ( !isrunning || isstopped) {
+        cout << "LeddarStream::RecordLiveData -> Stopping Thread" << endl;
+        if ( LeddarGetRecording(this->gHandle) ) {
+            LeddarStopRecording(this->gHandle);
+        }
+        return;
+    }
+
     // Get the index marking the end of the Path to the file
     int last_slash = fileName.find_last_of('/');
 
-    // Get the path and cast to char*
-    // Ascii or utf 8 char *
-    char* fileDir = const_cast<char*>(fileName.substr(0, last_slash).c_str());
+    // Get the path and convert to char array
+    char file_dir[fileName.length() + 1];
+    strcpy(file_dir, fileName.substr(0,last_slash).c_str());
 
     // Set the save directory.
-    LeddarConfigureRecording(fileDir, 0, 0);
+    LeddarConfigureRecording(file_dir, 0, 0);
 
-    // Leddar recording does not allow us to specify
-//    char* temp_file = const_cast<char*>(fileName.substr(last_slash+1).c_str());
+    // Leddar recording does not allow us to specify the sabe file before hand
     LeddarChar temp_file[255];
-
-    cout << "LeddarStream::RecordLiveData -> file_dir: " << fileDir << endl;
-//    cout << "LeddarStream::RecordLiveData -> temp_file: " << temp_file << endl;
-//    cout << "LeddarStream::RecordLiveData -> fileName: " << fileName << endl;
-//    cout << "LeddarStream::RecordLiveData -> fileOnly: " << fileName.substr(last_slash + 1) << endl;
-
-
 
     cout << "LeddarStream::RecordLiveData -> Entering LeddarStartRecording" << endl;
     CheckError( LeddarStartRecording( this->gHandle, temp_file ) );
     cout << "LeddarStream::RecordLiveData -> Exiting LeddarStartRecording" << endl;
 
     // Throw the thread into a sleeping loop until leddar device fails
-//    while ( isrunning && !isstopped
-//                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
-//    //        cout << "LeddarStream::RecordLiveData -> GOING TO SLEEP" << endl;
-//        }
-    QThread::sleep(10);
+    while ( isrunning && !isstopped
+                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
+//        LeddarWaitForData(this->gHandle, 5000);
+//        QThread::msleep(2000);
+//        cout << "LeddarStream::RecordLiveData -> GOING TO SLEEP" << endl;
+        QCoreApplication::processEvents();
+    }
+
+    //Stop The Recording
     LeddarStopRecording(this->gHandle);
-    cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
+
+    // Rename the file
+    QFile::rename(QString(temp_file), QString::fromStdString(fileName));
 
 
+
+
+cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
 }
 /*********************************************************************
  * Function to stream from the LIDAR sensor.
@@ -538,7 +550,7 @@ cout << "LeddarStream::doStream -> Entering doStream" << endl;
 
     LeddarDisconnect( gHandle );
 
-    QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
+//    QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
 //    emit this->finished();
 cout << "LeddarStream::doStream -> Exiting doStream" << endl;
 }
@@ -551,12 +563,15 @@ cout << "LeddarStream::doStream -> Exiting doStream" << endl;
  *
  * We then perform the reading from a file.
 ***/
-void LeddarStream::StartReplay(string filename) {
+void LeddarStream::StartReplay(string filename)
+{
 cout << "Entering StartReplay" << endl;
     if (isrunning) return;
     isstopped = false;
     isrunning = true;
+
     isReplay = true;
+    isRecording = false;
     emit running();
     doReplay(filename);
 cout << "Exiting StartReplay" << endl;
@@ -589,12 +604,15 @@ cout << "Exiting StopReplay" << endl;
  *
  * We then perform the streaming from the LIDAR sensor.
 ***/
-void LeddarStream::StartStream() {
+void LeddarStream::StartStream()
+{
 cout << "Entering StartStream" << endl;
     if (isrunning) return;
     isstopped = false;
     isrunning = true;
+
     isReplay = false;
+    isRecording = false;
     emit running();
     doStream();
 cout << "Exiting StartStream" << endl;
@@ -608,9 +626,10 @@ cout << "Exiting StartStream" << endl;
  *
  * We then perform the streaming from the LIDAR sensor.
 ***/
-void LeddarStream::StartRecord(string fileName) {
+void LeddarStream::StartRecord(string fileName)
+{
 cout << "Entering StartRecord" << endl;
-    if (isrunning) return;
+    if (isrunning || !isstopped) return;
     isstopped = false;
     isrunning = true;
     emit running();
@@ -621,6 +640,15 @@ cout << "Entering StartRecord" << endl;
 cout << "Exiting StartRecord" << endl;
 }
 
+void LeddarStream::StopRecord()
+{
+    if ( LeddarGetRecording(this->gHandle) == LD_SUCCESS)
+    {
+        LeddarStopRecording(this->gHandle);
+        cout << "LeddarStream::StopRecord -> Stopped Recording" << endl;
+    }
+}
+
 
 /*********************************************************************
  * Slot to stop streaming data from the LIDAR.
@@ -628,13 +656,16 @@ cout << "Exiting StartRecord" << endl;
  * We establish that this thread is not running, has been stopped,
  * and emit that it has been stopped to the main thread.
 ***/
-void LeddarStream::StopStream() {
+void LeddarStream::StopStream()
+{
 cout << "Entering StopStream" << endl;
     if (!isrunning || isstopped) return;
     isstopped = true;
     isrunning = false;
 
     isReplay = false;
+    isRecording = false;
+    StopRecord();
     emit stopped();
     ClearData();
 cout << "Exiting StopStream" << endl;

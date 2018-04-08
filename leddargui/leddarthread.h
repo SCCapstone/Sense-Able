@@ -36,6 +36,7 @@ public:
     //void DataCallback( void *aHandle );
     void ReadLiveData( void );
     void RecordLiveData(string fileName);
+    void StopRecord();
     void ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize );
     char* FindAddressByIndex( unsigned int aIndex, char* aAddresses );
 
