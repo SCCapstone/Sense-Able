@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     // Perform behavioral tests.
     QtBehaviorTestSuite suite;
-//    suite.runTests();
+    suite.runTests();
 
     // Show the app.
     w.show();
