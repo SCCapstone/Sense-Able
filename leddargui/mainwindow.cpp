@@ -466,8 +466,12 @@ void MainWindow::on_go_ReadFromFile_button_clicked()
 
 void MainWindow::on_go_StreamFromDevice_button_clicked()
 {
+    //Testing signal
+    emit streamButtonClicked();
+
     // TODO: Add logic for ReadData
     // Check that LeddarStream is stopped
+
     if (!this->stream->isrunning && this->stream->isstopped) {
         updateSoundFiles();
 

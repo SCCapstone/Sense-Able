@@ -97,7 +97,9 @@ signals:
     void passNotifier(vector<string>); // Deprecrated?
 
     void clicked(); // deprecated?
-    void streamButtonClicked(); // deprecated?
+
+    //used for behavioral tests
+    void streamButtonClicked();
 
 private:
     Ui::MainWindow *ui;
