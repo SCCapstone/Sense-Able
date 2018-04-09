@@ -17,14 +17,16 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
     QSignalSpy spy(&window, SIGNAL(streamButtonClicked()));
 
     //Get the buttons
-    QWidget *button = window.findChild<QPushButton*>("streamButton");
+    QWidget *streamButton = window.findChild<QPushButton*>("streamButton");
     //QWidget *readButton = window.findChild<QPushButton*>("readDataButton");
+    QWidget *quitButton = window.findChild<QPushButton*>("QuitButton");
 
     // Simulate clicking the buttons
-    QWidget *cancelButton = window.findChild<QPushButton*>("cancelButton");
-    QTest::mouseClick(button, Qt::LeftButton, Qt::NoModifier);
-    QTest::mouseClick(cancelButton, Qt::LeftButton, Qt::NoModifier);
+   // QWidget *cancelButton = window.findChild<QPushButton*>("cancelButton");
+    QTest::mouseClick(streamButton, Qt::LeftButton, Qt::NoModifier);
+    //QTest::mouseClick(cancelButton, Qt::LeftButton, Qt::NoModifier);
     //QTest::mouseClick(readButton, Qt::LeftButton, Qt::NoModifier);
+    QTest::mouseClick(quitButton, Qt::LeftButton, Qt::NoModifier);
 
 
     cout << "testStreamButtonClicked:  ";
