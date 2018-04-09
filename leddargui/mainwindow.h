@@ -52,7 +52,7 @@ private slots:
 
     //void on_backButtonRead_clicked();
 
-    void on_changeCamera_clicked();
+   // void on_changeCamera_clicked();
 
     void on_changeOrient_clicked();
 
@@ -71,6 +71,8 @@ private slots:
     void on_go_Record_button_clicked();
 
     void on_go_StopAll_button_clicked();
+
+    void on_cameraComboBox_currentIndexChanged(int index);
 
 signals:
     // Signals to capturethread.cpp
