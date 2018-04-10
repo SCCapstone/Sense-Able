@@ -26,9 +26,15 @@ CaptureThread::CaptureThread()
 
     //0: opens webcam
     //this->cap.open(0);
-    isstopped = false;
+    isstopped = true;
     isrunning = false;
+
+    defaultImageFile = "../LeddarData/default.jpg";
+    defaultImage = cv::imread(defaultImageFile);
 }
+/*********************************************************************
+ * The usual deconstructor
+***/
 CaptureThread::~CaptureThread()
 {
     return;
@@ -79,7 +85,9 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
  *
  * This fuction takes an image and a set of points and displays the distance on the frame
  ***/
-void CaptureThread::overlayDistance(std::vector<float> distances, cv::Mat frame) {
+void CaptureThread::overlayDistance(cv::Mat frame) {
+
+    if (distances.size() == 0) return;
 
     float max_dist = 10.;
     int height = frame.size().height;
@@ -146,8 +154,7 @@ void CaptureThread::doCapture(string videoFileName)
 
         int frame_width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
         int frame_height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
-//        ('H', '2', '6', '4')
-//        ('X', '2', '6', '4')
+
         videoWriter.open(videoFileName, CV_FOURCC('M', 'J', 'P', 'G'),
                          fps, cv::Size(frame_width, frame_height));
     }
@@ -156,21 +163,24 @@ void CaptureThread::doCapture(string videoFileName)
     long nextFrameTime = lastFrameTime + msdelay + msdelay;
     while(isrunning && !isstopped){
 //        lastFrameTime = chrono::system_clock.now();
+
         // Check that Video Stream is open
         if( cap.isOpened() ) {
             // Get the next frame
             cap >> frame;
             // Check that frame is not empty
             if ( !frame.empty() ) {
+
                 // Write to file if file is specified
                 if ( isRecording ) {
                     // save frame to file
                     videoWriter.write(frame);
                 }
+
     //            int a = imagedetect(hog, frame);
 
                 if (distances.size() > 0){
-                    overlayDistance(distances, frame);
+                    overlayDistance(frame);
                 }
                 emit(newFrame(&frame));
 
@@ -192,12 +202,15 @@ void CaptureThread::doCapture(string videoFileName)
         } // if ( !frame.empty() ) {
         else{
             qDebug()<<"\nCamera not detected or is already in use. \nClose any other applications using the camera and try again.";
-            StopCapture();
+//            StopCapture();
+            tempImage = defaultImage.clone();
+            overlayDistance(tempImage);
+            emit newFrame(&tempImage);
         }
         QCoreApplication::processEvents();
     }
 
-    QMetaObject::invokeMethod(this, "doCapture", Qt::QueuedConnection);
+//    QMetaObject::invokeMethod(this, "doCapture", Qt::QueuedConnection);
 //    emit this->finished();
 }
 
@@ -233,6 +246,7 @@ void CaptureThread::StartCapture(string videoStream)
     emit running();
 
     isRecording = false;
+
     cap.open(videoStream);
     doCapture();
 }
@@ -276,7 +290,7 @@ void CaptureThread::StopCapture()
         videoWriter.release();
     }
     // Emit an empty frame
-//    emitEmptyFrame();
+    emitDefaultFrame();
     emit stopped();
 
 }
@@ -285,19 +299,19 @@ void CaptureThread::StopCapture()
  * Emits and empty frame
  */
 // TODO:: Change from empty frame to default image. Empty frame crashes. Default image also crashes
-void CaptureThread::emitEmptyFrame()
+void CaptureThread::emitDefaultFrame()
 {
 
 //    cv::Mat emptyFrame;
 //    emit(newFrame(&emptyFrame));
-    cv::Mat emptyFrame = cv::imread(defaultImage);
+//    cv::Mat emptyFrame = cv::imread(defaultImage, CV_LOAD_IMAGE_COLOR);
 //    cout << emptyFrame.data << endl;
 //    cout << emptyFrame.cols << endl;
 //    cout << emptyFrame.rows << endl;
 //    cout << emptyFrame.step << endl;
-    if ( ! emptyFrame.empty()){
+    if ( ! defaultImage.empty()){
         cout << "emitting" << endl;
-        emit(newFrame(&emptyFrame));
+        emit(newFrame(&defaultImage));
 
     }
 }

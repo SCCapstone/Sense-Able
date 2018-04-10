@@ -121,12 +121,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // UI
     ui->beepCheckBox->setChecked(true);
-
-    // Hide some buttons
-//    ui->orientLabel->setHidden(true);
-//    ui->changeOrient->setHidden(true);
-//    ui->cameraLabel->setHidden(true);
-//    ui->changeCamera->setHidden(true);
+    // Set viewport to default image
+    ui->cameraView->setPixmap(QPixmap::fromImage(Mat2QImage(&capture->defaultImage)));
 }
 
 /*********************************************************************
@@ -158,6 +154,15 @@ string MainWindow::ltlToAVI(string leddarFile)
     return (file.absolutePath() +"/"+ file.baseName() + ".avi").toStdString();
 }
 
+/*********************************************************************
+ * Converts opencv Mat to QImage
+***/
+QImage MainWindow::Mat2QImage(cv::Mat* img)
+{
+    return QImage(
+                img->data, img->cols, img->rows,
+                img->step, QImage::Format_RGB888).rgbSwapped();
+}
 /*********************************************************************
  * Function to run when the readDataButton is clicked.
  *
@@ -259,7 +264,7 @@ void MainWindow::updateSoundFiles()
     if(checked) {
         // do nothing
     }
-}/*
+}*/
 
 /*********************************************************************
  * Slot to catch leddar data.
@@ -315,14 +320,28 @@ void MainWindow::catchDetectedObject(int object) {
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
     // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
-//    cout << frame->empty()  << "  " << frame->cols << "  " << frame->rows;
-    ui->cameraView->setPixmap(
-                QPixmap::fromImage(
-                    QImage(
-                        frame->data, frame->cols, frame->rows,
-                        frame->step, QImage::Format_RGB888).rgbSwapped()
-                    )
-                );
+
+    cout << frame->empty()  << "  " << frame->cols << "  " << frame->rows;
+    cout << "crash Qimage??" << endl;
+    QImage qimg = QImage( frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped();
+    cout << "no crash Qimage" << endl;
+
+    cout << "crash PIXMAP?" << endl;
+    QPixmap pxmap = QPixmap::fromImage(qimg);
+    cout << "no crash PIXMAP" << endl;
+
+    cout << "crash camera??" << endl;
+    ui->cameraView->setPixmap(pxmap);
+    cout << "no crash camera" << endl;
+
+
+    //    ui->cameraView->setPixmap(
+//                QPixmap::fromImage(
+//                    QImage(
+//                        frame->data, frame->cols, frame->rows,
+//                        frame->step, QImage::Format_RGB888).rgbSwapped()
+//                    )
+//                );
 //    cout << "  >314 is not crashing" << endl;
 
 }

@@ -17,12 +17,13 @@ public:
     ~CaptureThread();
     void run();
     int imagedetect(cv::HOGDescriptor, cv::Mat);
-    void overlayDistance(std::vector<float> distances, cv::Mat frame);
+    void overlayDistance(cv::Mat frame);
 
     cv::VideoCapture cap;
     cv::VideoWriter videoWriter;
-    cv::Mat frame;
-    string defaultImage = "/home/jms/Documents/School/Sense-Able/LeddarData/default.jpg";
+    cv::Mat frame, defaultImage, tempImage;
+
+    string defaultImageFile;
 
     bool isrunning, isstopped;
     bool isRecording;
@@ -47,7 +48,7 @@ signals:
 
 private:
     // Helper Functions
-    void emitEmptyFrame();
+    void emitDefaultFrame();
     long getCurrentTime();
 
 };

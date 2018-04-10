@@ -94,7 +94,7 @@ signals:
     // Signals to Usernotifier
     void passNotifier(vector<string>); // Deprecrated?
 
-    void clicked(); // deprecated?
+    void clicked();
     void streamButtonClicked(); // deprecated?
 
 private:
@@ -119,6 +119,7 @@ private:
     void stopAll();
     void updateSoundFiles();
     string ltlToAVI(string leddarFile);
+    QImage Mat2QImage(cv::Mat* img);
 };
 
 #endif // MAINWINDOW_H
