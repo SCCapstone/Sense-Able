@@ -116,8 +116,17 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach (const QCameraInfo &cameraInfo, cameras)
         this->cameraFileNames.push_back(cameraInfo.deviceName().toStdString());
 
-    foreach (const QCameraInfo &cameraInfo, cameras)
+    //This pushes all of the cameras that are available to the comobo box and lists them as
+    //camera 1, camera 2, camera 3 ... etc and gives the data of each index the value of the
+    //camera as it was found (e.g. "/dev/video0/" or "/dev/video1")
+    int count = 1;
+    foreach (const QCameraInfo &cameraInfo, cameras) {
+        QString cameraValue = QString::fromStdString(cameraInfo.deviceName().toStdString());
         cout << cameraInfo.deviceName().toStdString();
+        QString cameraNumber = "Camera " + QString::number(count);
+        ui->cameraComboBox->addItem(cameraNumber, cameraValue);
+        count++;
+    }
 
     // UI
     ui->beepCheckBox->setChecked(true);
@@ -390,35 +399,6 @@ void MainWindow::on_backButtonSettings_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::on_changeCamera_clicked()
-{
-   bool was_playing = this->stream->isrunning;
-   bool was_recording = this->capture->isRecording;
-
-   // We cant change the video stream input of a recorded file,
-   // so don't stop stream.
-   if ( !stream->isReplay ) {
-       stopAll();
-   }
-
-   if(videoStream == "/dev/video0") {
-       videoStream = "/dev/video1";
-       ui->cameraLabel->setText("Camera: Webcam");
-   }
-   else if(videoStream == "/dev/video1"){
-        videoStream = "/dev/video0";
-        ui->cameraLabel->setText("Camera: Built-In");
-   }
-
-   // We cant stop and then restart while recording
-   if (was_playing && !was_recording) {
-       QThread::usleep(.15);
-      emit startCapture(videoStream);
-      emit startStream();
-      emit passNotifier(this->notifier.soundFiles);
-   }
-}
-
 void MainWindow::on_changeOrient_clicked()
 {
 //    bool was_playing = stream->isrunning;
@@ -505,8 +485,12 @@ void MainWindow::on_go_ReadFromFile_button_clicked()
 
 void MainWindow::on_go_StreamFromDevice_button_clicked()
 {
+    //Testing signal
+    emit streamButtonClicked();
+
     // TODO: Add logic for ReadData
     // Check that LeddarStream is stopped
+
     if (!this->stream->isrunning && this->stream->isstopped) {
         updateSoundFiles();
 
@@ -567,4 +551,27 @@ void MainWindow::on_go_Record_button_clicked()
 void MainWindow::on_go_StopAll_button_clicked()
 {
     stopAll();
+}
+
+void MainWindow::on_cameraComboBox_currentIndexChanged(int index)
+{
+    bool was_playing = this->stream->isrunning;
+    bool was_recording = this->capture->isRecording;
+    QString currentCamera = ui->cameraComboBox->currentData().toString();
+
+    // We cant change the video stream input of a recorded file,
+    // so don't stop stream.
+    if ( !stream->isReplay ) {
+        stopAll();
+    }
+
+    videoStream = currentCamera.toStdString();
+
+    // We cant stop and then restart while recording
+    if (was_playing && !was_recording) {
+        QThread::usleep(.15);
+       emit startCapture(videoStream);
+       emit startStream();
+       emit passNotifier(this->notifier.soundFiles);
+    }
 }
