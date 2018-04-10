@@ -18,8 +18,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>782</width>
-    <height>0</height>
+    <width>892</width>
+    <height>726</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -311,8 +311,8 @@
            <rect>
             <x>-10</x>
             <y>0</y>
-            <width>881</width>
-            <height>671</height>
+            <width>880</width>
+            <height>670</height>
            </rect>
           </property>
           <property name="minimumSize">

@@ -35,13 +35,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //Set to start the application on the Go Page.
-    //Will eventually start on the Landing Page.
-    //Index has been changed so it now starts on the Landing page
+    //Index starts on the Landing page
     ui->stackedWidget->setCurrentIndex(1);
     //Set distance slider default. The value is divided
     //by 2 to get fractions of meters from 1.0m to 50.0m.
     ui->notificationDistanceSlider->setValue(50.0);
+
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
     this->captureThread = new QThread();
@@ -207,6 +206,8 @@ string MainWindow::ltlToAVI(string leddarFile)
  *
  * If data is already streaming, this button does nothing.
 ***/
+//TODO: update documentation, this button is now the button on the home
+//      page that changes screens to the 'go' page
 void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -325,13 +326,20 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 {
     // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
 //    cout << frame->empty()  << "  " << frame->cols << "  " << frame->rows;
-    ui->cameraView->setPixmap(
+    QPixmap resize = QPixmap::fromImage(
+                QImage(
+                    frame->data, frame->cols, frame->rows,
+                    frame->step, QImage::Format_RGB888).rgbSwapped()
+                );
+    ui->cameraView->setPixmap(resize.scaled(ui->cameraView->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+    /*ui->cameraView->setPixmap(
                 QPixmap::fromImage(
                     QImage(
                         frame->data, frame->cols, frame->rows,
                         frame->step, QImage::Format_RGB888).rgbSwapped()
                     )
-                );
+                );*/
 //    cout << "  >314 is not crashing" << endl;
 
 }
@@ -531,6 +539,7 @@ void MainWindow::on_go_Record_button_clicked()
 
 void MainWindow::on_go_StopAll_button_clicked()
 {
+    emit clicked();
     stopAll();
 }
 
