@@ -49,6 +49,10 @@ public:
     QLabel *cameraLabel;
     QLabel *orientLabel;
     QPushButton *Play;
+    QPushButton *go_StreamFromDevice_button;
+    QPushButton *go_ReadFromFile_button;
+    QPushButton *go_Record_button;
+    QPushButton *go_StopAll_button;
     QWidget *Page_Home;
     QHBoxLayout *horizontalLayout_4;
     QVBoxLayout *verticalLayout_3;
@@ -73,8 +77,6 @@ public:
     QFrame *line_2;
     QFrame *line_3;
     QLabel *label_25;
-    QCheckBox *speechCheckBox;
-    QCheckBox *beepCheckBox;
     QFrame *line_4;
     QLabel *label_26;
     QFrame *line_5;
@@ -82,8 +84,14 @@ public:
     QLabel *label_9;
     QComboBox *comboBox_2;
     QPushButton *backButtonSettings;
+    QWidget *layoutWidget;
+    QHBoxLayout *horizontalLayout_5;
     QSlider *notificationDistanceSlider;
     QLabel *notifDistanceLabel;
+    QWidget *layoutWidget1;
+    QVBoxLayout *verticalLayout_4;
+    QCheckBox *speechCheckBox;
+    QCheckBox *beepCheckBox;
     QWidget *Page_Notifications;
     QLabel *notificationsTitle;
     QFrame *line_6;
@@ -313,6 +321,18 @@ public:
         palette7.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
         Play->setPalette(palette7);
         Play->setFont(font2);
+        go_StreamFromDevice_button = new QPushButton(Page_StreamData);
+        go_StreamFromDevice_button->setObjectName(QStringLiteral("go_StreamFromDevice_button"));
+        go_StreamFromDevice_button->setGeometry(QRect(10, 160, 181, 31));
+        go_ReadFromFile_button = new QPushButton(Page_StreamData);
+        go_ReadFromFile_button->setObjectName(QStringLiteral("go_ReadFromFile_button"));
+        go_ReadFromFile_button->setGeometry(QRect(10, 200, 161, 31));
+        go_Record_button = new QPushButton(Page_StreamData);
+        go_Record_button->setObjectName(QStringLiteral("go_Record_button"));
+        go_Record_button->setGeometry(QRect(10, 240, 111, 31));
+        go_StopAll_button = new QPushButton(Page_StreamData);
+        go_StopAll_button->setObjectName(QStringLiteral("go_StopAll_button"));
+        go_StopAll_button->setGeometry(QRect(470, 610, 121, 31));
         stackedWidget->addWidget(Page_StreamData);
         cameraView->raise();
         objectLabel->raise();
@@ -322,6 +342,10 @@ public:
         cameraLabel->raise();
         orientLabel->raise();
         Play->raise();
+        go_StreamFromDevice_button->raise();
+        go_ReadFromFile_button->raise();
+        go_Record_button->raise();
+        go_StopAll_button->raise();
         Page_Home = new QWidget();
         Page_Home->setObjectName(QStringLiteral("Page_Home"));
         horizontalLayout_4 = new QHBoxLayout(Page_Home);
@@ -524,21 +548,10 @@ public:
         line_3->setFrameShape(QFrame::HLine);
         label_25 = new QLabel(Page_Settings);
         label_25->setObjectName(QStringLiteral("label_25"));
-        label_25->setGeometry(QRect(220, 210, 231, 41));
+        label_25->setGeometry(QRect(220, 210, 331, 41));
         QFont font6;
         font6.setPointSize(20);
         label_25->setFont(font6);
-        speechCheckBox = new QCheckBox(Page_Settings);
-        speechCheckBox->setObjectName(QStringLiteral("speechCheckBox"));
-        speechCheckBox->setGeometry(QRect(170, 260, 301, 41));
-        speechCheckBox->setFont(font4);
-        speechCheckBox->setLayoutDirection(Qt::RightToLeft);
-        speechCheckBox->setTristate(false);
-        beepCheckBox = new QCheckBox(Page_Settings);
-        beepCheckBox->setObjectName(QStringLiteral("beepCheckBox"));
-        beepCheckBox->setGeometry(QRect(170, 300, 301, 41));
-        beepCheckBox->setFont(font4);
-        beepCheckBox->setLayoutDirection(Qt::RightToLeft);
         line_4 = new QFrame(Page_Settings);
         line_4->setObjectName(QStringLiteral("line_4"));
         line_4->setGeometry(QRect(200, 340, 441, 30));
@@ -580,7 +593,7 @@ public:
         notificationsButton->setPalette(palette18);
         label_9 = new QLabel(Page_Settings);
         label_9->setObjectName(QStringLiteral("label_9"));
-        label_9->setGeometry(QRect(220, 80, 291, 41));
+        label_9->setGeometry(QRect(220, 80, 331, 41));
         label_9->setFont(font6);
         comboBox_2 = new QComboBox(Page_Settings);
         comboBox_2->setObjectName(QStringLiteral("comboBox_2"));
@@ -597,15 +610,63 @@ public:
         palette19.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
         backButtonSettings->setPalette(palette19);
         backButtonSettings->setFont(font2);
-        notificationDistanceSlider = new QSlider(Page_Settings);
+        layoutWidget = new QWidget(Page_Settings);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(220, 130, 401, 41));
+        horizontalLayout_5 = new QHBoxLayout(layoutWidget);
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        horizontalLayout_5->setContentsMargins(0, 0, 0, 0);
+        notificationDistanceSlider = new QSlider(layoutWidget);
         notificationDistanceSlider->setObjectName(QStringLiteral("notificationDistanceSlider"));
-        notificationDistanceSlider->setGeometry(QRect(220, 140, 181, 20));
+        QSizePolicy sizePolicy2(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(notificationDistanceSlider->sizePolicy().hasHeightForWidth());
+        notificationDistanceSlider->setSizePolicy(sizePolicy2);
+        notificationDistanceSlider->setMinimumSize(QSize(331, 0));
+        notificationDistanceSlider->setMaximumSize(QSize(331, 16777215));
         notificationDistanceSlider->setMinimum(1);
         notificationDistanceSlider->setMaximum(100);
         notificationDistanceSlider->setOrientation(Qt::Horizontal);
-        notifDistanceLabel = new QLabel(Page_Settings);
+
+        horizontalLayout_5->addWidget(notificationDistanceSlider);
+
+        notifDistanceLabel = new QLabel(layoutWidget);
         notifDistanceLabel->setObjectName(QStringLiteral("notifDistanceLabel"));
-        notifDistanceLabel->setGeometry(QRect(550, 130, 89, 23));
+        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(notifDistanceLabel->sizePolicy().hasHeightForWidth());
+        notifDistanceLabel->setSizePolicy(sizePolicy3);
+        notifDistanceLabel->setMinimumSize(QSize(40, 0));
+
+        horizontalLayout_5->addWidget(notifDistanceLabel, 0, Qt::AlignHCenter|Qt::AlignVCenter);
+
+        layoutWidget1 = new QWidget(Page_Settings);
+        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
+        layoutWidget1->setGeometry(QRect(170, 260, 308, 92));
+        verticalLayout_4 = new QVBoxLayout(layoutWidget1);
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        verticalLayout_4->setContentsMargins(0, 0, 0, 0);
+        speechCheckBox = new QCheckBox(layoutWidget1);
+        speechCheckBox->setObjectName(QStringLiteral("speechCheckBox"));
+        speechCheckBox->setFont(font4);
+        speechCheckBox->setLayoutDirection(Qt::RightToLeft);
+        speechCheckBox->setTristate(false);
+
+        verticalLayout_4->addWidget(speechCheckBox);
+
+        beepCheckBox = new QCheckBox(layoutWidget1);
+        beepCheckBox->setObjectName(QStringLiteral("beepCheckBox"));
+        beepCheckBox->setFont(font4);
+        beepCheckBox->setLayoutDirection(Qt::RightToLeft);
+
+        verticalLayout_4->addWidget(beepCheckBox);
+
         stackedWidget->addWidget(Page_Settings);
         Page_Notifications = new QWidget();
         Page_Notifications->setObjectName(QStringLiteral("Page_Notifications"));
@@ -976,7 +1037,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(2);
+        stackedWidget->setCurrentIndex(0);
         obj1_notif_choice->setCurrentIndex(0);
         obj2_notif_choice->setCurrentIndex(1);
         obj3_notif_choice->setCurrentIndex(2);
@@ -1002,6 +1063,10 @@ public:
         cameraLabel->setText(QApplication::translate("MainWindow", "Camera: Built-In", 0));
         orientLabel->setText(QApplication::translate("MainWindow", "Orientation: Horizontal", 0));
         Play->setText(QApplication::translate("MainWindow", "Play", 0));
+        go_StreamFromDevice_button->setText(QApplication::translate("MainWindow", "Stream From Device", 0));
+        go_ReadFromFile_button->setText(QApplication::translate("MainWindow", "Read From File", 0));
+        go_Record_button->setText(QApplication::translate("MainWindow", "Record", 0));
+        go_StopAll_button->setText(QApplication::translate("MainWindow", "Stop", 0));
         titleLabel->setText(QApplication::translate("MainWindow", "Sense-able", 0));
         streamButton->setText(QApplication::translate("MainWindow", "Begin Stream", 0));
         readDataPageButton->setText(QApplication::translate("MainWindow", "Read Data ", 0));
@@ -1009,8 +1074,6 @@ public:
         QuitButton->setText(QApplication::translate("MainWindow", "Quit", 0));
         settingsLabel->setText(QApplication::translate("MainWindow", "Settings:", 0));
         label_25->setText(QApplication::translate("MainWindow", "Notification Type:", 0));
-        speechCheckBox->setText(QApplication::translate("MainWindow", "Speech                        ", 0));
-        beepCheckBox->setText(QApplication::translate("MainWindow", "Beep                            ", 0));
         label_26->setText(QApplication::translate("MainWindow", "Distance measured in:", 0));
         notificationsButton->setText(QApplication::translate("MainWindow", "Notifications", 0));
         label_9->setText(QApplication::translate("MainWindow", "Notification Distance", 0));
@@ -1020,7 +1083,9 @@ public:
          << QApplication::translate("MainWindow", "US customary systems", 0)
         );
         backButtonSettings->setText(QApplication::translate("MainWindow", "Back", 0));
-        notifDistanceLabel->setText(QApplication::translate("MainWindow", "0", 0));
+        notifDistanceLabel->setText(QApplication::translate("MainWindow", " 0 m", 0));
+        speechCheckBox->setText(QApplication::translate("MainWindow", "Speech                        ", 0));
+        beepCheckBox->setText(QApplication::translate("MainWindow", "Beep                            ", 0));
         notificationsTitle->setText(QApplication::translate("MainWindow", "Notifications:", 0));
         notificationLabel->setText(QApplication::translate("MainWindow", "Notification", 0));
         objectTypeLabel->setText(QApplication::translate("MainWindow", "Object Type", 0));

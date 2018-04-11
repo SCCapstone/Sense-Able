@@ -150,7 +150,8 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../leddargui/capturethread.h \
 		../leddargui/QtBehaviorTestSuite.h \
 		../leddargui/leddarthread.h \
-		../leddargui/objectdetectthread.h ../leddargui/main.cpp \
+		../leddargui/objectdetectthread.h \
+		../leddargui/globalconstants.h ../leddargui/main.cpp \
 		../leddargui/mainwindow.cpp \
 		../leddargui/usernotifier.cpp \
 		../leddargui/capturethread.cpp \
@@ -354,7 +355,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../leddargui/mainwindow.h ../leddargui/LeddarProperties.h ../leddargui/LeddarC.h ../leddargui/usernotifier.h ../leddargui/capturethread.h ../leddargui/QtBehaviorTestSuite.h ../leddargui/leddarthread.h ../leddargui/objectdetectthread.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../leddargui/mainwindow.h ../leddargui/LeddarProperties.h ../leddargui/LeddarC.h ../leddargui/usernotifier.h ../leddargui/capturethread.h ../leddargui/QtBehaviorTestSuite.h ../leddargui/leddarthread.h ../leddargui/objectdetectthread.h ../leddargui/globalconstants.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../leddargui/main.cpp ../leddargui/mainwindow.cpp ../leddargui/usernotifier.cpp ../leddargui/capturethread.cpp ../leddargui/unittestsuite.cpp ../leddargui/googletest/src/gtest-all.cc ../leddargui/QtBehaviorTestSuite.cpp ../leddargui/leddarthread.cpp ../leddargui/objectdetectthread.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../leddargui/mainwindow.ui $(DISTDIR)/
 
@@ -388,6 +389,7 @@ moc_mainwindow.cpp: ../leddargui/leddarthread.h \
 		../leddargui/capturethread.h \
 		../leddargui/objectdetectthread.h \
 		../leddargui/usernotifier.h \
+		../leddargui/globalconstants.h \
 		../leddargui/mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/LeddarLibs -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/googletest/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/gtest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/mainwindow.h -o moc_mainwindow.cpp
 
@@ -403,6 +405,7 @@ moc_leddarthread.cpp: ../leddargui/LeddarC.h \
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/LeddarLibs -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/googletest/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/gtest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/leddarthread.h -o moc_leddarthread.cpp
 
 moc_objectdetectthread.cpp: ../leddargui/usernotifier.h \
+		../leddargui/globalconstants.h \
 		../leddargui/objectdetectthread.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui -I/usr/local/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/LeddarLibs -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/googletest/include -I/home/ckisby/SCoursework/csce490/AAAMOST_RECENT/Sense-Able/leddargui/gtest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../leddargui/objectdetectthread.h -o moc_objectdetectthread.cpp
 
@@ -431,6 +434,7 @@ main.o: ../leddargui/main.cpp ../leddargui/mainwindow.h \
 		../leddargui/capturethread.h \
 		../leddargui/objectdetectthread.h \
 		../leddargui/usernotifier.h \
+		../leddargui/globalconstants.h \
 		../leddargui/googletest/include/gtest/gtest.h \
 		../leddargui/googletest/include/gtest/internal/gtest-internal.h \
 		../leddargui/googletest/include/gtest/internal/gtest-port.h \
@@ -463,10 +467,12 @@ mainwindow.o: ../leddargui/mainwindow.cpp ../leddargui/mainwindow.h \
 		../leddargui/capturethread.h \
 		../leddargui/objectdetectthread.h \
 		../leddargui/usernotifier.h \
+		../leddargui/globalconstants.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../leddargui/mainwindow.cpp
 
-usernotifier.o: ../leddargui/usernotifier.cpp ../leddargui/usernotifier.h
+usernotifier.o: ../leddargui/usernotifier.cpp ../leddargui/usernotifier.h \
+		../leddargui/globalconstants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o usernotifier.o ../leddargui/usernotifier.cpp
 
 capturethread.o: ../leddargui/capturethread.cpp ../leddargui/capturethread.h
@@ -496,6 +502,7 @@ unittestsuite.o: ../leddargui/unittestsuite.cpp ../leddargui/googletest/include/
 		../leddargui/googletest/include/gtest/gtest_pred_impl.h \
 		../leddargui/objectdetectthread.h \
 		../leddargui/usernotifier.h \
+		../leddargui/globalconstants.h \
 		../leddargui/leddarthread.h \
 		../leddargui/LeddarC.h \
 		../leddargui/LeddarProperties.h \
@@ -544,7 +551,8 @@ QtBehaviorTestSuite.o: ../leddargui/QtBehaviorTestSuite.cpp ../leddargui/QtBehav
 		../leddargui/LeddarProperties.h \
 		../leddargui/capturethread.h \
 		../leddargui/objectdetectthread.h \
-		../leddargui/usernotifier.h
+		../leddargui/usernotifier.h \
+		../leddargui/globalconstants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o QtBehaviorTestSuite.o ../leddargui/QtBehaviorTestSuite.cpp
 
 leddarthread.o: ../leddargui/leddarthread.cpp ../leddargui/leddarthread.h \
@@ -553,7 +561,8 @@ leddarthread.o: ../leddargui/leddarthread.cpp ../leddargui/leddarthread.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o leddarthread.o ../leddargui/leddarthread.cpp
 
 objectdetectthread.o: ../leddargui/objectdetectthread.cpp ../leddargui/objectdetectthread.h \
-		../leddargui/usernotifier.h
+		../leddargui/usernotifier.h \
+		../leddargui/globalconstants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objectdetectthread.o ../leddargui/objectdetectthread.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 

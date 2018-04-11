@@ -11,7 +11,10 @@
 #include <cmath>
 #include <math.h>
 #include <iostream>
+#include <opencv2/core/core.hpp>
 #include "objectdetectthread.h"
+
+using namespace cv;
 
 /*********************************************************************
  * The usual constructor.
@@ -55,6 +58,7 @@ void objectDetector::doDetect(vector<float> distances) {
         // There is an obstacle in range.  We need to identify it.
 
         // Compute each obstacle fit value.
+cout << "\nWALL FIT: " << detectWall(distances) << endl;
         obstacle_fits.emplace(WALL, detectWall(distances));
         obstacle_fits.emplace(WALL_CORNER, detectCorner(distances));
         obstacle_fits.emplace(PILLAR, detectPillar(distances));
@@ -84,11 +88,23 @@ void objectDetector::doDetect(vector<float> distances) {
 
 float objectDetector::detectWall(vector<float> distances) {
     vector<float> coefficients;
+    vector<float> xvalues;
+    vector<float> yvalues;
     float fit;
 
+    xvalues = xaxis_projection(distances);
+    yvalues = yaxis_projection(distances);
+
     // Fit a linear curve y = a1 * x + a0 to the distances.
-    coefficients = polynomial_fit(1, distances);
-    fit = fit_quality(coefficients, 1, distances);
+    coefficients = polynomial_fit(1, yvalues, xvalues);
+    fit = fit_quality(coefficients, 1, yvalues, xvalues);
+
+cout << "WALL DETECT FIT: " << fit << endl;
+
+    for (int i = 0; i < coefficients.size(); i++) {
+        cout << "WALL DETECT COEFFICIENTS: " << coefficients.at(i) << " ";
+    }
+    cout << endl << endl;
 
     // TODO: If the linear curve is too steep, we want to return '0' to
     // indicate that the wall is not detected!  This should be handled here.
@@ -117,15 +133,26 @@ float objectDetector::detectWall(vector<float> distances) {
 
 float objectDetector::detectCorner(vector<float> distances) {
     vector<float> coefficients;
+    vector<float> yvalues;
+    vector<float> xvalues;
     float fit;
 
+    xvalues = xaxis_projection(distances);
+    yvalues = yaxis_projection(distances);
+
     // Fit a degree 2 parabola to the distances.
-    coefficients = polynomial_fit(2, distances);
-    fit = fit_quality(coefficients, 2, distances);
+    coefficients = polynomial_fit(2, yvalues, xvalues);
+    fit = fit_quality(coefficients, 2, yvalues, xvalues);
 
     // TODO: If the parabola is too steep, or not sharp enough, we want to
     // return '0' to indicate that no parabola is detected!  This should
     // be handled here.
+
+    // If the best fit degree parabola is actually a degree 1 parabola,
+    // then a parabola is not a very good fit... reject.
+    if (coefficients.at(coefficients.size() - 1) == 0) {
+        return 0.0;
+    }
 
     return 0.0;
 }
@@ -196,19 +223,52 @@ float apply_polynomial(vector<float> coefficients, int degree, float x_value) {
  * not scaled correctly.  We can handle this error individually for each
  * new obstacle.
 **/
-vector<float> objectDetector::polynomial_fit(int polynom_degree, vector<float> points) {
+vector<float> objectDetector::polynomial_fit(int polynom_degree, vector<float> points, vector<float> xvalues) {
+    Mat XMAT;
+    Mat YMAT;
+    Mat XINV; // *Left* Inverse of X
+    Mat XTRANS; // Transpose
+    Mat COEFFS;
+
     float X[points.size()][polynom_degree + 1];
-    float T[polynom_degree + 1][points.size()];
+    float Y[points.size()][1];
     vector<float> coefficients;
 
     // First, we compute the matrix 'X' as given in the reference.
     for (int i = 0; i < points.size(); i++) {
         for (int k = 0; k < polynom_degree + 1; k++) {
-            // xi happens to be just 'i' in this case.
-            X[i][k] = pow(i, k);
+            X[i][k] = pow(xvalues.at(i), k);
         }
     }
 
+    // We then compute the matrix form of 'points' as matrix 'Y':
+    for (int i = 0; i < points.size(); i++) {
+        Y[i][0] = points.at(i);
+    }
+
+    // We then convert X and Y to OpenCV 'Mat' objects for easy calculation.
+    XMAT = Mat(points.size(), polynom_degree + 1, CV_32F, X);
+    YMAT = Mat(points.size(), 1, CV_32F, Y);
+
+    // Next, we compute the *left* inverse XINV of matrix 'X', if it exists.
+//    XINV = XMAT.inv(DECOMP_SVD);
+    XTRANS = XMAT.t();
+    XINV = (XTRANS * XMAT).inv();
+    XINV = XINV * XTRANS;
+
+    // Compute the product X*(y1, y2, y3, ..., yn) to obtain the vector
+    // of coefficients (a0, a1, a2, ..., ak).
+    COEFFS = XINV * YMAT;
+
+    // Finally, we convert the coefficients (a1, a2, ..., an) back to a vector to return.
+    for (int i = 0; i < COEFFS.rows; ++i) {
+        coefficients.push_back(COEFFS.at<float>(i));
+    }
+
+    return coefficients;
+
+// OLD ////////////////////////////////////////////////////////////////////////////
+    /*
     // Next, we compute the transpose 'T' of matrix 'X', as discussed
     // in the reference.
     for (int i = 0; i < points.size(); i++) {
@@ -222,7 +282,7 @@ Credit Jinyu for helping with this function.
 
     // Finally, we take the product X*(y1, y2, y3, ..., yn) to obtain
     // the vector of coefficients (a0, a1, a2, ..., ak).
-    int dotproduct;
+/*    int dotproduct;
     for (int k = 0; k < polynom_degree + 1; k++) {
         dotproduct = 0;
 
@@ -234,6 +294,7 @@ Credit Jinyu for helping with this function.
     }
 
     return coefficients;
+*/
 }
 
 /*********************************************************************
@@ -248,11 +309,11 @@ Credit Jinyu for helping with this function.
     // individual tests.  This is not the correct place for checking how
     // steep our curve is.
 **/
-float objectDetector::fit_quality(vector<float> coefficients, int polynom_degree, vector<float> points) {
+float objectDetector::fit_quality(vector<float> coefficients, int polynom_degree, vector<float> points, vector<float> xvalues) {
     int r = 0;
     for (int i = 0; i < points.size(); i++) {
         // Take the difference between outcome and expected (using polynomial with 'coefficients').
-        r += std::pow(points.at(i) - apply_polynomial(coefficients, polynom_degree, i), 2);
+        r += std::pow(points.at(i) - apply_polynomial(coefficients, polynom_degree, xvalues.at(i)), 2);
     }
     r = sqrt(r);
 
@@ -260,6 +321,8 @@ float objectDetector::fit_quality(vector<float> coefficients, int polynom_degree
 }
 
 /*********************************************************************
+ * JONBOI's CODE
+ *
  * Function to project each distance onto the y-axis.
  *
  * This function projects each point of a 'float' 'vector' of distances
@@ -282,12 +345,30 @@ cout << "Entering yaxis_projection" << endl;
     {
         float theta_radians = theta*M_PI/180;
         float y = distances.at(i) * sin(theta_radians);
-        projected.insert(projected.begin(), y);
+        projected.push_back(y);
 //        std::cout << "THETA: " << theta << " SIN THETA: " << sin(theta_radians) << std::endl;
 //        std::cout << "Value: " << distances.at(i) << " Projection: " << y << std::endl;
 
         // Increment theta for the next segment
         theta -= 2.8;
+    }
+
+    return projected;
+}
+
+// CALAAABS CODE
+vector<float> objectDetector::xaxis_projection(vector<float> distances) {
+cout << "Entering xaxis_projection" << endl;
+    vector<float> projected;
+
+    float theta = 90 + (2.8 * .5 * int(distances.size()));
+
+    for (int i = 0; i < distances.size(); i++) {
+        float theta_radians = theta * M_PI / 180;
+        float x = distances.at(i) * cos(theta_radians);
+        projected.push_back(x);
+
+        theta -=2.8;
     }
 
     return projected;
