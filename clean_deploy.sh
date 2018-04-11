@@ -8,15 +8,18 @@ if [[ $do_appimage == y* ]]; then
     sudo ldconfig
     echo $LD_LIBRARY_PATH
     ./linuxdeployqt-continuous-x86_64.AppImage build-leddargui-Desktop_Qt_5_9_4_GCC_64bit-Release/leddargui -qmake=$HOME/Qt/5.9.4/gcc_64/bin/qmake -bundle-non-qt-libs -verbose=2 -appimage
+
+
+    # Deletes all old files, including sound and Leddar Libs,
+    # and copies in all needed files from the main directory
+
+    # Remove old AppImage and move new one to directory
+    rm build_deploy/SenseableGui-x86_64.AppImage
+    mv SenseableGui-x86_64.AppImage build_deploy/
+
 fi
 
 
-# Deletes all old files, including sound and Leddar Libs,
-# and copies in all needed files from the main directory
-
-# Remove old AppImage and move new one to directory
-rm build_deploy/SenseAbleGui-x86_64.AppImage
-mv SenseAbleGui-x86_64.AppImage build_deploy/
 
 
 # Optional Tar and Zip type y
