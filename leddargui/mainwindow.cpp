@@ -243,7 +243,7 @@ void MainWindow::on_streamButton_clicked()
 ***/
 void MainWindow::updateSoundFiles()
 {
-    if ( ui->beepCheckBox->isChecked() ) {
+    if (ui->beepCheckBox->isChecked() ) {
         notifier.fileType = SOUNDFILES;
     }
     else { // if (ui->speechCheckBox->isChecked())
