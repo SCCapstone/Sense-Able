@@ -77,9 +77,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setLeddarOrientation(bool)), stream, SLOT(setOrientation(bool)));
 
 
-//    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
-//                    SLOT(catchDataPoints(int,vector<float>, bool)),
-//                    Qt::QueuedConnection);
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
+                    SLOT(catchDataPoints(int,vector<float>, bool)),
+                    Qt::QueuedConnection);
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
                     objdetector, SLOT(StartDetect(int, vector<float>, bool)),
                     Qt::QueuedConnection);
@@ -278,7 +278,7 @@ void MainWindow::updateSoundFiles()
  * of 'dataPoints' emmitted.  We then display these data points as
  * Window 'labels'.
 ***/
-/*void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrientation) {
+void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrientation) {
     QLabel* labels[] = {ui->pt1, ui->pt2,  ui->pt3,
                        ui->pt4,  ui->pt5,  ui->pt6,
                        ui->pt7,  ui->pt8,  ui->pt9,
@@ -290,7 +290,7 @@ void MainWindow::updateSoundFiles()
     for (int i = 0; i <= 15; i++) {
         (labels[i])->setText(QString::number(dataPoints.at(i)));
     }
-} */
+}
 
 /*********************************************************************
  * Slot to catch the object detected.
@@ -490,6 +490,7 @@ void MainWindow::on_go_StreamFromDevice_button_clicked()
 
 void MainWindow::on_go_Record_button_clicked()
 {
+    emit clicked();
     // Check that stream is stopped
     if (!stream->isrunning && stream->isstopped) {
 
