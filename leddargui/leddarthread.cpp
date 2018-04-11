@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <chrono>
 
 #include "leddarthread.h"
 
@@ -148,9 +149,21 @@ cout << "Entering ReplayData" << endl;
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
 
-//    double *fps = 0;
-//    LeddarGetProperty(this->gHandle, PID_MEASUREMENT_RATE, 0, fps);
-//    cout << *fps << endl;
+    // Calculate the frame rate of the recording
+    // base rate = 12800
+
+    // Properties are the power to raise 2 to. e.g. Accumulation rate = 2 ^ PID_ACCUMULATION_EXPONENT
+    double fps, baserate, accumulationexp, oversampleexp;
+    LeddarGetProperty(this->gHandle, PID_ACCUMULATION_EXPONENT, 0, &accumulationexp);
+    LeddarGetProperty(this->gHandle, PID_OVERSAMPLING_EXPONENT, 0, &oversampleexp);
+    baserate = 12800;
+
+    // Calculate the frames per second :  Measurement rate = base rate/accumulations/oversampling
+    fps = baserate / pow(2, accumulationexp) / pow(2, oversampleexp);
+
+    // Calculate time between recordings in milliseconds
+    long msdelay = 1.0/fps * 1000;
+    long nextFrameTime = getCurrentTime() + msdelay;
 
     while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE && isrunning && !isstopped)
     {
@@ -183,7 +196,12 @@ cout << "Entering ReplayData" << endl;
         // Signal the detected points to the GUI.
         if (dataPoints.size() != 0) {
             emit this->sendDataPoints(currentRecordIndex, dataPoints, orientation);
-            QThread::msleep(200);
+
+            long thisFrameTime = getCurrentTime();
+            if (thisFrameTime < nextFrameTime ) {
+                QThread::msleep(nextFrameTime - thisFrameTime);
+            }
+            nextFrameTime = getCurrentTime() + msdelay;
         }
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
@@ -198,12 +216,6 @@ cout << "Entering ReplayData" << endl;
 cout << "Exiting ReplayData" << endl;
 }
 
-// *****************************************************************************
-// Function: ReplayMenu
-//
-/// \brief   Main menu when a replay a record file.
-// *****************************************************************************
-
 /*********************************************************************
  * Function to replay a Leddar file.
  *
@@ -217,19 +229,7 @@ cout << "Entering doReplay" << endl;
 
     cout << fileName<< endl;
 
-    // Initialize the Leddar Handle.
-//    this->gHandle = LeddarCreate();
-
-    // TODO
-    // We currently use a hard-coded filename.
-    //string inputString = "LeddarData/WALL.ltl";
-    //char* lName = new char[inputString.size() + 1];
-    //std::copy(inputString.begin(), inputString.end(), lName);
-    //lName[inputString.size()] = '\0';
-
     char* lName = const_cast<char*>(fileName.c_str());
-            //fileName.c_str();
-//            <char*>(fileName);
 
     // Load the file record.
     if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
@@ -251,12 +251,8 @@ cout << "Entering doReplay" << endl;
         cout << "Failed to load file!" << endl;
     }
 
-
-    // Destroy the handle, and signal that we are done.
-//    LeddarDestroy(this->gHandle);
-//    QMetaObject::invokeMethod(this, "doReplay", Qt::QueuedConnection);
     StopStream();
-//    emit this->finished();
+
 cout << "Exiting doReplay" << endl;
 }
 
@@ -286,7 +282,6 @@ cout << "Entering ReadLiveData" << endl;
     while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS && isrunning && !isstopped) {
         LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ));
         lCount = LeddarGetDetectionCount( this->gHandle );
-
 
         /******************************
          * Run some edge-case tests.
@@ -682,6 +677,17 @@ void LeddarStream::ClearData(unsigned int count)
 {
     vector<float> zeros(count, 0.0);
     emit this->sendDataPoints(0, zeros, orientation);
+}
+
+/*********************************************************************
+ * Returns the time since epoch in milliseconds
+ */
+//
+long LeddarStream::getCurrentTime()
+{
+    long ms = chrono::duration_cast< chrono::milliseconds> (
+                chrono::system_clock::now().time_since_epoch()).count();
+    return ms;
 }
 
 /**********************************************************************

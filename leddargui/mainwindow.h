@@ -123,6 +123,7 @@ private:
     void stopAll();
     void updateSoundFiles();
     string ltlToAVI(string leddarFile);
+    QImage Mat2QImage(cv::Mat* img);
 };
 
 #endif // MAINWINDOW_H
