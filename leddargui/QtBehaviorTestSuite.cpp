@@ -9,6 +9,7 @@ QtBehaviorTestSuite::QtBehaviorTestSuite() {
 void QtBehaviorTestSuite::runTests() {
     this->testStreamButtonClicked();
     this->testReadFunction();
+    this->testButtonClickable();
 }
 
 void QtBehaviorTestSuite::testStreamButtonClicked() {
@@ -39,15 +40,15 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
     QTest::mouseClick(stopButton, Qt::LeftButton, Qt::NoModifier);
     //QTest::mouseClick(readButton, Qt::LeftButton, Qt::NoModifier);
     QTest::mouseClick(quitButton, Qt::LeftButton, Qt::NoModifier);
-    QTest::mouseClick(backButton, Qt::LeftButton, Qt::NoModifier);
+    //QTest::mouseClick(backButton, Qt::LeftButton, Qt::NoModifier);
 
     cout << "\ntestStreamButtonClicked:  ";
     if (spy.count() == 1) {
-        cout << "SUCCESS";
+        cout << "SUCCESS\n";
     } else {
-        cout << "FAILURE";
+        cout << "FAILURE\n";
     }
-    cout << "\nstartStream test: ";
+    cout << "startStream test: ";
     if (streamSpy.count() == 1){
         cout << "SUCCESS\n";
     }
@@ -63,16 +64,45 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
 void QtBehaviorTestSuite::testReadFunction(){
     MainWindow window;
     QSignalSpy readSpy(&window, SIGNAL(startRead(string)));
-    QSignalSpy wat(&window, SIGNAL(startCapture(string)));
+    QSignalSpy captureSpy(&window, SIGNAL(startCapture(string)));
 
     QWidget *readButton = window.findChild<QPushButton*>("go_ReadFromFile_button");
+    QWidget *stopButton = window.findChild<QPushButton*>("go_StopAll_button");
+
 
     QTest::mouseClick(readButton, Qt::LeftButton, Qt::NoModifier);
+    QTest::mouseClick(stopButton, Qt::LeftButton, Qt::NoModifier);
 
     cout << "\ntest startRead sent:  ";
     if (readSpy.count() == 1) {
-        cout << "SUCCESS";
+        cout << "SUCCESS\n";
     } else {
-        cout << "FAILURE";
+        cout << "FAILURE\n";
     }
+}
+
+/* Tests whether buttons are "clickable" i.e. run their own functions
+ * if other threads are already running (They shouldn't be)
+ */
+void QtBehaviorTestSuite::testButtonClickable(){
+    MainWindow window;
+
+    QSignalSpy streamSpy(&window, SIGNAL(streamButtonClicked()));
+    QSignalSpy readSpy(&window, SIGNAL(startRead(string)));
+
+    QWidget *fromDeviceButton = window.findChild<QPushButton*>("go_StreamFromDevice_button");
+    QWidget *readButton = window.findChild<QPushButton*>("go_ReadFromFile_button");
+    QWidget *stopButton = window.findChild<QPushButton*>("go_StopAll_button");
+
+
+    QTest::mouseClick(fromDeviceButton, Qt::LeftButton);
+    QTest::mouseClick(readButton, Qt::LeftButton);
+    QTest::mouseClick(stopButton, Qt::LeftButton);
+
+
+    //QCOMPARE(streamSpy.count(),1);
+    //QCOMPARE(readSpy.count(),0);
+    readSpy.wait();
+    qDebug() << "Stream clicked: " << bool(streamSpy.count());
+    qDebug() << "Read started: " << bool(readSpy.count());
 }

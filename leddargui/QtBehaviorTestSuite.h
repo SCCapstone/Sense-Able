@@ -15,6 +15,7 @@ public:
     void runTests();
     void testStreamButtonClicked();
     void testReadFunction();
+    void testButtonClickable();
 
 signals:
 
