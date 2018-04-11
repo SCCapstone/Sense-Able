@@ -26,7 +26,7 @@ private slots:
 
     //void on_readDataButton_clicked(bool checked);
 
-    //void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
+    void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
 
     void catchDetectedObject(int object);
 

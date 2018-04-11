@@ -35,13 +35,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //Set to start the application on the Go Page.
-    //Will eventually start on the Landing Page.
-    //Index has been changed so it now starts on the Landing page
+    //Index starts on the Landing page
     ui->stackedWidget->setCurrentIndex(1);
     //Set distance slider default. The value is divided
     //by 2 to get fractions of meters from 1.0m to 50.0m.
     ui->notificationDistanceSlider->setValue(50.0);
+
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
     this->captureThread = new QThread();
@@ -78,9 +77,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setLeddarOrientation(bool)), stream, SLOT(setOrientation(bool)));
 
 
-//    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
-//                    SLOT(catchDataPoints(int,vector<float>, bool)),
-//                    Qt::QueuedConnection);
+    connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
+                    SLOT(catchDataPoints(int,vector<float>, bool)),
+                    Qt::QueuedConnection);
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
                     objdetector, SLOT(StartDetect(int, vector<float>, bool)),
                     Qt::QueuedConnection);
@@ -212,6 +211,8 @@ QImage MainWindow::Mat2QImage(cv::Mat* img)
  *
  * If data is already streaming, this button does nothing.
 ***/
+//TODO: update documentation, this button is now the button on the home
+//      page that changes screens to the 'go' page
 void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -282,7 +283,7 @@ void MainWindow::updateSoundFiles()
  * of 'dataPoints' emmitted.  We then display these data points as
  * Window 'labels'.
 ***/
-/*void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrientation) {
+void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrientation) {
     QLabel* labels[] = {ui->pt1, ui->pt2,  ui->pt3,
                        ui->pt4,  ui->pt5,  ui->pt6,
                        ui->pt7,  ui->pt8,  ui->pt9,
@@ -294,7 +295,7 @@ void MainWindow::updateSoundFiles()
     for (int i = 0; i <= 15; i++) {
         (labels[i])->setText(QString::number(dataPoints.at(i)));
     }
-} */
+}
 
 /*********************************************************************
  * Slot to catch the object detected.
@@ -329,29 +330,12 @@ void MainWindow::catchDetectedObject(int object) {
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
     // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
-
-//    cout << frame->empty()  << "  " << frame->cols << "  " << frame->rows;
-//    cout << "crash Qimage??" << endl;
-    QImage qimg = QImage( frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped();
-//    cout << "no crash Qimage" << endl;
-
-//    cout << "crash PIXMAP?" << endl;
-    QPixmap pxmap = QPixmap::fromImage(qimg);
-//    cout << "no crash PIXMAP" << endl;
-
-//    cout << "crash camera??" << endl;
-    ui->cameraView->setPixmap(pxmap);
-//    cout << "no crash camera" << endl;
-
-
-    //    ui->cameraView->setPixmap(
-//                QPixmap::fromImage(
-//                    QImage(
-//                        frame->data, frame->cols, frame->rows,
-//                        frame->step, QImage::Format_RGB888).rgbSwapped()
-//                    )
-//                );
-//    cout << "  >314 is not crashing" << endl;
+    QPixmap resize = QPixmap::fromImage(
+                QImage(
+                    frame->data, frame->cols, frame->rows,
+                    frame->step, QImage::Format_RGB888).rgbSwapped()
+                );
+    ui->cameraView->setPixmap(resize.scaled(ui->cameraView->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
 }
 
@@ -501,6 +485,7 @@ void MainWindow::on_go_StreamFromDevice_button_clicked()
 
 void MainWindow::on_go_Record_button_clicked()
 {
+    emit clicked();
     // Check that stream is stopped
     if (!stream->isrunning && stream->isstopped) {
 
@@ -550,6 +535,7 @@ void MainWindow::on_go_Record_button_clicked()
 
 void MainWindow::on_go_StopAll_button_clicked()
 {
+    emit clicked();
     stopAll();
 }
 
