@@ -26,12 +26,14 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <chrono>
 
 #include "leddarthread.h"
 
 #include <QCoreApplication>
 #include <QThread>
 #include <QObject>
+#include <QFile>
 #include <functional>
 
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
@@ -147,9 +149,21 @@ cout << "Entering ReplayData" << endl;
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
 
-//    double *fps = 0;
-//    LeddarGetProperty(this->gHandle, PID_MEASUREMENT_RATE, 0, fps);
-//    cout << *fps << endl;
+    // Calculate the frame rate of the recording
+    // base rate = 12800
+
+    // Properties are the power to raise 2 to. e.g. Accumulation rate = 2 ^ PID_ACCUMULATION_EXPONENT
+    double fps, baserate, accumulationexp, oversampleexp;
+    LeddarGetProperty(this->gHandle, PID_ACCUMULATION_EXPONENT, 0, &accumulationexp);
+    LeddarGetProperty(this->gHandle, PID_OVERSAMPLING_EXPONENT, 0, &oversampleexp);
+    baserate = 12800;
+
+    // Calculate the frames per second :  Measurement rate = base rate/accumulations/oversampling
+    fps = baserate / pow(2, accumulationexp) / pow(2, oversampleexp);
+
+    // Calculate time between recordings in milliseconds
+    long msdelay = 1.0/fps * 1000;
+    long nextFrameTime = getCurrentTime() + msdelay;
 
     while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE && isrunning && !isstopped)
     {
@@ -182,7 +196,12 @@ cout << "Entering ReplayData" << endl;
         // Signal the detected points to the GUI.
         if (dataPoints.size() != 0) {
             emit this->sendDataPoints(currentRecordIndex, dataPoints, orientation);
-            QThread::msleep(200);
+
+            long thisFrameTime = getCurrentTime();
+            if (thisFrameTime < nextFrameTime ) {
+                QThread::msleep(nextFrameTime - thisFrameTime);
+            }
+            nextFrameTime = getCurrentTime() + msdelay;
         }
         dataPoints.erase(dataPoints.begin(), dataPoints.end());
         QCoreApplication::processEvents();
@@ -197,12 +216,6 @@ cout << "Entering ReplayData" << endl;
 cout << "Exiting ReplayData" << endl;
 }
 
-// *****************************************************************************
-// Function: ReplayMenu
-//
-/// \brief   Main menu when a replay a record file.
-// *****************************************************************************
-
 /*********************************************************************
  * Function to replay a Leddar file.
  *
@@ -216,19 +229,7 @@ cout << "Entering doReplay" << endl;
 
     cout << fileName<< endl;
 
-    // Initialize the Leddar Handle.
-//    this->gHandle = LeddarCreate();
-
-    // TODO
-    // We currently use a hard-coded filename.
-    //string inputString = "LeddarData/WALL.ltl";
-    //char* lName = new char[inputString.size() + 1];
-    //std::copy(inputString.begin(), inputString.end(), lName);
-    //lName[inputString.size()] = '\0';
-
     char* lName = const_cast<char*>(fileName.c_str());
-            //fileName.c_str();
-//            <char*>(fileName);
 
     // Load the file record.
     if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
@@ -250,12 +251,8 @@ cout << "Entering doReplay" << endl;
         cout << "Failed to load file!" << endl;
     }
 
-
-    // Destroy the handle, and signal that we are done.
-//    LeddarDestroy(this->gHandle);
-//    QMetaObject::invokeMethod(this, "doReplay", Qt::QueuedConnection);
     StopStream();
-//    emit this->finished();
+
 cout << "Exiting doReplay" << endl;
 }
 
@@ -285,7 +282,6 @@ cout << "Entering ReadLiveData" << endl;
     while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS && isrunning && !isstopped) {
         LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ));
         lCount = LeddarGetDetectionCount( this->gHandle );
-
 
         /******************************
          * Run some edge-case tests.
@@ -452,42 +448,53 @@ cout << "Exiting FindAddressByIndex" << endl;
 ***/
 void LeddarStream::RecordLiveData(string fileName)
 {
-    cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
+cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
+
+    // Redundant Code
+    if ( !isrunning || isstopped) {
+        cout << "LeddarStream::RecordLiveData -> Stopping Thread" << endl;
+        if ( LeddarGetRecording(this->gHandle) ) {
+            LeddarStopRecording(this->gHandle);
+        }
+        return;
+    }
+
     // Get the index marking the end of the Path to the file
     int last_slash = fileName.find_last_of('/');
 
-    // Get the path and cast to char*
-    // Ascii or utf 8 char *
-    char* fileDir = const_cast<char*>(fileName.substr(0, last_slash).c_str());
+    // Get the path and convert to char array
+    char file_dir[fileName.length() + 1];
+    strcpy(file_dir, fileName.substr(0,last_slash).c_str());
 
     // Set the save directory.
-    LeddarConfigureRecording(fileDir, 0, 0);
+    LeddarConfigureRecording(file_dir, 0, 0);
 
-    // Leddar recording does not allow us to specify
-//    char* temp_file = const_cast<char*>(fileName.substr(last_slash+1).c_str());
+    // Leddar recording does not allow us to specify the sabe file before hand
     LeddarChar temp_file[255];
-
-    cout << "LeddarStream::RecordLiveData -> file_dir: " << fileDir << endl;
-//    cout << "LeddarStream::RecordLiveData -> temp_file: " << temp_file << endl;
-//    cout << "LeddarStream::RecordLiveData -> fileName: " << fileName << endl;
-//    cout << "LeddarStream::RecordLiveData -> fileOnly: " << fileName.substr(last_slash + 1) << endl;
-
-
 
     cout << "LeddarStream::RecordLiveData -> Entering LeddarStartRecording" << endl;
     CheckError( LeddarStartRecording( this->gHandle, temp_file ) );
     cout << "LeddarStream::RecordLiveData -> Exiting LeddarStartRecording" << endl;
 
     // Throw the thread into a sleeping loop until leddar device fails
-//    while ( isrunning && !isstopped
-//                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
-//    //        cout << "LeddarStream::RecordLiveData -> GOING TO SLEEP" << endl;
-//        }
-    QThread::sleep(10);
+    while ( isrunning && !isstopped
+                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
+//        LeddarWaitForData(this->gHandle, 5000);
+//        QThread::msleep(2000);
+//        cout << "LeddarStream::RecordLiveData -> GOING TO SLEEP" << endl;
+        QCoreApplication::processEvents();
+    }
+
+    //Stop The Recording
     LeddarStopRecording(this->gHandle);
-    cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
+
+    // Rename the file
+    QFile::rename(QString(temp_file), QString::fromStdString(fileName));
 
 
+
+
+cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
 }
 /*********************************************************************
  * Function to stream from the LIDAR sensor.
@@ -538,7 +545,7 @@ cout << "LeddarStream::doStream -> Entering doStream" << endl;
 
     LeddarDisconnect( gHandle );
 
-    QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
+//    QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
 //    emit this->finished();
 cout << "LeddarStream::doStream -> Exiting doStream" << endl;
 }
@@ -551,12 +558,15 @@ cout << "LeddarStream::doStream -> Exiting doStream" << endl;
  *
  * We then perform the reading from a file.
 ***/
-void LeddarStream::StartReplay(string filename) {
+void LeddarStream::StartReplay(string filename)
+{
 cout << "Entering StartReplay" << endl;
     if (isrunning) return;
     isstopped = false;
     isrunning = true;
+
     isReplay = true;
+    isRecording = false;
     emit running();
     doReplay(filename);
 cout << "Exiting StartReplay" << endl;
@@ -589,12 +599,15 @@ cout << "Exiting StopReplay" << endl;
  *
  * We then perform the streaming from the LIDAR sensor.
 ***/
-void LeddarStream::StartStream() {
+void LeddarStream::StartStream()
+{
 cout << "Entering StartStream" << endl;
     if (isrunning) return;
     isstopped = false;
     isrunning = true;
+
     isReplay = false;
+    isRecording = false;
     emit running();
     doStream();
 cout << "Exiting StartStream" << endl;
@@ -608,9 +621,10 @@ cout << "Exiting StartStream" << endl;
  *
  * We then perform the streaming from the LIDAR sensor.
 ***/
-void LeddarStream::StartRecord(string fileName) {
+void LeddarStream::StartRecord(string fileName)
+{
 cout << "Entering StartRecord" << endl;
-    if (isrunning) return;
+    if (isrunning || !isstopped) return;
     isstopped = false;
     isrunning = true;
     emit running();
@@ -621,6 +635,15 @@ cout << "Entering StartRecord" << endl;
 cout << "Exiting StartRecord" << endl;
 }
 
+void LeddarStream::StopRecord()
+{
+    if ( LeddarGetRecording(this->gHandle) == LD_SUCCESS)
+    {
+        LeddarStopRecording(this->gHandle);
+        cout << "LeddarStream::StopRecord -> Stopped Recording" << endl;
+    }
+}
+
 
 /*********************************************************************
  * Slot to stop streaming data from the LIDAR.
@@ -628,13 +651,16 @@ cout << "Exiting StartRecord" << endl;
  * We establish that this thread is not running, has been stopped,
  * and emit that it has been stopped to the main thread.
 ***/
-void LeddarStream::StopStream() {
+void LeddarStream::StopStream()
+{
 cout << "Entering StopStream" << endl;
     if (!isrunning || isstopped) return;
     isstopped = true;
     isrunning = false;
 
     isReplay = false;
+    isRecording = false;
+    StopRecord();
     emit stopped();
     ClearData();
 cout << "Exiting StopStream" << endl;
@@ -651,6 +677,17 @@ void LeddarStream::ClearData(unsigned int count)
 {
     vector<float> zeros(count, 0.0);
     emit this->sendDataPoints(0, zeros, orientation);
+}
+
+/*********************************************************************
+ * Returns the time since epoch in milliseconds
+ */
+//
+long LeddarStream::getCurrentTime()
+{
+    long ms = chrono::duration_cast< chrono::milliseconds> (
+                chrono::system_clock::now().time_since_epoch()).count();
+    return ms;
 }
 
 /**********************************************************************

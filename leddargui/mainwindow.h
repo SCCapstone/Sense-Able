@@ -22,9 +22,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_readDataButton_clicked();
+    //void on_readDataButton_clicked();
 
-    void on_readDataButton_clicked(bool checked);
+    //void on_readDataButton_clicked(bool checked);
 
     void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
 
@@ -34,7 +34,7 @@ private slots:
 
     void frameCaptured(cv::Mat* frame);
 
-    void on_cancelButtonRead_clicked();
+    //void on_cancelButtonRead_clicked();
 
     void on_settingsPageButton_clicked();
 
@@ -42,7 +42,7 @@ private slots:
 
     void on_notificationsButton_clicked();
 
-    void on_readDataPageButton_clicked();
+    //void on_readDataPageButton_clicked();
 
     void on_backButton_clicked();
 
@@ -50,15 +50,13 @@ private slots:
 
     void on_backButtonSettings_clicked();
 
-    void on_backButtonRead_clicked();
+    //void on_backButtonRead_clicked();
 
-    void on_changeCamera_clicked();
+   // void on_changeCamera_clicked();
 
     void on_changeOrient_clicked();
 
     void on_QuitButton_clicked();
-
-    void on_Play_clicked();
 
     void on_notificationDistanceSlider_valueChanged(int value);
 
@@ -73,6 +71,8 @@ private slots:
     void on_go_Record_button_clicked();
 
     void on_go_StopAll_button_clicked();
+
+    void on_cameraComboBox_currentIndexChanged(int index);
 
 signals:
     // Signals to capturethread.cpp
@@ -97,7 +97,9 @@ signals:
     void passNotifier(vector<string>); // Deprecrated?
 
     void clicked(); // deprecated?
-    void streamButtonClicked(); // deprecated?
+
+    //used for behavioral tests
+    void streamButtonClicked();
 
 private:
     Ui::MainWindow *ui;
@@ -121,6 +123,7 @@ private:
     void stopAll();
     void updateSoundFiles();
     string ltlToAVI(string leddarFile);
+    QImage Mat2QImage(cv::Mat* img);
 };
 
 #endif // MAINWINDOW_H

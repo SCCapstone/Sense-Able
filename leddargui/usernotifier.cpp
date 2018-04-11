@@ -35,14 +35,14 @@ UserNotifier::UserNotifier() {
     soundFiles = defaultSoundFiles;
 
     voiceFiles = {
-        "../Sounds/blaster-firing.wav",
-        "../Sounds/blaster-firing.wav",
-        "../Sounds/blaster-firing.wav",
-        "../Sounds/blaster-firing.wav",
-        "../Sounds/blaster-firing.wav",
-        "../Sounds/blaster-firing.wav",
-        "../Sounds/blaster-firing.wav",
-        "../Sounds/blaster-firing.wav"
+        "../Sounds/Wall_Voice.wav",
+        "../Sounds/Wall_Corner_Voice.wav",
+        "../Sounds/Pillar_Voice.wav",
+        "../Sounds/Trip_Hazard_Voice.wav",
+        "../Sounds/Other_Voice.wav",
+        "../Sounds/Stairs_Voice.wav",
+        "../Sounds/Other_Voice.wav",
+        "../Sounds/Other_Voice.wav"
     };
 
 }

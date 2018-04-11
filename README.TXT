@@ -8,6 +8,7 @@ ________________________
 1. SYSTEM REQUIREMENTS
 2. BUILDING AND RUNNING
 3. TESTING
+4. WARNINGS 
 
 ________________________
 1. SYSTEM REQUIREMENTS
@@ -92,3 +93,16 @@ that widget (i.e. do a keypress or a mouse click, etc.).  See the
 QTest documentation on how to simulate a widget.  Finally, we output
 whether the simulation was actually performed ("SUCCESS") or not
 ("FAILURE").
+
+
+________________________
+4. WARNINGS
+________________________
+When using the record function, running the program as sudo with grant exclusive permission to leddar recordings to root. To avoid this, run only as regular user. 
+
+If the leddar seems to not have USB permissions, no detections are reported while streaming or no leddar recording is generated and the Leddar is plugged in. Try unplugging the leddar, re runnnig install-senseable, and then plugging the leddar back in. If all else fails, restart your computer. 
+
+
+
+
+

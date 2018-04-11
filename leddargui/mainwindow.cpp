@@ -35,10 +35,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //Set to start the application on the Go Page.
-    //Will eventually start on the Landing Page.
-    //Index has been changed so it now starts on the Landing page
+    //Index starts on the Landing page
     ui->stackedWidget->setCurrentIndex(1);
+    //Set distance slider default. The value is divided
+    //by 2 to get fractions of meters from 1.0m to 50.0m.
+    ui->notificationDistanceSlider->setValue(50.0);
+
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
     this->captureThread = new QThread();
@@ -113,17 +115,22 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach (const QCameraInfo &cameraInfo, cameras)
         this->cameraFileNames.push_back(cameraInfo.deviceName().toStdString());
 
-    foreach (const QCameraInfo &cameraInfo, cameras)
+    //This pushes all of the cameras that are available to the comobo box and lists them as
+    //camera 1, camera 2, camera 3 ... etc and gives the data of each index the value of the
+    //camera as it was found (e.g. "/dev/video0/" or "/dev/video1")
+    int count = 1;
+    foreach (const QCameraInfo &cameraInfo, cameras) {
+        QString cameraValue = QString::fromStdString(cameraInfo.deviceName().toStdString());
         cout << cameraInfo.deviceName().toStdString();
+        QString cameraNumber = "Camera " + QString::number(count);
+        ui->cameraComboBox->addItem(cameraNumber, cameraValue);
+        count++;
+    }
 
     // UI
     ui->beepCheckBox->setChecked(true);
-
-    // Hide some buttons
-//    ui->orientLabel->setHidden(true);
-//    ui->changeOrient->setHidden(true);
-//    ui->cameraLabel->setHidden(true);
-//    ui->changeCamera->setHidden(true);
+    // Set viewport to default image
+    ui->cameraView->setPixmap(QPixmap::fromImage(Mat2QImage(&capture->defaultImage)));
 }
 
 /*********************************************************************
@@ -156,6 +163,15 @@ string MainWindow::ltlToAVI(string leddarFile)
 }
 
 /*********************************************************************
+ * Converts opencv Mat to QImage
+***/
+QImage MainWindow::Mat2QImage(cv::Mat* img)
+{
+    return QImage(
+                img->data, img->cols, img->rows,
+                img->step, QImage::Format_RGB888).rgbSwapped();
+}
+/*********************************************************************
  * Function to run when the readDataButton is clicked.
  *
  * Opens a gui file dialog to allow the user to read in leddar data from
@@ -164,7 +180,7 @@ string MainWindow::ltlToAVI(string leddarFile)
  *
  * If data is already streaming, this button does nothing.
 ***/
-void MainWindow::on_readDataButton_clicked()
+/*void MainWindow::on_readDataButton_clicked()
 {
     if (!this->stream->isrunning) {
         string leddarFileName = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
@@ -185,7 +201,7 @@ void MainWindow::on_readDataButton_clicked()
         }
         emit startRead(leddarFileName);
     }
-}
+}*/
 
 /*********************************************************************
  * Function to run when the streamButton is clicked.
@@ -195,6 +211,8 @@ void MainWindow::on_readDataButton_clicked()
  *
  * If data is already streaming, this button does nothing.
 ***/
+//TODO: update documentation, this button is now the button on the home
+//      page that changes screens to the 'go' page
 void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -225,7 +243,7 @@ void MainWindow::on_streamButton_clicked()
 ***/
 void MainWindow::updateSoundFiles()
 {
-    if ( ui->beepCheckBox->isChecked() ) {
+    if (ui->beepCheckBox->isChecked() ) {
         notifier.fileType = SOUNDFILES;
     }
     else { // if (ui->speechCheckBox->isChecked())
@@ -251,12 +269,12 @@ void MainWindow::updateSoundFiles()
  *
  * Required; won't go away.
 ***/
-void MainWindow::on_readDataButton_clicked(bool checked)
+/*void MainWindow::on_readDataButton_clicked(bool checked)
 {
     if(checked) {
         // do nothing
     }
-}
+}*/
 
 /*********************************************************************
  * Slot to catch leddar data.
@@ -312,28 +330,13 @@ void MainWindow::catchDetectedObject(int object) {
 void MainWindow::frameCaptured(cv::Mat* frame)
 {
     // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
-//    cout << frame->empty()  << "  " << frame->cols << "  " << frame->rows;
-    ui->cameraView->setPixmap(
-                QPixmap::fromImage(
-                    QImage(
-                        frame->data, frame->cols, frame->rows,
-                        frame->step, QImage::Format_RGB888).rgbSwapped()
-                    )
+    QPixmap resize = QPixmap::fromImage(
+                QImage(
+                    frame->data, frame->cols, frame->rows,
+                    frame->step, QImage::Format_RGB888).rgbSwapped()
                 );
-//    cout << "  >314 is not crashing" << endl;
+    ui->cameraView->setPixmap(resize.scaled(ui->cameraView->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
-}
-
-/*********************************************************************
- * Function to run when the cancelButtonRead is clicked.
- *
- * We stop all threads from executing processes, except the main thread.
- * Does the same as the above button but is used for a different page of
- * the application
-***/
-void MainWindow::on_cancelButtonRead_clicked()
-{
-    stopAll();
 }
 
 /*********************************************************************
@@ -343,12 +346,6 @@ void MainWindow::on_cancelButtonRead_clicked()
  * and then we go back to the main page of the app
 ***/
 void MainWindow::on_backButtonGo_clicked()
-{
-    stopAll();
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
-void MainWindow::on_backButtonRead_clicked()
 {
     stopAll();
     ui->stackedWidget->setCurrentIndex(1);
@@ -375,11 +372,6 @@ void MainWindow::on_notificationsButton_clicked()
     ui->stackedWidget->setCurrentIndex(3);
 }
 
-void MainWindow::on_readDataPageButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(4);
-}
-
 void MainWindow::on_backButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);
@@ -389,35 +381,6 @@ void MainWindow::on_backButton_clicked()
 void MainWindow::on_backButtonSettings_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
-}
-
-void MainWindow::on_changeCamera_clicked()
-{
-   bool was_playing = this->stream->isrunning;
-   bool was_recording = this->capture->isRecording;
-
-   // We cant change the video stream input of a recorded file,
-   // so don't stop stream.
-   if ( !stream->isReplay ) {
-       stopAll();
-   }
-
-   if(videoStream == "/dev/video0") {
-       videoStream = "/dev/video1";
-       ui->cameraLabel->setText("Camera: Webcam");
-   }
-   else if(videoStream == "/dev/video1"){
-        videoStream = "/dev/video0";
-        ui->cameraLabel->setText("Camera: Built-In");
-   }
-
-   // We cant stop and then restart while recording
-   if (was_playing && !was_recording) {
-       QThread::usleep(.15);
-      emit startCapture(videoStream);
-      emit startStream();
-      emit passNotifier(this->notifier.soundFiles);
-   }
 }
 
 void MainWindow::on_changeOrient_clicked()
@@ -451,29 +414,6 @@ void MainWindow::on_changeOrient_clicked()
 void MainWindow::on_QuitButton_clicked()
 {
     emit clicked();
-}
-
-void MainWindow::on_Play_clicked()
-{
-    // TODO: Add logic for ReadData
-    if(this->stream->isrunning)
-    {
-        stopAll();
-        ui->Play->setText("Play");
-    }
-    else if (this->stream->isstopped)
-    {
-       emit startCapture(videoStream);
-       emit startStream();
-       ui->Play->setText("Stop");
-    }
-    else if (!this->stream->isrunning)
-    {
-        emit streamButtonClicked();
-        emit startCapture(videoStream);
-        emit startStream();
-        ui->Play->setText("Stop");
-    }
 }
 
 //Sets notification distance and sends value to objectdetectthead
@@ -529,8 +469,12 @@ void MainWindow::on_go_ReadFromFile_button_clicked()
 
 void MainWindow::on_go_StreamFromDevice_button_clicked()
 {
+    //Testing signal
+    emit streamButtonClicked();
+
     // TODO: Add logic for ReadData
     // Check that LeddarStream is stopped
+
     if (!this->stream->isrunning && this->stream->isstopped) {
         updateSoundFiles();
 
@@ -541,10 +485,8 @@ void MainWindow::on_go_StreamFromDevice_button_clicked()
 
 void MainWindow::on_go_Record_button_clicked()
 {
-    stopAll();
+    emit clicked();
     // Check that stream is stopped
-//    cout << this->stream->isrunning << endl;
-//    cout << this->stream->isstopped << endl;
     if (!stream->isrunning && stream->isstopped) {
 
         // Open File dialog, get save name
@@ -586,7 +528,6 @@ void MainWindow::on_go_Record_button_clicked()
         this->updateSoundFiles();
 
         emit emitStartVideoRecord(videoStream, videoFileName);
-//        emit startStream();
         emit emitStartLeddarRecord(leddarFileName);
 
     } // if (!stream->isrunning && stream->isstopped) {
@@ -594,5 +535,29 @@ void MainWindow::on_go_Record_button_clicked()
 
 void MainWindow::on_go_StopAll_button_clicked()
 {
+    emit clicked();
     stopAll();
+}
+
+void MainWindow::on_cameraComboBox_currentIndexChanged(int index)
+{
+    bool was_playing = this->stream->isrunning;
+    bool was_recording = this->capture->isRecording;
+    QString currentCamera = ui->cameraComboBox->currentData().toString();
+
+    // We cant change the video stream input of a recorded file,
+    // so don't stop stream.
+    if ( !stream->isReplay ) {
+        stopAll();
+    }
+
+    videoStream = currentCamera.toStdString();
+
+    // We cant stop and then restart while recording
+    if (was_playing && !was_recording) {
+        QThread::usleep(.15);
+       emit startCapture(videoStream);
+       emit startStream();
+       emit passNotifier(this->notifier.soundFiles);
+    }
 }

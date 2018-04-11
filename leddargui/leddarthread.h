@@ -36,11 +36,13 @@ public:
     //void DataCallback( void *aHandle );
     void ReadLiveData( void );
     void RecordLiveData(string fileName);
+    void StopRecord();
     void ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize );
     char* FindAddressByIndex( unsigned int aIndex, char* aAddresses );
 
     // Helper function
     void ClearData(unsigned int count = 16);
+    long getCurrentTime();
 
     LeddarHandle gHandle;
     bool isrunning, isstopped;
