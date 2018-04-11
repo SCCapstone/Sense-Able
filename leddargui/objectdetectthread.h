@@ -19,9 +19,10 @@ public:
     void detectObject(vector<float> distances);
     int detect_wall(vector<float> v, float measure_error, float flat_error);
     vector<float> yaxis_projection(vector<float> distances);
+    vector<float> xaxis_projection(vector<float> distances);
 
-    vector<float> polynomial_fit(int polynom_degree, vector<float> points);
-    float fit_quality(vector<float> coefficients, int polynom_degree, vector<float> points);
+    vector<float> polynomial_fit(int polynom_degree, vector<float> points, vector<float> xvalues);
+    float fit_quality(vector<float> coefficients, int polynom_degree, vector<float> points, vector<float> xvalues);
 
     float detectWall(vector<float> distances);
     float detectCorner(vector<float> distances);
