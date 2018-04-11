@@ -13,6 +13,9 @@
 #include <iostream>
 #include <QObject>
 #include <QString>
+
+#include "globalconstants.h"
+
 using namespace std;
 
 #include "LeddarC.h"
@@ -26,23 +29,18 @@ public:
     LeddarStream();
     ~LeddarStream();
 
-    static const bool VERTICAL = true; // Beam across x-axis --
-    static const bool HORIZONTAL = false; // Beam across y-axis |
-
-    static void CheckError(int aCode);
-    char WaitKey(void);
-    /*static void DataCallback(void *aHandle);*/
-    void ReplayData(void);
-    //void DataCallback( void *aHandle );
     void ReadLiveData( void );
+    void ReplayData(void);
     void RecordLiveData(string fileName);
     void StopRecord();
+
+    // Helper functions
+    static void CheckError(int aCode);
     void ListSensors( char* aConnectyionType, char* aAddresses, unsigned int aSize );
     char* FindAddressByIndex( unsigned int aIndex, char* aAddresses );
-
-    // Helper function
     void ClearData(unsigned int count = 16);
     long getCurrentTime();
+
 
     LeddarHandle gHandle;
     bool isrunning, isstopped;
@@ -50,12 +48,10 @@ public:
     bool orientation = VERTICAL;
 
 public slots:
-//    void StartReplay(QString filename);
-    void StartReplay(string fileName);
-//    void StopReplay();
     void StartStream();
-    void StopStream();
+    void StartReplay(string fileName);
     void StartRecord(string fileName);
+    void StopStream();
     void setOrientation(bool aOrientation);
 
 private slots:
@@ -63,8 +59,10 @@ private slots:
     void doStream(string fileName = "");
 
 signals:
-    void finished();
     void sendDataPoints(int index, vector<float> dataPoints, bool aOrientation);
+
+    // QThread "under the hood" signals
+    void finished();
     void running();
     void stopped();
 

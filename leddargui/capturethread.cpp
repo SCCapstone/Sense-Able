@@ -1,19 +1,23 @@
 /*********************************************************************
  * Class for capturing webcam data.
  *
- * Date last modified: 8 December 2017
+ * Date last modified: 11 April 2018
  * Author: Kathryn Vincent, Jonathan Senn
 ***/
 
-//#include <QThread>
-//#include <opencv2/opencv.hpp>
-//#include <opencv2/highgui.hpp>
-//#include <opencv2/videoio.hpp>
-//#include <QTimer>
 #include <QCoreApplication>
 #include <QDebug>
 
 #include "capturethread.h"
+
+
+
+/*********************************************************************
+ *********************************************************************
+                           PUBLIC
+ *********************************************************************
+**********************************************************************/
+
 
 /*********************************************************************
  * The usual constructor.
@@ -23,9 +27,6 @@
 ***/
 CaptureThread::CaptureThread()
 {
-
-    //0: opens webcam
-    //this->cap.open(0);
     isstopped = true;
     isrunning = false;
 
@@ -87,17 +88,17 @@ int CaptureThread::imagedetect(cv::HOGDescriptor hog, cv::Mat frame){
  ***/
 void CaptureThread::overlayDistance(cv::Mat frame) {
 
-    if (distances.size() == 0) return;
+    if (detections.size() == 0) return;
 
     float max_dist = 10.;
     int height = frame.size().height;
     int width = frame.size().width;
 
-    int segments = int(distances.size());
+    int segments = int(detections.size());
     int seg_dist = width/segments; //Truncates but this shouldn't be noticeable. Also it doesn't matter.
 
     for (int i=0; i<segments; i++) {
-        float distance = distances.at(i);
+        float distance = detections.at(i);
 
         // Normalize the distance from 0 - max distance
         float scaling_factor = distance / max_dist;
@@ -123,110 +124,43 @@ void CaptureThread::overlayDistance(cv::Mat frame) {
     return;
 }
 
+
+
 /*********************************************************************
- * Function to capture images from the webcamera.
- *
- * This function captures images from the camera and emits the frames
- * to the main thread to display on a window.
- *
- * We also load a hardcoded image detector and perform image detection on
- * every frame of the camera feed.  The results are also emitted to
- * the main thread for display.
-***/
-void CaptureThread::doCapture(string videoFileName)
+ *********************************************************************
+                           HELPER FUNCTIONS
+ *********************************************************************
+**********************************************************************/
+
+
+/*********************************************************************
+ * Emits the default frame
+ */
+void CaptureThread::emitDefaultFrame()
 {
-    if (!isrunning || isstopped) return;
-
-    int fps = cap.get(CV_CAP_PROP_FPS);
-    long msdelay = 1.0/cap.get(CV_CAP_PROP_FPS) * 1000;
-    msdelay += 5;
-
-//    cout << "CaptureThread::doCapture -> FPS: " << fps << endl;
-//    cout << "CaptureThread::doCapture -> Delay: " << msdelay << endl;
-
-//    cv::HOGDescriptor hog;
-//    hog.load("../my_detector.yml"); 
-
-    // If save file is specified, construct a writing video stream.
-    if ( isRecording  && cap.isOpened()) {
-
-        cout << "CaptureThread::doCapture -> CaptureThread is recording" << endl;
-
-        int frame_width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
-        int frame_height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
-
-        videoWriter.open(videoFileName, CV_FOURCC('M', 'J', 'P', 'G'),
-                         fps, cv::Size(frame_width, frame_height));
-    }
-
-//    long lastFrameTime = getCurrentTime() - msdelay;
-    long nextFrameTime = getCurrentTime() + msdelay;
-    while(isrunning && !isstopped){
-//        lastFrameTime = chrono::system_clock.now();
-
-        // Check that Video Stream is open
-        if( cap.isOpened() ) {
-            // Get the next frame
-            cap >> frame;
-            // Check that frame is not empty
-            if ( !frame.empty() ) {
-
-                // Write to file if file is specified
-                if ( isRecording ) {
-                    // save frame to file
-                    videoWriter.write(frame);
-                }
-
-    //            int a = imagedetect(hog, frame);
-
-                if (distances.size() > 0){
-                    overlayDistance(frame);
-                }
-                emit(newFrame(&frame));
-
-                // Set and check timer
-                long thisFrameTime = getCurrentTime();
-                if (thisFrameTime < nextFrameTime){
-                    // force wait (lastFrameTime + fps - thisFrameTime);
-                    QThread::msleep( nextFrameTime - thisFrameTime);
-//                    cout << "time to delay: " << (nextFrameTime - thisFrameTime) << endl;
-                }
-//                lastFrameTime = getCurrentTime();
-                nextFrameTime = getCurrentTime() + msdelay;
-            }
-            else {
-                // Lets start emiting a default frame
-                cout << "Empty Frame" << endl;
-                StopCapture();
-            }
-        } // if ( !frame.empty() ) {
-        else{
-            qDebug()<<"\nCamera not detected or is already in use. \nClose any other applications using the camera and try again.";
-//            StopCapture();
-            tempImage = defaultImage.clone();
-            overlayDistance(tempImage);
-            emit newFrame(&tempImage);
-        }
-        QCoreApplication::processEvents();
-    }
-
-//    QMetaObject::invokeMethod(this, "doCapture", Qt::QueuedConnection);
-//    emit this->finished();
+    cout << "emitting" << endl;
+    emit(emitFrame(&defaultImage));
 }
 
 /*********************************************************************
- * Slot to receive data points from leddar thread
- *
- * Set class variable distances to the newly received dataPoints.
- ****/
-void CaptureThread::captureDataPoints(int index, std::vector<float> points, bool aOrientation){
-    if(isrunning && !isstopped){
-        //Draw stuff on frame
-        distances.empty();
-        distances = points;
-//        cout << "CaptureThread::captureDataPoints -> capturing points in capture thread";
-    }
+ * Returns the time since epoch in milliseconds
+ */
+//
+long CaptureThread::getCurrentTime()
+{
+    long ms = chrono::duration_cast< chrono::milliseconds> (
+                chrono::system_clock::now().time_since_epoch()).count();
+    return ms;
 }
+
+
+
+/*********************************************************************
+ *********************************************************************
+                           PUBLIC SLOTS
+ *********************************************************************
+**********************************************************************/
+
 
 /*********************************************************************
  * Slot to start this thread.
@@ -252,6 +186,28 @@ void CaptureThread::StartCapture(string videoStream)
 }
 
 /*********************************************************************
+ * Slot to stop this thread.
+ *
+ * We establish that this thread is not running, and has been stopped.
+ * We emit that it has been stopped to the main thread.
+***/
+void CaptureThread::StopCapture()
+{
+    if (!isrunning ) return;
+    isstopped = true;
+    isrunning = false;
+
+    cap.release();
+    if (isRecording) {
+        videoWriter.release();
+    }
+    // Emit an default frame
+    emitDefaultFrame();
+    emit stopped();
+
+}
+
+/*********************************************************************
  * Slot to start this thread.
  *
  * We establish that this thread is running, has not stopped, and emit that
@@ -273,44 +229,113 @@ void CaptureThread::StartRecord(string videoStream, string videoFileName)
     doCapture(videoFileName);
 }
 
+
+
 /*********************************************************************
- * Slot to stop this thread.
+ *********************************************************************
+                           PRIVATE SLOTS
+ *********************************************************************
+**********************************************************************/
+
+
+/*********************************************************************
+ * Function to capture images from the webcamera.
  *
- * We establish that this thread is not running, and has been stopped.
- * We emit that it has been stopped to the main thread.
+ * This function captures images from the camera and emits the frames
+ * to the main thread to display on a window.
+ *
+ * We also load a hardcoded image detector and perform image detection on
+ * every frame of the camera feed.  The results are also emitted to
+ * the main thread for display.
 ***/
-void CaptureThread::StopCapture()
+void CaptureThread::doCapture(string videoFileName)
 {
-    if (!isrunning ) return;
-    isstopped = true;
-    isrunning = false;
+    if (!isrunning || isstopped) return;
 
-    cap.release();
-    if (isRecording) {
-        videoWriter.release();
+    // Get the frame rate of the video stream and calculate required delay
+    int fps = cap.get(CV_CAP_PROP_FPS);
+    long msdelay = 1.0/cap.get(CV_CAP_PROP_FPS) * 1000;
+
+//    cout << "CaptureThread::doCapture -> FPS: " << fps << endl;
+//    cout << "CaptureThread::doCapture -> Delay: " << msdelay << endl;
+
+//    cv::HOGDescriptor hog;
+//    hog.load("../my_detector.yml"); 
+
+    // If save file is specified, construct a writing video stream.
+    if ( isRecording  && cap.isOpened()) {
+
+        cout << "CaptureThread::doCapture -> CaptureThread is recording" << endl;
+
+        int frame_width = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+        int frame_height = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+
+        // Create the stream, encoded as Mjpeg. For other encodings see: https://www.fourcc.org/
+        videoWriter.open(videoFileName, CV_FOURCC('M', 'J', 'P', 'G'),
+                         fps, cv::Size(frame_width, frame_height));
     }
-    // Emit an empty frame
-    emitDefaultFrame();
-    emit stopped();
 
+    // Later we will use this to time throttle the replay speed.
+    long nextFrameTime = getCurrentTime() + msdelay;
+
+    while(isrunning && !isstopped){
+
+        // Check that Video Stream is open
+        if( cap.isOpened() ) {
+
+            cap >> frame;
+
+            // Check that frame is not empty
+            if ( !frame.empty() ) {
+
+                // Write to file if file is specified
+                if ( isRecording ) {
+                    // save frame to file
+                    videoWriter.write(frame);
+                }
+
+    //            int a = imagedetect(hog, frame);
+
+                // Draw the heatmap and distances on to the frame and emit
+                overlayDistance(frame);
+                emit(emitFrame(&frame));
+
+                // Get the current time and compare to the expected "next frame time"
+                // If the we arrive earlier than expected, wait
+                long thisFrameTime = getCurrentTime();
+                if (thisFrameTime < nextFrameTime){
+                    QThread::msleep( nextFrameTime - thisFrameTime);
+                }
+                nextFrameTime = getCurrentTime() + msdelay;
+            }
+            else {
+                // Lets start emiting a default frame
+                cout << "Empty Frame" << endl;
+                StopCapture();
+            }
+        } // if ( !frame.empty() ) {
+        else{
+            qDebug()<<"\nCamera not detected or is already in use. \nClose any other applications using the camera and try again.";
+            StopCapture();
+        }
+        QCoreApplication::processEvents();
+    }
+
+//    QMetaObject::invokeMethod(this, "doCapture", Qt::QueuedConnection);
+//    emit this->finished();
 }
 
 /*********************************************************************
- * Emits the default frame
- */
-void CaptureThread::emitDefaultFrame()
-{
-    cout << "emitting" << endl;
-    emit(newFrame(&defaultImage));
+ * Slot to receive data points from leddar thread
+ *
+ * Set class variable distances to the newly received dataPoints.
+ ****/
+void CaptureThread::catchDetections(int index, std::vector<float> points, bool aOrientation){
+    if(isrunning && !isstopped){
+        //Draw stuff on frame
+        detections.empty();
+        detections = points;
+//        cout << "CaptureThread::captureDataPoints -> capturing points in capture thread";
+    }
 }
 
-/*********************************************************************
- * Returns the time since epoch in milliseconds
- */
-//
-long CaptureThread::getCurrentTime()
-{
-    long ms = chrono::duration_cast< chrono::milliseconds> (
-                chrono::system_clock::now().time_since_epoch()).count();
-    return ms;
-}

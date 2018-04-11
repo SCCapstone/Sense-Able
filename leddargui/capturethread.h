@@ -15,41 +15,41 @@ class CaptureThread : public QObject
 public:
     CaptureThread();
     ~CaptureThread();
-    void run();
+
+//    void run();
     int imagedetect(cv::HOGDescriptor, cv::Mat);
     void overlayDistance(cv::Mat frame);
 
+    // Helper Functions
+    void emitDefaultFrame();
+    long getCurrentTime();
+
     cv::VideoCapture cap;
     cv::VideoWriter videoWriter;
-    cv::Mat frame, defaultImage, tempImage;
+    cv::Mat frame, defaultImage;
 
     string defaultImageFile;
 
     bool isrunning, isstopped;
     bool isRecording;
-    std::vector<float> distances;
+    std::vector<float> detections;
 
 public slots:
     void StartCapture(string videoStream);
     void StopCapture();
-
     void StartRecord(string videoStream, string videFileName);
 
 private slots:
     void doCapture(string videoFileName = "");
-    void captureDataPoints(int index, std::vector<float> dataPoints, bool aOrientation);
+    void catchDetections(int index, std::vector<float> dataPoints, bool aOrientation);
 
 signals:
-    void newFrame(cv::Mat*);
+    void emitFrame(cv::Mat*);
+
+    // QThread "under the hood" signals
     void running();
     void stopped();
     void cancel();
-//    void finished();
-
-private:
-    // Helper Functions
-    void emitDefaultFrame();
-    long getCurrentTime();
 
 };
 

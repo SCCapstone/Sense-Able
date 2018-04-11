@@ -34,25 +34,17 @@ private slots:
 
     void frameCaptured(cv::Mat* frame);
 
-    //void on_cancelButtonRead_clicked();
-
     void on_settingsPageButton_clicked();
 
     void on_actionMain_Menu_triggered();
 
     void on_notificationsButton_clicked();
 
-    //void on_readDataPageButton_clicked();
-
     void on_backButton_clicked();
 
     void on_backButtonGo_clicked();
 
     void on_backButtonSettings_clicked();
-
-    //void on_backButtonRead_clicked();
-
-   // void on_changeCamera_clicked();
 
     void on_changeOrient_clicked();
 
@@ -76,9 +68,9 @@ private slots:
 
 signals:
     // Signals to capturethread.cpp
-    void startCapture(string);
-    void emitStartVideoRecord(string, string);
-    void stopCapture();
+    void StartCapture(string);
+    void StartVideoRecord(string, string);
+    void StopCapture();
 
     // Signals to leddarthread.cpp
     void startStream();
@@ -93,10 +85,8 @@ signals:
     void stopDetect();  // Deprecated?
     void setSigDist(float);
 
-    // Signals to Usernotifier
-    void passNotifier(vector<string>); // Deprecrated?
 
-    void clicked(); // deprecated?
+    void clicked();
 
     //used for behavioral tests
     void streamButtonClicked();

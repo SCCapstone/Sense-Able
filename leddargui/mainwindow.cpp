@@ -61,10 +61,10 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<vector<string> >("vector<string>");
 
     this->capture->moveToThread(captureThread);
-    connect(this, SIGNAL(startCapture(string)), capture, SLOT(StartCapture(string)));
-    connect(this, SIGNAL(emitStartVideoRecord(string,string)), capture, SLOT(StartRecord(string,string)));
-    connect(this, SIGNAL(stopCapture()), capture, SLOT(StopCapture()));
-    connect(capture, SIGNAL(newFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
+    connect(this, SIGNAL(StartCapture(string)), capture, SLOT(StartCapture(string)));
+    connect(this, SIGNAL(StartVideoRecord(string,string)), capture, SLOT(StartRecord(string,string)));
+    connect(this, SIGNAL(StopCapture()), capture, SLOT(StopCapture()));
+    connect(capture, SIGNAL(emitFrame(cv::Mat*)), this, SLOT(frameCaptured(cv::Mat*)));
 
     // We then connect the leddar stream and main thread to allow the
     // window to display the data read in from the stream.
@@ -84,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
                     objdetector, SLOT(StartDetect(int, vector<float>, bool)),
                     Qt::QueuedConnection);
     connect(stream, SIGNAL(sendDataPoints(int,vector<float>, bool)),
-                    capture, SLOT(captureDataPoints(int,vector<float>,bool)),
+                    capture, SLOT(catchDetections(int,vector<float>,bool)),
                     Qt::QueuedConnection);
 
     // We then connect the leddar stream and the object detector so that
@@ -146,7 +146,7 @@ MainWindow::~MainWindow()
 ***/
 void MainWindow::stopAll()
 {
-    emit stopCapture();
+    emit StopCapture();
     emit stopStream();
     emit stopRead();
     emit stopDetect();
@@ -258,6 +258,7 @@ void MainWindow::updateSoundFiles()
         ui->obj7_notif_choice->currentIndex(), ui->obj8_notif_choice->currentIndex()
     };
 
+    // TODO:: Explain this code
     for (unsigned int i=0; i < newSoundFiles.size(); i++) {
         notifier.soundFiles.at(i) = notifier.defaultSoundFiles.at(newSoundFiles.at(i));
     }
@@ -460,7 +461,7 @@ void MainWindow::on_go_ReadFromFile_button_clicked()
         QFileInfo check_file(QString::fromStdString(videoFilename));
         if (check_file.exists() && check_file.isFile())
         {
-            emit startCapture(videoFilename);
+            emit StartCapture(videoFilename);
 
         }
         emit startRead(leddarFileName);
@@ -478,7 +479,7 @@ void MainWindow::on_go_StreamFromDevice_button_clicked()
     if (!this->stream->isrunning && this->stream->isstopped) {
         updateSoundFiles();
 
-        emit startCapture(videoStream);
+        emit StartCapture(videoStream);
         emit startStream();
     }
 }
@@ -527,7 +528,7 @@ void MainWindow::on_go_Record_button_clicked()
 
         this->updateSoundFiles();
 
-        emit emitStartVideoRecord(videoStream, videoFileName);
+        emit StartVideoRecord(videoStream, videoFileName);
         emit emitStartLeddarRecord(leddarFileName);
 
     } // if (!stream->isrunning && stream->isstopped) {
@@ -556,8 +557,7 @@ void MainWindow::on_cameraComboBox_currentIndexChanged(int index)
     // We cant stop and then restart while recording
     if (was_playing && !was_recording) {
         QThread::usleep(.15);
-       emit startCapture(videoStream);
+       emit StartCapture(videoStream);
        emit startStream();
-       emit passNotifier(this->notifier.soundFiles);
     }
 }

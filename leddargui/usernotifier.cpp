@@ -18,7 +18,7 @@ using namespace std;
 ***/
 UserNotifier::UserNotifier() {
 
-    // Objects Map to the index of the vector via
+    // Objects Map to the index of the vector via the integer defined in globalconstants.h
 
     // Populate vectors with default values
     defaultSoundFiles = {

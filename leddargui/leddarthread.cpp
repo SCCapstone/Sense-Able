@@ -38,6 +38,13 @@
 
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
 
+
+/*********************************************************************
+ *********************************************************************
+                           PUBLIC
+ *********************************************************************
+**********************************************************************/
+
 /*********************************************************************
  * The usual constructor.
  *
@@ -74,55 +81,91 @@ LeddarStream::~LeddarStream() {
 }
 
 /*********************************************************************
- * Function to check for an error in a Leddar command.
+ * Function to read live data from the sensor.
  *
- * This function prints out the error code to console for any
- * unsuccessful Leddar library function.
+ * We detect the next set of points detected by the sensor, and store
+ * them in a 'float' 'vector'.  We then emit these points and their
+ * identifying index.  We continue reading points until either there
+ * are no more points available, this thread stops running, or this
+ * thread is stopped.
 ***/
-void LeddarStream::CheckError( int aCode )
+void LeddarStream::ReadLiveData( void )
 {
-    if ( aCode != LD_SUCCESS )
-    {        
-        printf( "LeddarC error (%d): ", aCode );
+cout << "Entering ReadLiveData" << endl;
+    int currentRecordIndex;
+    vector<float> dataPoints;
+    unsigned int i, lCount;
+    LdDetection lDetections[16];
 
-        switch ( aCode )
-        {
-            case LD_ACCESS_DENIED : printf("ACCESS DENIED\n" ); break;
-            case LD_TIMEOUT : printf("TIMEOUT\n" ); break;
-            case LD_START_OF_FILE : printf("THAT IS THE START OF FILE\n" ); break;
-            case LD_END_OF_FILE : printf("THIS IS THE END OF FILE\n" ); break;
-            case LD_NO_RECORD : printf("THERE IS NO RECORD\n" ); break;
-            case LD_ALREADY_STARTED : printf("ALREADY STARTED\n" ); break;
-            case LD_NO_DATA_TRANSFER : printf("NO DATA TRANSFER\n" ); break;
-            case LD_NOT_CONNECTED : printf("NOT CONNECTED\n" ); break;
-            case LD_INVALID_ARGUMENT : printf("THAT IS AN INVALID ARGUMENT\n" ); break;
-            case LD_ERROR : printf("ERROR\n" ); break;
-            case LD_NOT_ENOUGH_SPACE : printf("THERE IS NOT ENOUGH SPACE\n" ); break;
+    LeddarChar recordingFileName[255];
+
+    if (!isrunning || isstopped) return;
+
+    CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
+
+    while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS && isrunning && !isstopped) {
+        LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ));
+        lCount = LeddarGetDetectionCount( this->gHandle );
+
+        /******************************
+         * Run some edge-case tests.
+        ***/
+        if (lCount == 0) {
+            cout << "ERROR: ReadLiveData - NO POINTS DETECTED!" << endl;
+
+            // The official Leddar documentation suggests sending LeddarGetDetections to
+            // a callback function.  Otherwise, the documentation suggests that we are
+            // "not guranteed to get coherent data."  We could not get the callback working
+            // with our Qt object-oriented structure.  Instead, I have determined that the
+            // only likely data incoherence involves receiving random 0 vectors of points.
+            // We 'continue' in case this is the case, so that we can later get actual data.
+            continue;
         }
-    }
-}
+        if (lCount > ARRAY_LEN(lDetections)) {
+            cout << "ERROR: ReadLiveData - More points detected than expected!" << endl;
+            continue;
 
-/*********************************************************************
- * Function to wait until a key is pressed.
- *
- * Note that we need to ping the sensor to keep the connection alive
- * while waiting for the key.
- *
- * Returns:
- *   The character corresponding to the key pressed (converted to uppercase)
-***/
-char LeddarStream::WaitKey( void )
-{
-cout << "Entering WaitKey" << endl;
-    // LeddarGetKey is blocking so we need to wait for a key to be pressed
-    // before calling it.
-    while( !LeddarKeyPressed() )
-    {
-        LeddarSleep( 0.5 );
-    }
+            // lCount = ARRAY_LEN( lDetections );
+            // This was Leddar's default behavior.  I guess they're really bad testers, eh?
+        } else if (lCount < ARRAY_LEN(lDetections)) {
+            // TODO: What do we do in the situation where we get fewer points than expected?
+            // This can happen if the sensor is partially covered, or alternatively if the
+            // sensor sees half of a wall.  Right now we 'continue' so that we don't get a
+            // major crash.
+            cout << "ERROR: ReadLiveData - Fewer points detected than expected!" << endl;
+            continue;
+        } else {
+            cout << "ReadLiveData has exactly as many points as expected.";
+        }
+        /******************************/
 
-    return toupper( LeddarGetKey() );
-cout << "Exiting WaitKey" << endl;
+        // When replaying a record, display the current index
+        if ( LeddarGetRecordSize( this->gHandle ) != 0 )
+        {
+            currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
+            cout << currentRecordIndex << endl;
+        }
+
+        // Output the detected points to the console.
+        for (i=0; i < lCount; i++)
+        {
+            cout << lDetections[i].mDistance << " ";
+            dataPoints.push_back(lDetections[i].mDistance);
+        }
+        cout << endl;
+
+        // Signal the detected points to the GUI.
+        emit this->sendDataPoints(currentRecordIndex, dataPoints, orientation);
+
+        dataPoints.erase(dataPoints.begin(), dataPoints.end());
+        QCoreApplication::processEvents();
+    }
+    // Emit all zeros
+    ClearData(lCount);
+
+    LeddarStopDataTransfer( this->gHandle );
+    StopStream();
+cout << "Exiting ReadLiveData" << endl;
 }
 
 /*********************************************************************
@@ -217,132 +260,113 @@ cout << "Exiting ReplayData" << endl;
 }
 
 /*********************************************************************
- * Function to replay a Leddar file.
+ * Function to record data captured by the Leddar into the given file
  *
- * We create a leddar handle and try to connect to a Leddar record file.
- * We close up by disconnecting and destroying our handle.
+ * input: fileName - Absolute filepath and name e.g. /home/x/y.ltl
+ *
 ***/
-void LeddarStream::doReplay(string fileName)
+void LeddarStream::RecordLiveData(string fileName)
 {
-cout << "Entering doReplay" << endl;
-    if (!isrunning || isstopped) return;
+cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
 
-    cout << fileName<< endl;
-
-    char* lName = const_cast<char*>(fileName.c_str());
-
-    // Load the file record.
-    if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
-    {
-        // For a big file, especially if it is on a network drive, it may
-        // take a while before the replay is 100% ready. Note that you
-        // can still use the replay but it will not report the complete
-        // size until it is finished loading.
-        while( LeddarGetRecordLoading( this->gHandle ) )
-        {
-            LeddarSleep( 0.5 );
+    // Redundant Code
+    if ( !isrunning || isstopped) {
+        cout << "LeddarStream::RecordLiveData -> Stopping Thread" << endl;
+        if ( LeddarGetRecording(this->gHandle) ) {
+            LeddarStopRecording(this->gHandle);
         }
-
-        ReplayData();
-        LeddarDisconnect(this->gHandle);
-    }
-    else
-    {
-        cout << "Failed to load file!" << endl;
+        return;
     }
 
-    StopStream();
+    // Get the index marking the end of the Path to the file
+    int last_slash = fileName.find_last_of('/');
 
-cout << "Exiting doReplay" << endl;
+    // Get the path and convert to char array
+    char file_dir[fileName.length() + 1];
+    strcpy(file_dir, fileName.substr(0,last_slash).c_str());
+
+    // Set the save directory.
+    LeddarConfigureRecording(file_dir, 0, 0);
+
+    // Leddar recording does not allow us to specify the save file before hand
+    LeddarChar temp_file[255];
+
+//    cout << "LeddarStream::RecordLiveData -> Entering LeddarStartRecording" << endl;
+    CheckError( LeddarStartRecording( this->gHandle, temp_file ) );
+//    cout << "LeddarStream::RecordLiveData -> Exiting LeddarStartRecording" << endl;
+
+    // Throw the thread into a sleeping loop until leddar device fails
+    while ( isrunning && !isstopped
+                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
+        QThread::msleep(200);
+        QCoreApplication::processEvents();
+    }
+
+    //Stop The Recording
+    LeddarStopRecording(this->gHandle);
+
+    // Rename the file
+    QFile::rename(QString(temp_file), QString::fromStdString(fileName));
+
+
+
+
+cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
 }
 
 /*********************************************************************
- * Function to read live data from the sensor.
+ * Function that issues a stop recording command
  *
- * We detect the next set of points detected by the sensor, and store
- * them in a 'float' 'vector'.  We then emit these points and their
- * identifying index.  We continue reading points until either there
- * are no more points available, this thread stops running, or this
- * thread is stopped.
+ * This function is necessary because of the atomic nature
+ *
 ***/
-void LeddarStream::ReadLiveData( void )
+void LeddarStream::StopRecord()
 {
-cout << "Entering ReadLiveData" << endl;
-    int currentRecordIndex;
-    vector<float> dataPoints;
-    unsigned int i, lCount;
-    LdDetection lDetections[16];
-
-    LeddarChar recordingFileName[255];
-
-    if (!isrunning || isstopped) return;
-
-    CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
-
-    while (LeddarWaitForData(this->gHandle, 2000000) == LD_SUCCESS && isrunning && !isstopped) {
-        LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ));
-        lCount = LeddarGetDetectionCount( this->gHandle );
-
-        /******************************
-         * Run some edge-case tests.
-        ***/
-        if (lCount == 0) {
-            cout << "ERROR: ReadLiveData - NO POINTS DETECTED!" << endl;
-
-            // The official Leddar documentation suggests sending LeddarGetDetections to
-            // a callback function.  Otherwise, the documentation suggests that we are
-            // "not guranteed to get coherent data."  We could not get the callback working
-            // with our Qt object-oriented structure.  Instead, I have determined that the
-            // only likely data incoherence involves receiving random 0 vectors of points.
-            // We 'continue' in case this is the case, so that we can later get actual data.
-            continue;
-        }
-        if (lCount > ARRAY_LEN(lDetections)) {
-            cout << "ERROR: ReadLiveData - More points detected than expected!" << endl;
-            continue;
-
-            // lCount = ARRAY_LEN( lDetections );
-            // This was Leddar's default behavior.  I guess they're really bad testers, eh?
-        } else if (lCount < ARRAY_LEN(lDetections)) {
-            // TODO: What do we do in the situation where we get fewer points than expected?
-            // This can happen if the sensor is partially covered, or alternatively if the
-            // sensor sees half of a wall.  Right now we 'continue' so that we don't get a
-            // major crash.
-            cout << "ERROR: ReadLiveData - Fewer points detected than expected!" << endl;
-            continue;
-        } else {
-            cout << "ReadLiveData has exactly as many points as expected.";
-        }
-        /******************************/
-
-        // When replaying a record, display the current index
-        if ( LeddarGetRecordSize( this->gHandle ) != 0 )
-        {
-            currentRecordIndex = LeddarGetCurrentRecordIndex(this->gHandle);
-            cout << currentRecordIndex << endl;
-        }
-
-        // Output the detected points to the console.
-        for (i=0; i < lCount; i++)
-        {
-            cout << lDetections[i].mDistance << " ";
-            dataPoints.push_back(lDetections[i].mDistance);
-        }
-        cout << endl;
-
-        // Signal the detected points to the GUI.
-        emit this->sendDataPoints(currentRecordIndex, dataPoints, orientation);
-
-        dataPoints.erase(dataPoints.begin(), dataPoints.end());
-        QCoreApplication::processEvents();
+    if ( LeddarGetRecording(this->gHandle) == LD_SUCCESS)
+    {
+        LeddarStopRecording(this->gHandle);
+        cout << "LeddarStream::StopRecord -> Stopped Recording" << endl;
     }
-    // Emit all zeros
-    ClearData(lCount);
-
-    LeddarStopDataTransfer( this->gHandle );
-    StopStream();
-cout << "Exiting ReadLiveData" << endl;
 }
+
+
+
+/*********************************************************************
+ *********************************************************************
+                           HELPER FUNCTIONS
+ *********************************************************************
+ *********************************************************************/
+
+
+/*********************************************************************
+ * Function to check for an error in a Leddar command.
+ *
+ * This function prints out the error code to console for any
+ * unsuccessful Leddar library function.
+***/
+void LeddarStream::CheckError( int aCode )
+{
+    if ( aCode != LD_SUCCESS )
+    {
+        printf( "LeddarC error (%d): ", aCode );
+
+        switch ( aCode )
+        {
+            case LD_ACCESS_DENIED : printf("ACCESS DENIED\n" ); break;
+            case LD_TIMEOUT : printf("TIMEOUT\n" ); break;
+            case LD_START_OF_FILE : printf("THAT IS THE START OF FILE\n" ); break;
+            case LD_END_OF_FILE : printf("THIS IS THE END OF FILE\n" ); break;
+            case LD_NO_RECORD : printf("THERE IS NO RECORD\n" ); break;
+            case LD_ALREADY_STARTED : printf("ALREADY STARTED\n" ); break;
+            case LD_NO_DATA_TRANSFER : printf("NO DATA TRANSFER\n" ); break;
+            case LD_NOT_CONNECTED : printf("NOT CONNECTED\n" ); break;
+            case LD_INVALID_ARGUMENT : printf("THAT IS AN INVALID ARGUMENT\n" ); break;
+            case LD_ERROR : printf("ERROR\n" ); break;
+            case LD_NOT_ENOUGH_SPACE : printf("THERE IS NOT ENOUGH SPACE\n" ); break;
+        }
+    }
+}
+
 
 /*********************************************************************
  * Function to list the address of all sensors available.
@@ -439,63 +463,143 @@ cout << "Entering FindAddressByIndex" << endl;
 cout << "Exiting FindAddressByIndex" << endl;
 }
 
-
-/*********************************************************************
- * Function to record data captured by the Leddar into the given file
- *
- * input: fileName - Absolute filepath and name e.g. /home/x/y.ltl
+/**********************************************************************
+ * Emits a vector of zeros through sendDataPoints so as to "clean up"
+ * the read data page after data is collected.
  *
 ***/
-void LeddarStream::RecordLiveData(string fileName)
+void LeddarStream::ClearData(unsigned int count)
 {
-cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
-
-    // Redundant Code
-    if ( !isrunning || isstopped) {
-        cout << "LeddarStream::RecordLiveData -> Stopping Thread" << endl;
-        if ( LeddarGetRecording(this->gHandle) ) {
-            LeddarStopRecording(this->gHandle);
-        }
-        return;
-    }
-
-    // Get the index marking the end of the Path to the file
-    int last_slash = fileName.find_last_of('/');
-
-    // Get the path and convert to char array
-    char file_dir[fileName.length() + 1];
-    strcpy(file_dir, fileName.substr(0,last_slash).c_str());
-
-    // Set the save directory.
-    LeddarConfigureRecording(file_dir, 0, 0);
-
-    // Leddar recording does not allow us to specify the sabe file before hand
-    LeddarChar temp_file[255];
-
-    cout << "LeddarStream::RecordLiveData -> Entering LeddarStartRecording" << endl;
-    CheckError( LeddarStartRecording( this->gHandle, temp_file ) );
-    cout << "LeddarStream::RecordLiveData -> Exiting LeddarStartRecording" << endl;
-
-    // Throw the thread into a sleeping loop until leddar device fails
-    while ( isrunning && !isstopped
-                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
-//        LeddarWaitForData(this->gHandle, 5000);
-//        QThread::msleep(2000);
-//        cout << "LeddarStream::RecordLiveData -> GOING TO SLEEP" << endl;
-        QCoreApplication::processEvents();
-    }
-
-    //Stop The Recording
-    LeddarStopRecording(this->gHandle);
-
-    // Rename the file
-    QFile::rename(QString(temp_file), QString::fromStdString(fileName));
-
-
-
-
-cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
+    vector<float> zeros(count, 0.0);
+    emit this->sendDataPoints(0, zeros, orientation);
 }
+
+/*********************************************************************
+ * Returns the time since epoch in milliseconds
+ */
+//
+long LeddarStream::getCurrentTime()
+{
+    long ms = chrono::duration_cast< chrono::milliseconds> (
+                chrono::system_clock::now().time_since_epoch()).count();
+    return ms;
+}
+
+
+
+/*********************************************************************
+ *********************************************************************
+                           PUBLIC SLOTS
+ *********************************************************************
+**********************************************************************/
+
+
+/*********************************************************************
+ * Slot to start streaming data from the LIDAR.
+ *
+ * We establish that this thread is running, has not been stopped,
+ * and emit that it is running to the main thread.
+ *
+ * We then perform the streaming from the LIDAR sensor.
+***/
+void LeddarStream::StartStream()
+{
+cout << "Entering StartStream" << endl;
+    if (isrunning) return;
+    isstopped = false;
+    isrunning = true;
+
+    isReplay = false;
+    isRecording = false;
+    emit running();
+    doStream();
+cout << "Exiting StartStream" << endl;
+}
+
+/*********************************************************************
+ * Slot to start replaying data from a file.
+ *
+ * We establish that this thread is running, has not been stopped,
+ * and emit that it is running to the main thread.
+ *
+ * We then perform the reading from a file.
+***/
+void LeddarStream::StartReplay(string filename)
+{
+cout << "Entering StartReplay" << endl;
+    if (isrunning) return;
+    isstopped = false;
+    isrunning = true;
+
+    isReplay = true;
+    isRecording = false;
+    emit running();
+    doReplay(filename);
+cout << "Exiting StartReplay" << endl;
+}
+
+/*********************************************************************
+ * Slot to start streaming data from the LIDAR.
+ *
+ * We establish that this thread is running, has not been stopped,
+ * and emit that it is running to the main thread.
+ *
+ * We then perform the streaming from the LIDAR sensor.
+***/
+void LeddarStream::StartRecord(string fileName)
+{
+cout << "Entering StartRecord" << endl;
+    if (isrunning || !isstopped) return;
+    isstopped = false;
+    isrunning = true;
+    emit running();
+
+    isReplay = false;
+    isRecording = true;
+    doStream(fileName);
+cout << "Exiting StartRecord" << endl;
+}
+
+/*********************************************************************
+ * Slot to stop streaming data from the LIDAR.
+ *
+ * We establish that this thread is not running, has been stopped,
+ * and emit that it has been stopped to the main thread.
+***/
+void LeddarStream::StopStream()
+{
+cout << "Entering StopStream" << endl;
+    if (!isrunning || isstopped) return;
+    isstopped = true;
+    isrunning = false;
+
+    isReplay = false;
+    isRecording = false;
+//    StopRecord();
+    emit stopped();
+    ClearData();
+cout << "Exiting StopStream" << endl;
+}
+
+/**********************************************************************
+ * Set the orientation of the Leddar. Default orientation is Vertical
+ *
+***/
+void LeddarStream::setOrientation(bool aOrientation)
+{
+//    cout << "EMISSION RECEIVED " << aOrientation << endl;
+    orientation = aOrientation;
+}
+
+
+
+/*********************************************************************
+ *********************************************************************
+                           PRIVATE SLOTS
+ *********************************************************************
+**********************************************************************/
+
+
 /*********************************************************************
  * Function to stream from the LIDAR sensor.
  *
@@ -545,173 +649,50 @@ cout << "LeddarStream::doStream -> Entering doStream" << endl;
 
     LeddarDisconnect( gHandle );
 
-//    QMetaObject::invokeMethod(this, "doStream", Qt::QueuedConnection);
-//    emit this->finished();
 cout << "LeddarStream::doStream -> Exiting doStream" << endl;
 }
 
 /*********************************************************************
- * Slot to start replaying data from a file.
+ * Function to replay a Leddar file.
  *
- * We establish that this thread is running, has not been stopped,
- * and emit that it is running to the main thread.
- *
- * We then perform the reading from a file.
+ * We create a leddar handle and try to connect to a Leddar record file.
+ * We close up by disconnecting and destroying our handle.
 ***/
-void LeddarStream::StartReplay(string filename)
+void LeddarStream::doReplay(string fileName)
 {
-cout << "Entering StartReplay" << endl;
-    if (isrunning) return;
-    isstopped = false;
-    isrunning = true;
-
-    isReplay = true;
-    isRecording = false;
-    emit running();
-    doReplay(filename);
-cout << "Exiting StartReplay" << endl;
-}
-
-/* TODO: REMOVE!!!
- * Sometimes, this slot is called before StopStream, preventing the stream
- * from being stopped.  Both functions do the same thing, anyway, so why
- * bother calling them something different?
- *
-*********************************************************************
- * Slot to stop replaying data from a file.
- *
- * We establish that this thread is not running, has been stopped,
- * and emit that it has been stopped to the main thread.
-***
-void LeddarStream::StopReplay() {
-cout << "Entering StopReplay" << endl;
+cout << "Entering doReplay" << endl;
     if (!isrunning || isstopped) return;
-    isstopped = true;
-    isrunning = false;
-    emit stopped();
-cout << "Exiting StopReplay" << endl;
-}*/
-/*********************************************************************
- * Slot to start streaming data from the LIDAR.
- *
- * We establish that this thread is running, has not been stopped,
- * and emit that it is running to the main thread.
- *
- * We then perform the streaming from the LIDAR sensor.
-***/
-void LeddarStream::StartStream()
-{
-cout << "Entering StartStream" << endl;
-    if (isrunning) return;
-    isstopped = false;
-    isrunning = true;
 
-    isReplay = false;
-    isRecording = false;
-    emit running();
-    doStream();
-cout << "Exiting StartStream" << endl;
-}
+    cout << fileName<< endl;
 
-/*********************************************************************
- * Slot to start streaming data from the LIDAR.
- *
- * We establish that this thread is running, has not been stopped,
- * and emit that it is running to the main thread.
- *
- * We then perform the streaming from the LIDAR sensor.
-***/
-void LeddarStream::StartRecord(string fileName)
-{
-cout << "Entering StartRecord" << endl;
-    if (isrunning || !isstopped) return;
-    isstopped = false;
-    isrunning = true;
-    emit running();
+    char* lName = const_cast<char*>(fileName.c_str());
 
-    isReplay = false;
-    isRecording = true;
-    doStream(fileName);
-cout << "Exiting StartRecord" << endl;
-}
-
-void LeddarStream::StopRecord()
-{
-    if ( LeddarGetRecording(this->gHandle) == LD_SUCCESS)
+    // Load the file record.
+    if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
     {
-        LeddarStopRecording(this->gHandle);
-        cout << "LeddarStream::StopRecord -> Stopped Recording" << endl;
+        // For a big file, especially if it is on a network drive, it may
+        // take a while before the replay is 100% ready. Note that you
+        // can still use the replay but it will not report the complete
+        // size until it is finished loading.
+        while( LeddarGetRecordLoading( this->gHandle ) )
+        {
+            LeddarSleep( 0.5 );
+        }
+
+        ReplayData();
+        LeddarDisconnect(this->gHandle);
     }
+    else
+    {
+        cout << "Failed to load file!" << endl;
+    }
+
+    StopStream();
+
+cout << "Exiting doReplay" << endl;
 }
 
-
-/*********************************************************************
- * Slot to stop streaming data from the LIDAR.
- *
- * We establish that this thread is not running, has been stopped,
- * and emit that it has been stopped to the main thread.
-***/
-void LeddarStream::StopStream()
-{
-cout << "Entering StopStream" << endl;
-    if (!isrunning || isstopped) return;
-    isstopped = true;
-    isrunning = false;
-
-    isReplay = false;
-    isRecording = false;
-    StopRecord();
-    emit stopped();
-    ClearData();
-cout << "Exiting StopStream" << endl;
-}
-
-// End of file Main.c
-
-/**********************************************************************
- * Emits a vector of zeros through sendDataPoints so as to "clean up"
- * the read data page after data is collected.
- *
-***/
-void LeddarStream::ClearData(unsigned int count)
-{
-    vector<float> zeros(count, 0.0);
-    emit this->sendDataPoints(0, zeros, orientation);
-}
-
-/*********************************************************************
- * Returns the time since epoch in milliseconds
- */
-//
-long LeddarStream::getCurrentTime()
-{
-    long ms = chrono::duration_cast< chrono::milliseconds> (
-                chrono::system_clock::now().time_since_epoch()).count();
-    return ms;
-}
-
-/**********************************************************************
- * Set the orientation of the Leddar. Default orientation is Vertical
- *
-***/
-void LeddarStream::setOrientation(bool aOrientation)
-{
-//    cout << "EMISSION RECEIVED " << aOrientation << endl;
-    orientation = aOrientation;
-
-//    if (aOrientation == VERTICAL) {
-//        this->orientation = VERTICAL;
-////        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
-//    }
-//    else if (aOrientation == HORIZONTAL) {
-//        this->orientation = HORIZONTAL;
-////        std::cout << "NEW ORIENTATION: " << this->orientation << std::endl;
-
-//    }
-//    else{
-//        std::cout << "INVALID ORIENTATION VALUE" << std::endl;
-//    }
-}
+// End of file leddarthread.cpp
 
 
 
