@@ -141,8 +141,8 @@ void CaptureThread::doCapture(string videoFileName)
     long msdelay = 1.0/cap.get(CV_CAP_PROP_FPS) * 1000;
     msdelay += 5;
 
-    cout << "CaptureThread::doCapture -> FPS: " << fps << endl;
-    cout << "CaptureThread::doCapture -> Delay: " << msdelay << endl;
+//    cout << "CaptureThread::doCapture -> FPS: " << fps << endl;
+//    cout << "CaptureThread::doCapture -> Delay: " << msdelay << endl;
 
 //    cv::HOGDescriptor hog;
 //    hog.load("../my_detector.yml"); 
@@ -159,8 +159,8 @@ void CaptureThread::doCapture(string videoFileName)
                          fps, cv::Size(frame_width, frame_height));
     }
 
-    long lastFrameTime = getCurrentTime() - msdelay;
-    long nextFrameTime = lastFrameTime + msdelay + msdelay;
+//    long lastFrameTime = getCurrentTime() - msdelay;
+    long nextFrameTime = getCurrentTime() + msdelay;
     while(isrunning && !isstopped){
 //        lastFrameTime = chrono::system_clock.now();
 
@@ -191,8 +191,8 @@ void CaptureThread::doCapture(string videoFileName)
                     QThread::msleep( nextFrameTime - thisFrameTime);
 //                    cout << "time to delay: " << (nextFrameTime - thisFrameTime) << endl;
                 }
-                lastFrameTime = getCurrentTime();
-                nextFrameTime = lastFrameTime + msdelay;
+//                lastFrameTime = getCurrentTime();
+                nextFrameTime = getCurrentTime() + msdelay;
             }
             else {
                 // Lets start emiting a default frame
@@ -224,7 +224,7 @@ void CaptureThread::captureDataPoints(int index, std::vector<float> points, bool
         //Draw stuff on frame
         distances.empty();
         distances = points;
-        qDebug()<<"capturing points in capture thread";
+//        cout << "CaptureThread::captureDataPoints -> capturing points in capture thread";
     }
 }
 
@@ -296,26 +296,18 @@ void CaptureThread::StopCapture()
 }
 
 /*********************************************************************
- * Emits and empty frame
+ * Emits the default frame
  */
-// TODO:: Change from empty frame to default image. Empty frame crashes. Default image also crashes
 void CaptureThread::emitDefaultFrame()
 {
-
-//    cv::Mat emptyFrame;
-//    emit(newFrame(&emptyFrame));
-//    cv::Mat emptyFrame = cv::imread(defaultImage, CV_LOAD_IMAGE_COLOR);
-//    cout << emptyFrame.data << endl;
-//    cout << emptyFrame.cols << endl;
-//    cout << emptyFrame.rows << endl;
-//    cout << emptyFrame.step << endl;
-    if ( ! defaultImage.empty()){
-        cout << "emitting" << endl;
-        emit(newFrame(&defaultImage));
-
-    }
+    cout << "emitting" << endl;
+    emit(newFrame(&defaultImage));
 }
 
+/*********************************************************************
+ * Returns the time since epoch in milliseconds
+ */
+//
 long CaptureThread::getCurrentTime()
 {
     long ms = chrono::duration_cast< chrono::milliseconds> (

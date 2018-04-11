@@ -330,18 +330,18 @@ void MainWindow::frameCaptured(cv::Mat* frame)
 {
     // TODO: IS THIS REALLY SLOW? IT SEEM LIKE THIS WOULD BE SLOW
 
-    cout << frame->empty()  << "  " << frame->cols << "  " << frame->rows;
-    cout << "crash Qimage??" << endl;
+//    cout << frame->empty()  << "  " << frame->cols << "  " << frame->rows;
+//    cout << "crash Qimage??" << endl;
     QImage qimg = QImage( frame->data, frame->cols, frame->rows, frame->step, QImage::Format_RGB888).rgbSwapped();
-    cout << "no crash Qimage" << endl;
+//    cout << "no crash Qimage" << endl;
 
-    cout << "crash PIXMAP?" << endl;
+//    cout << "crash PIXMAP?" << endl;
     QPixmap pxmap = QPixmap::fromImage(qimg);
-    cout << "no crash PIXMAP" << endl;
+//    cout << "no crash PIXMAP" << endl;
 
-    cout << "crash camera??" << endl;
+//    cout << "crash camera??" << endl;
     ui->cameraView->setPixmap(pxmap);
-    cout << "no crash camera" << endl;
+//    cout << "no crash camera" << endl;
 
 
     //    ui->cameraView->setPixmap(

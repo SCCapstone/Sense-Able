@@ -42,6 +42,7 @@ public:
 
     // Helper function
     void ClearData(unsigned int count = 16);
+    long getCurrentTime();
 
     LeddarHandle gHandle;
     bool isrunning, isstopped;
