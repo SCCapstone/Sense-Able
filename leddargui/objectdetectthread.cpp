@@ -58,7 +58,6 @@ void objectDetector::doDetect(vector<float> distances) {
         // There is an obstacle in range.  We need to identify it.
 
         // Compute each obstacle fit value.
-cout << "\nWALL FIT: " << detectWall(distances) << endl;
         obstacle_fits.emplace(WALL, detectWall(distances));
         obstacle_fits.emplace(WALL_CORNER, detectCorner(distances));
         obstacle_fits.emplace(PILLAR, detectPillar(distances));
@@ -144,6 +143,13 @@ float objectDetector::detectCorner(vector<float> distances) {
     coefficients = polynomial_fit(2, yvalues, xvalues);
     fit = fit_quality(coefficients, 2, yvalues, xvalues);
 
+    cout << "CORNER FIT: " << fit << endl;
+
+        for (int i = 0; i < coefficients.size(); i++) {
+            cout << "CORNER COEFFICIENTS: " << coefficients.at(i) << " ";
+        }
+        cout << endl << endl;
+
     // TODO: If the parabola is too steep, or not sharp enough, we want to
     // return '0' to indicate that no parabola is detected!  This should
     // be handled here.
@@ -168,8 +174,8 @@ float objectDetector::detectTripHazard(vector<float> distances) {
 float apply_polynomial(vector<float> coefficients, int degree, float x_value) {
     float result = 0;
 
-    for (int i = 0; i < degree; i++) {
-        result += coefficients.at(i) * x_value;
+    for (int i = 0; i <= degree; i++) {
+        result += coefficients.at(i) * std::pow(x_value, i);
     }
 
     return result;
@@ -305,19 +311,38 @@ Credit Jinyu for helping with this function.
  * http://mathworld.wolfram.com/LeastSquaresFittingPolynomial.html
  * http://mathworld.wolfram.com/CorrelationCoefficient.html
  *
+ * Note that we use the more general definition of R squared:
+ * https://en.wikipedia.org/wiki/Coefficient_of_determination
+ *
  * // TODO: Handle scaling error outside of this function, when performing
     // individual tests.  This is not the correct place for checking how
     // steep our curve is.
 **/
 float objectDetector::fit_quality(vector<float> coefficients, int polynom_degree, vector<float> points, vector<float> xvalues) {
-    int r = 0;
+    float r_squared = 0.0;
+    float rss = 0.0; // Residual sum of squares
+    float tss = 0.0; // Total sum of squares
+    float mean = 0.0;
+
+    // We compute the mean of the points.
+    for (int i = 0; i < points.size(); i++) {
+        mean += points.at(i);
+    }
+    mean = (float)(mean) / (float)(points.size());
+
     for (int i = 0; i < points.size(); i++) {
         // Take the difference between outcome and expected (using polynomial with 'coefficients').
-        r += std::pow(points.at(i) - apply_polynomial(coefficients, polynom_degree, xvalues.at(i)), 2);
+        rss += std::pow(points.at(i) - apply_polynomial(coefficients, polynom_degree, xvalues.at(i)), 2);
+        tss += std::pow(points.at(i) - mean, 2);
     }
-    r = sqrt(r);
 
-    return r;
+    // Note that for non-linear fitting, sometimes the r_squared value can be negative!
+    // How do we interpret this?
+cout << "RSS: " << rss << "TSS " << tss << endl;
+
+    r_squared = 1.0 - (float)(rss / tss);
+
+    return r_squared;
 }
 
 /*********************************************************************
@@ -361,7 +386,7 @@ vector<float> objectDetector::xaxis_projection(vector<float> distances) {
 cout << "Entering xaxis_projection" << endl;
     vector<float> projected;
 
-    float theta = 90 + (2.8 * .5 * int(distances.size()));
+    float theta = 90 + (2.8 * 0.5 * int(distances.size()));
 
     for (int i = 0; i < distances.size(); i++) {
         float theta_radians = theta * M_PI / 180;
