@@ -35,7 +35,7 @@ public slots:
     void SetSignalDist(float sig_dist);
 
 private slots:
-    void doDetect(vector<float> dataPoints);
+    void doDetect(vector<float> dataPoints, bool aOrientation);
 
 signals:
     void emitDetectedObject(int object);
