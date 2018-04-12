@@ -96,9 +96,8 @@ signals:
     // Signals to Usernotifier
     void passNotifier(vector<string>); // Deprecrated?
 
-    void clicked(); // deprecated?
-
-    //used for behavioral tests
+    // Used for behavioral tests
+    void clickedButton();
     void streamButtonClicked();
 
 private:

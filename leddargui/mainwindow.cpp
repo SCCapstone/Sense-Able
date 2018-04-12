@@ -152,6 +152,7 @@ void MainWindow::stopAll()
     emit stopDetect();
     QThread::usleep(.35);
 }
+
 /*********************************************************************
  * Takes a *.ltl file and returns a the same basename with a .mp4
  *  extension
@@ -171,14 +172,9 @@ QImage MainWindow::Mat2QImage(cv::Mat* img)
                 img->data, img->cols, img->rows,
                 img->step, QImage::Format_RGB888).rgbSwapped();
 }
+
 /*********************************************************************
- * Function to run when the readDataButton is clicked.
- *
- * Opens a gui file dialog to allow the user to read in leddar data from
- * a file.  We then begin the threads to stream the read data and detect
- * any objects found.
- *
- * If data is already streaming, this button does nothing.
+ * old read from file button
 ***/
 /*void MainWindow::on_readDataButton_clicked()
 {
@@ -206,17 +202,12 @@ QImage MainWindow::Mat2QImage(cv::Mat* img)
 /*********************************************************************
  * Function to run when the streamButton is clicked.
  *
- * We begin the threads to start webcam capture, stream in live data,
- * and detect any objects found.
- *
- * If data is already streaming, this button does nothing.
+ * Navigates to the Stream Page from the Home Page.
 ***/
-//TODO: update documentation, this button is now the button on the home
-//      page that changes screens to the 'go' page
 void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
-    //emit streamButtonClicked();
+    emit clickedButton();
 
     this->updateSoundFiles();
 
@@ -228,6 +219,7 @@ void MainWindow::on_streamButton_clicked()
 //                             is actually detected.
 //    }
 }
+
 /*********************************************************************
  * Changes the UserNotifier sound Mapping according to the ui
  *
@@ -263,18 +255,6 @@ void MainWindow::updateSoundFiles()
     }
 
 }
-
-/*********************************************************************
- * Additional function for the readDataButton.
- *
- * Required; won't go away.
-***/
-/*void MainWindow::on_readDataButton_clicked(bool checked)
-{
-    if(checked) {
-        // do nothing
-    }
-}*/
 
 /*********************************************************************
  * Slot to catch leddar data.
@@ -353,6 +333,7 @@ void MainWindow::on_backButtonGo_clicked()
 //Switching between pages
 void MainWindow::on_settingsPageButton_clicked()
 {
+    emit clickedButton();
     //if no notification was checked then default to beep notifiers
     if((ui->speechCheckBox->isChecked() == false) && (ui->beepCheckBox->isChecked() == false)) {
         ui->beepCheckBox->setChecked(true);
@@ -412,7 +393,7 @@ void MainWindow::on_changeOrient_clicked()
 
 void MainWindow::on_QuitButton_clicked()
 {
-    emit clicked();
+    emit clickedButton();
 }
 
 //Sets notification distance and sends value to objectdetectthead
@@ -438,6 +419,15 @@ void MainWindow::on_beepCheckBox_stateChanged()
     }
 }
 
+/*********************************************************************
+ * Function to run when the Read From File button is clicked.
+ *
+ * Opens a gui file dialog to allow the user to read in leddar data from
+ * a file.  We then begin the threads to stream the read data and detect
+ * any objects found.
+ *
+ * If data is already streaming, this button does nothing.
+***/
 void MainWindow::on_go_ReadFromFile_button_clicked()
 {
 
@@ -466,6 +456,14 @@ void MainWindow::on_go_ReadFromFile_button_clicked()
     }
 }
 
+/*********************************************************************
+ * Function to run when the Stream From Device Button is clicked.
+ *
+ * We begin the threads to start webcam capture, stream in live data,
+ * and detect any objects found.
+ *
+ * If data is already streaming, this button does nothing.
+***/
 void MainWindow::on_go_StreamFromDevice_button_clicked()
 {
     //Testing signal
@@ -484,7 +482,7 @@ void MainWindow::on_go_StreamFromDevice_button_clicked()
 
 void MainWindow::on_go_Record_button_clicked()
 {
-    emit clicked();
+    emit clickedButton();
     // Check that stream is stopped
     if (!stream->isrunning && stream->isstopped) {
 
@@ -534,7 +532,7 @@ void MainWindow::on_go_Record_button_clicked()
 
 void MainWindow::on_go_StopAll_button_clicked()
 {
-    emit clicked();
+    emit clickedButton();
     stopAll();
 }
 
