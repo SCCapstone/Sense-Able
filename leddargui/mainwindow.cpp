@@ -396,13 +396,31 @@ void MainWindow::on_QuitButton_clicked()
     emit clickedButton();
 }
 
-//Sets notification distance and sends value to objectdetectthead
+/*********************************************************************
+ * Function to run when the Distance Slider is changed to a new value.
+ *
+ * Takes the value input by the user and displays it in meters or feet
+ * depending on the units setting.
+ * The function will then convert the value to meters if it is in feet
+ * and emit a signal to set sig_dist to the new value.
+***/
 void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
 {
-    float newDistance = value/2.0;
-    QString displayDist = QString::number(newDistance);
-    ui->notifDistanceLabel->setText(displayDist + " m");
-    emit setSigDist(newDistance);
+    if(value<=0) value = 1;
+    QString displayDist;
+    float metricDistance;
+    if(metricUnits){
+        metricDistance = value/2.0;
+        displayDist = QString::number(metricDistance);
+        ui->notifDistanceLabel->setText(displayDist + " m");
+    }
+    else if(!metricUnits) {
+        displayDist = QString::number((value), 'f', 0);
+        ui->notifDistanceLabel->setText(displayDist + " ft");
+        metricDistance = value*0.3048;
+    }
+    //qDebug() << "Metric value passed to sigDist: " << metricDistance;
+    emit setSigDist(metricDistance);
 }
 
 void MainWindow::on_speechCheckBox_stateChanged()
@@ -557,4 +575,27 @@ void MainWindow::on_cameraComboBox_currentIndexChanged(int index)
        emit startStream();
        emit passNotifier(this->notifier.soundFiles);
     }
+}
+
+void MainWindow::on_settingsComboBox_currentIndexChanged(int index)
+{
+    //feet to meters
+    if(index==0){
+        metricUnits = true;
+        int newValue = ui->notificationDistanceSlider->value()*.3048*2;
+        //Setting the range to 1-100 and dividing by 2 to in order to get .5 meter intervals
+        ui->notificationDistanceSlider->setRange(1, 100);
+        emit ui->notificationDistanceSlider->valueChanged(newValue);
+        ui->notificationDistanceSlider->setSliderPosition(newValue);
+    }
+    //meters to feet
+    else if(index==1){
+        metricUnits = false;
+        //Setting maximum to 164 feet to keep similar range as meters
+        ui->notificationDistanceSlider->setRange(1, 164);
+        int newValue = ui->notificationDistanceSlider->value()/(.3048*2);
+        emit ui->notificationDistanceSlider->valueChanged(newValue);
+        ui->notificationDistanceSlider->setSliderPosition(newValue);
+    }
+
 }

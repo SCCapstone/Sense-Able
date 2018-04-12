@@ -170,7 +170,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="Page_StreamData">
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -1400,12 +1400,6 @@ border-color: rgb(46, 52, 54);</string>
          </widget>
         </item>
        </layout>
-       <zorder>layoutWidget</zorder>
-       <zorder>cameraView</zorder>
-       <zorder>layoutWidget</zorder>
-       <zorder>objectLabel</zorder>
-       <zorder>backButtonGo</zorder>
-       <zorder>horizontalSpacer_5</zorder>
       </widget>
       <widget class="QWidget" name="Page_Home">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -2303,7 +2297,7 @@ border-color: rgb(46, 52, 54);</string>
          <string>Notification Distance</string>
         </property>
        </widget>
-       <widget class="QComboBox" name="comboBox_2">
+       <widget class="QComboBox" name="settingsComboBox">
         <property name="geometry">
          <rect>
           <x>350</x>
@@ -2409,68 +2403,6 @@ border-color: rgb(46, 52, 54);</string>
         <property name="geometry">
          <rect>
           <x>350</x>
-          <y>140</y>
-          <width>401</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QSlider" name="notificationDistanceSlider">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>331</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>331</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>100</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-          <widget class="QLabel" name="notifDistanceLabel">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>40</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string> 1 m</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>350</x>
           <y>250</y>
           <width>308</width>
           <height>92</height>
@@ -2507,6 +2439,68 @@ border-color: rgb(46, 52, 54);</string>
            </property>
            <property name="text">
             <string>Beep                            </string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>351</x>
+          <y>141</y>
+          <width>432</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QSlider" name="notificationDistanceSlider">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>331</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>331</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="notifDistanceLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>91</width>
+             <height>23</height>
+            </size>
+           </property>
+           <property name="text">
+            <string> 1 m</string>
            </property>
           </widget>
          </item>

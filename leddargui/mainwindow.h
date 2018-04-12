@@ -74,6 +74,8 @@ private slots:
 
     void on_cameraComboBox_currentIndexChanged(int index);
 
+    void on_settingsComboBox_currentIndexChanged(int index);
+
 signals:
     // Signals to capturethread.cpp
     void startCapture(string);
@@ -113,6 +115,7 @@ private:
     //TODO: FIND A BETTER DEFAULT
     string videoStream = "/dev/video0";
     int leddarOrientation = true;
+    bool metricUnits = true;
 
     QSignalMapper* signalMapper;
     UserNotifier notifier;
