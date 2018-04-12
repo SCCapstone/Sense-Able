@@ -335,8 +335,7 @@ void MainWindow::frameCaptured(cv::Mat* frame)
                     frame->data, frame->cols, frame->rows,
                     frame->step, QImage::Format_RGB888).rgbSwapped()
                 );
-    ui->cameraView->setPixmap(resize.scaled(ui->cameraView->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
+    ui->cameraView->setPixmap(resize.scaled(ui->cameraView->size(), Qt::KeepAspectRatio));
 }
 
 /*********************************************************************
