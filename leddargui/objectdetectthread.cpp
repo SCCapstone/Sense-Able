@@ -4,6 +4,9 @@
  * Date last modified: 3 April 2018
  * Author: Jonathan Senn and Caleb Kisby
  *
+ * Good way to visualize polynomials for curve fitting:
+ * https://www.desmos.com/calculator/pfdwlq5qht
+ *
 ***/
 
 #include <vector>
@@ -15,171 +18,6 @@
 #include "objectdetectthread.h"
 
 using namespace cv;
-
-/*********************************************************************
- * The usual constructor.
- *
- * When initialized, we establish that this thread is not running, and
- * has not been stopped.  We also register the string type so that it
- * may be emitted via a signal.
-***/
-objectDetector::objectDetector()
-{
-//cout << "Entering objectDetector" << endl;
-    qRegisterMetaType<string>("string");
-    isstopped = false;
-    isrunning = false;
-
-//    obstacleTypes.push_back("Wall");
-//    obstacleTypes.push_back("Wall Corner");
-//    obstacleTypes.push_back("Pillar");
-//    obstacleTypes.push_back("Trip Hazard");
-//    obstacleTypes.push_back("Unidentified Obstacle");
-//    obstacleTypes.push_back("None");
-}
-
-void objectDetector::doDetect(vector<float> distances) {
-//cout << "Entering doDetect" << endl;
-    map<int, float> obstacle_fits;
-    int obstacle_type = NONE;
-    int running_fit = 0;
-
-    if (!isrunning || isstopped) return;
-
-    // Check if there are any obstacles within range, whatsoever.
-    bool close = false;
-    for (int i = 0; i < distances.size(); i++) {
-        if (distances.at(i) < sig_dist + .1 * sig_dist) {
-            close = true;
-        }
-    }
-
-    if (close) {
-        // There is an obstacle in range.  We need to identify it.
-
-        // Compute each obstacle fit value.
-        obstacle_fits.emplace(WALL, detectWall(distances));
-        obstacle_fits.emplace(WALL_CORNER, detectCorner(distances));
-        obstacle_fits.emplace(PILLAR, detectPillar(distances));
-        obstacle_fits.emplace(TRIP_HAZARD, detectTripHazard(distances));
-        obstacle_fits.emplace(UNIDENTIFIED_OBSTACLE, 0.0);
-        obstacle_fits.emplace(NONE, -1.0);
-
-        // Determine the obstacle type with the maximum fit value.
-        for (map<int, float>::iterator it = obstacle_fits.begin();
-             it != obstacle_fits.end(); ++it) {
-
-            if (it->second >= running_fit) {
-                obstacle_type = it->first;
-            }
-        }
-
-    } else {
-        // There is no obstacle in range.
-        obstacle_type = NONE;
-    }
-
-    emit emitDetectedObject(obstacle_type);
-
-    StopDetect();
-//cout << "Exiting doDetect" << endl;
-}
-
-float objectDetector::detectWall(vector<float> distances) {
-    vector<float> coefficients;
-    vector<float> xvalues;
-    vector<float> yvalues;
-    float fit;
-
-    xvalues = xaxis_projection(distances);
-    yvalues = yaxis_projection(distances);
-
-    // Fit a linear curve y = a1 * x + a0 to the distances.
-    coefficients = polynomial_fit(1, yvalues, xvalues);
-    fit = fit_quality(coefficients, 1, yvalues, xvalues);
-
-cout << "WALL DETECT FIT: " << fit << endl;
-
-    for (int i = 0; i < coefficients.size(); i++) {
-        cout << "WALL DETECT COEFFICIENTS: " << coefficients.at(i) << " ";
-    }
-    cout << endl << endl;
-
-    // TODO: If the linear curve is too steep, we want to return '0' to
-    // indicate that the wall is not detected!  This should be handled here.
-
-    // Essentially, we just check if the slope exceeds a certain error around our
-    // expected slope.
-    // Jonathan's old, helpful code, for just linear curves:
-
-    // If any of the segments exceed tolerated measurement error -
-    // A wall is not considered to exist across the field of vision
-/*    bool wall = true;
-    for ( unsigned int i = 0; i < distances.size(); i++ ){
-      float errori = std::abs( (slope*int(i) + intercept) - distances.at(i) );
-      if ( errori > measure_error )  {
-  //       std::cout << "error: " << (slope*int(i)+intercept) - distances.at(i) << std::endl;
-  //       std::cout << "Distance: " << distances.at(i) << std::endl;
-  //       std::cout << "Slope: " << slope << std::endl;
-  //       std::cout << "Intercept: " << intercept << std::endl;
-        wall = false;
-      }
-    }
-*/
-
-    return fit;
-}
-
-float objectDetector::detectCorner(vector<float> distances) {
-    vector<float> coefficients;
-    vector<float> yvalues;
-    vector<float> xvalues;
-    float fit;
-
-    xvalues = xaxis_projection(distances);
-    yvalues = yaxis_projection(distances);
-
-    // Fit a degree 2 parabola to the distances.
-    coefficients = polynomial_fit(2, yvalues, xvalues);
-    fit = fit_quality(coefficients, 2, yvalues, xvalues);
-
-    cout << "CORNER FIT: " << fit << endl;
-
-        for (int i = 0; i < coefficients.size(); i++) {
-            cout << "CORNER COEFFICIENTS: " << coefficients.at(i) << " ";
-        }
-        cout << endl << endl;
-
-    // TODO: If the parabola is too steep, or not sharp enough, we want to
-    // return '0' to indicate that no parabola is detected!  This should
-    // be handled here.
-
-    // If the best fit degree parabola is actually a degree 1 parabola,
-    // then a parabola is not a very good fit... reject.
-    if (coefficients.at(coefficients.size() - 1) == 0) {
-        return 0.0;
-    }
-
-    return 0.0;
-}
-
-float objectDetector::detectPillar(vector<float> distances) {
-    return 0.0;
-}
-
-float objectDetector::detectTripHazard(vector<float> distances) {
-    return 0.0;
-}
-
-float apply_polynomial(vector<float> coefficients, int degree, float x_value) {
-    float result = 0;
-
-    for (int i = 0; i <= degree; i++) {
-        result += coefficients.at(i) * std::pow(x_value, i);
-    }
-
-    return result;
-}
 
 /**************** HERE BE DRAGONS ****************/
 /*___________________________________________________
@@ -203,6 +41,316 @@ float apply_polynomial(vector<float> coefficients, int degree, float x_value) {
 """""""""""""""""""""""""""""""""""""""""""""""""""
                  TREAD CAREFULLY.
 */
+
+/*********************************************************************
+ * The usual constructor.
+ *
+ * When initialized, we establish that this thread is not running, and
+ * has not been stopped.  We also register the string type so that it
+ * may be emitted via a signal.
+***/
+objectDetector::objectDetector()
+{
+//cout << "Entering objectDetector" << endl;
+    qRegisterMetaType<string>("string");
+    isstopped = false;
+    isrunning = false;
+}
+
+/*********************************************************************
+ * Function to do obstacle detection.
+ *
+ * This function determines whether there is a recognizable obstacle
+ * within range in the set of 'distances', and if so, emits that detected obstacle.
+ *
+ * First, we check if there are any obstacles in range.  If we are 'close' to
+ * such an obstacle, then we compute the (r squared) fit values for each
+ * possible obstacle type.  Possible obstacle types are determined by the
+ * orientation 'aOrientation' of the Leddar sensor.  We consider the detected
+ * obstacle to be that with the highest (i.e. closest to 1) r squared value.
+ *
+ * Note that if none of the obstacles have a higher fit value than the
+ * FIT_THRESHOLD, then we emit UNIDENTIFIED_OBSTACLE.
+ *
+ * Parameters:
+ *  distances - The 'vector' of distance points coming in
+ *  aOrientation - The orientation of the Leddar sensor.
+ *
+ * Returns: None
+ *
+ * Emits:
+ *  obstacleType - The type of obstacle detected.  Possible values are:
+ *   NONE - If no obstacle is within range
+ *
+ *   UNIDENTIFIED_OBSTACLE - If an obstacle is within range, but all obstacle
+ *    types fail to have fit values within the FIT_THRESHOLD.
+ *
+ *   WALL - If a wall has been detected
+ *   WALL_CORNER - If a wall corner has been detected (horizontal orientation)
+ *   PILLAR - If a pillar has been detected (horizontal orientation)
+ *   TRIP_HAZARD - If a trip hazard has been detected (vertical orientation)
+ *
+ ********************************************************************
+ * TODO: Austin suggested determining 'close' by taking the *average* of the
+ *   'distances' and comparing that against our 'sig_dist'
+ *
+ * TODO: Implement PILLAR detection
+ * TODO: Implement TRIP_HAZARD detection
+ *
+***/
+void objectDetector::doDetect(vector<float> distances, bool aOrientation) {
+//cout << "Entering doDetect" << endl;
+    map<int, float> obstacle_fits;
+    int obstacle_type = NONE;
+    float running_fit = 0.0;
+
+    if (!isrunning || isstopped) return;
+
+    // Check if there are any obstacles within range, whatsoever.
+    bool close = false;
+    for (int i = 0; i < distances.size(); i++) {
+        if (distances.at(i) < sig_dist + .1 * sig_dist) {
+            close = true;
+        }
+    }
+
+    // There is an obstacle in range.  We need to identify it.
+    if (close) {
+
+        // Compute each obstacle fit value for the chosen orientation.
+        if (aOrientation == HORIZONTAL) {
+            obstacle_fits.emplace(WALL, detectWall(distances));
+            obstacle_fits.emplace(WALL_CORNER, detectCorner(distances));
+            obstacle_fits.emplace(PILLAR, detectPillar(distances));
+            obstacle_fits.emplace(UNIDENTIFIED_OBSTACLE, FIT_THRESHOLD);
+
+        } else if (aOrientation == VERTICAL) {
+            obstacle_fits.emplace(WALL, detectWall(distances));
+            obstacle_fits.emplace(TRIP_HAZARD, detectTripHazard(distances));
+            obstacle_fits.emplace(UNIDENTIFIED_OBSTACLE, FIT_THRESHOLD);
+        } else {
+            cout << "ERROR: Orientation hasn't been set." << endl;
+            return;
+        }
+
+        // Determine the obstacle type with the maximum fit value.
+        running_fit = 0;
+        for (map<int, float>::iterator it = obstacle_fits.begin();
+             it != obstacle_fits.end(); ++it) {
+
+            if (it->second >= running_fit) {
+                obstacle_type = it->first;
+                running_fit = it->second;
+            }
+        }
+
+    } else {
+        // There is no obstacle in range.
+        obstacle_type = NONE;
+    }
+
+    // Emit the detected obstacle!
+    emit emitDetectedObject(obstacle_type);
+
+    StopDetect();
+//cout << "Exiting doDetect" << endl;
+}
+
+/*********************************************************************
+ * Function to do wall detection.
+ *
+ * This function determines if the given 'distances' are best fit
+ * by a flat wall.  First, since the LIDAR distances are separated
+ * by an angle, we project the distances onto the y-axis and the x-axis
+ * to get our 'yvalues' and 'xvalues' for curve fitting.
+ *
+ * We then fit a linear curve y = a1*x + a0 to the distances.  This
+ * is because a flat wall is best given by a straight line.  We also
+ * obtain the fit quality 'fit' (i.e. the r squared value) of this fit.
+ *
+ * Finally, if the slope is too steep (in either direction), then we
+ * decide that a wall does not fit at all, and reject the fit value.
+ *
+ * We return the quality of the fit.
+ *
+ * Parameters:
+ *  distances - The 'vector' of distance points coming in.
+ *
+ * Returns:
+ *  fit - The fit quality of the linear curve on the distances
+ *  0.0 - Indicates that the curve does not fit at all.
+ *
+ ********************************************************************
+ * TODO: In Jonathan's old code (for linear curves), we throw out
+ * the fit if any of the distances exceed tolerated measurement error.
+ * Is this still neccessary / useful? @Jonathan
+ *
+ * Quote:
+ *      // If any of the segments exceed tolerated measurement error -
+ *      // A wall is not considered to exist across the field of vision
+ *      bool wall = true;
+ *      for ( unsigned int i = 0; i < distances.size(); i++ ){
+ *          float errori = std::abs( (slope*int(i) + intercept) - distances.at(i) );
+ *          if ( errori > measure_error )  {
+ *              std::cout << "error: " << (slope*int(i)+intercept) - distances.at(i) << std::endl;
+ *              std::cout << "Distance: " << distances.at(i) << std::endl;
+ *              std::cout << "Slope: " << slope << std::endl;
+ *              std::cout << "Intercept: " << intercept << std::endl;
+ *              wall = false;
+ *          }
+ *      }
+***/
+
+float objectDetector::detectWall(vector<float> distances) {
+    vector<float> coefficients;
+    vector<float> xvalues;
+    vector<float> yvalues;
+    float fit = 0.0;
+
+    xvalues = xaxis_projection(distances);
+    yvalues = yaxis_projection(distances);
+
+    // Fit a linear curve y = a1 * x + a0 to the distances.
+    coefficients = polynomial_fit(1, yvalues, xvalues);
+    fit = fit_quality(coefficients, 1, yvalues, xvalues);
+
+/*
+cout << "WALL DETECT FIT: " << fit << endl;
+
+    for (int i = 0; i < coefficients.size(); i++) {
+        cout << "WALL DETECT COEFFICIENTS: " << coefficients.at(i) << " ";
+    }
+    cout << endl << endl;
+*/
+
+    // If the slope is too steep in either direction, then a wall is
+    // not a good fit.
+    if (coefficients.at(1) > 0.1 ||
+        coefficients.at(1) < -0.1) {
+
+        return 0.0;
+    }
+
+    return fit;
+}
+
+/*********************************************************************
+ * Function to do wall corner detection.
+ *
+ * This function determines if the given 'distances' are best fit
+ * by a wall corner.  First, since the LIDAR distances are separated
+ * by an angle, we project the distances onto the y-axis and the x-axis
+ * to get our 'yvalues' and 'xvalues' for curve fitting.
+ *
+ * We then fit a quadratic y = a0 + a1x + a2x^2 to the distances.  This
+ * is because a wall corner, although rigid and pointed, can be adequately
+ * modeled as a sharp quadratic curve, pointed downward.  We also
+ * obtain the fit quality 'fit' (i.e. the r squared value) of this fit.
+ *
+ * If the quadratic happens to be linear (i.e. the a2 coefficient is 0),
+ * or points upward (the a2 coefficient is negative),
+ * then it does not model a wall corner, so we reject the fit value.
+ *
+ * Finally, if the quadratic is too flat, or not sharp enough,
+ * then we determine that it is not a wall corner at all, and reject the fit value.
+ *
+ * We return the quality of the fit.
+ *
+ * Parameters:
+ *  distances - The 'vector' of distance points coming in.
+ *
+ * Returns:
+ *  fit - The fit quality of the quadratic curve on the distances
+ *  0.0 - Indicates that the curve does not fit at all.
+ *
+ ********************************************************************
+ * TODO: Corner detection is a little bit finicky (i.e. it rarely decides
+ * that the obstacle is a wall corner).  Play around with
+ * the flatness and sharpness numbers, perhaps, until desired
+ * nonfinickyness.
+ *
+ * You can play around with such numbers with the following useful website:
+ * https://www.desmos.com/calculator/pfdwlq5qht
+***/
+float objectDetector::detectCorner(vector<float> distances) {
+    vector<float> coefficients;
+    vector<float> yvalues;
+    vector<float> xvalues;
+    float fit;
+
+    xvalues = xaxis_projection(distances);
+    yvalues = yaxis_projection(distances);
+
+    // Fit a degree 2 parabola to the distances.
+    coefficients = polynomial_fit(2, yvalues, xvalues);
+    fit = fit_quality(coefficients, 2, yvalues, xvalues);
+/*
+    cout << "CORNER FIT: " << fit << endl;
+
+        for (int i = 0; i < coefficients.size(); i++) {
+            cout << "CORNER COEFFICIENTS: " << coefficients.at(i) << " ";
+        }
+        cout << endl << endl;
+*/
+    // If the best fit degree parabola is actually a degree 1 parabola,
+    // or points up, reject.
+    if (coefficients.at(coefficients.size() - 1) >= 0) {
+        return 0.0;
+
+    // If the parabola is too flat, or not sharp enough, then a wall corner
+    // is not a good fit.  Reject.
+    } else if (coefficients.at(coefficients.size() - 1) > -0.05 ||
+               coefficients.at(coefficients.size() - 1) < -1) {
+        return 0.0;
+    }
+
+    return fit;
+}
+
+/*********************************************************************
+ * Function to do pillar detection.
+ *
+***/
+float objectDetector::detectPillar(vector<float> distances) {
+    return 0.0;
+}
+
+/*********************************************************************
+ * Function to do trip hazard detection.
+ *
+***/
+float objectDetector::detectTripHazard(vector<float> distances) {
+    return 0.0;
+}
+
+/*********************************************************************
+ * Function to plug in a value into a polynomial.
+ *
+ * This function plugs in the given 'x_value' to the polynomial of degree
+ * 'degree' with the given 'coefficients'.  This is done straightforwardly,
+ * as the sum:
+ *
+ *   a0 + a1x + a2x^2 + ... + adx^d,
+ *
+ * Where d='degree', 'coefficients'= <a0, a1, ..., ad>, and x='x_value'.
+ *
+ * Parameters:
+ *  coefficients - The coefficients that determine the polynomial
+ *  degree - The degree of the polynomial
+ *  x_value - The x value to apply
+ *
+ * Returns:
+ *  result - The result of plugging the 'x_value' into the polynomial.
+***/
+float apply_polynomial(vector<float> coefficients, int degree, float x_value) {
+    float result = 0;
+
+    for (int i = 0; i <= degree; i++) {
+        result += coefficients.at(i) * std::pow(x_value, i);
+    }
+
+    return result;
+}
 
 /*********************************************************************
  * Function to compute the best fit polynomial for a set of points.
@@ -272,35 +420,6 @@ vector<float> objectDetector::polynomial_fit(int polynom_degree, vector<float> p
     }
 
     return coefficients;
-
-// OLD ////////////////////////////////////////////////////////////////////////////
-    /*
-    // Next, we compute the transpose 'T' of matrix 'X', as discussed
-    // in the reference.
-    for (int i = 0; i < points.size(); i++) {
-        for (int k = 0; k < polynom_degree + 1; k++) {
-            T[k][i] = X[i][k];
-        }
-    }/* TODO TODO TODO
-Jinyu pointed out that this step is wrong!  We need to compute the *inverse* of X!
-Credit Jinyu for helping with this function.
-*/
-
-    // Finally, we take the product X*(y1, y2, y3, ..., yn) to obtain
-    // the vector of coefficients (a0, a1, a2, ..., ak).
-/*    int dotproduct;
-    for (int k = 0; k < polynom_degree + 1; k++) {
-        dotproduct = 0;
-
-        for (int i = 0; i < points.size(); i++) {
-            dotproduct += T[k][i] * points.at(i);
-        }
-
-        coefficients.push_back(dotproduct);
-    }
-
-    return coefficients;
-*/
 }
 
 /*********************************************************************
@@ -412,7 +531,7 @@ void objectDetector::StartDetect(int index, vector<float> dataPoints, bool aOrie
     isstopped = false;
     isrunning = true;
     emit running();
-    doDetect(dataPoints);
+    doDetect(dataPoints, aOrientation);
 //cout << "Exiting StartDetect" << endl;
 }
 
