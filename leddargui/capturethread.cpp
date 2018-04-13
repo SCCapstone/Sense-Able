@@ -321,9 +321,6 @@ void CaptureThread::doCapture(string videoFileName)
         }
         QCoreApplication::processEvents();
     }
-
-//    QMetaObject::invokeMethod(this, "doCapture", Qt::QueuedConnection);
-//    emit this->finished();
 }
 
 /*********************************************************************

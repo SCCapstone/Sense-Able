@@ -44,6 +44,8 @@ signals:
 private:
     bool isrunning, isstopped;
     float sig_dist;
+    float apply_polynomial(vector<float> coefficients, int degree, float x_value);
+
 };
 
 #endif // OBJECTDETECT_H

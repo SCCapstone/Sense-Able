@@ -126,7 +126,11 @@ cout << "Entering ReadLiveData" << endl;
         }
         if (lCount > ARRAY_LEN(lDetections)) {
             cout << "LeddarStream::ReadLiveData -> ERROR: ReadLiveData - More points detected than expected: " << lCount << endl;
-            continue;
+//            continue;
+            /***************
+             * HOT FIX: At Distances > 10 meter > 16 points are always detected! I just shrink lCount to 16
+             */
+            lCount = 16;
 
             // lCount = ARRAY_LEN( lDetections );
             // This was Leddar's default behavior.  I guess they're really bad testers, eh?
