@@ -19,6 +19,16 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
+
+
+/*********************************************************************
+ *********************************************************************
+                           PUBLIC
+ *********************************************************************
+**********************************************************************/
+
+
+
 /*********************************************************************
  * The usual constructor.
  *
@@ -133,6 +143,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cameraView->setPixmap(QPixmap::fromImage(Mat2QImage(&capture->defaultImage)));
 }
 
+
 /*********************************************************************
  * The usual destructor.
 ***/
@@ -140,6 +151,16 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+/*********************************************************************
+ *********************************************************************
+                        Helper Functions
+ *********************************************************************
+**********************************************************************/
+//These functions aren't defined in the header, however they are crucial
+//to the running of this code
+
 
 /*********************************************************************
  * Stops all threads
@@ -153,6 +174,7 @@ void MainWindow::stopAll()
     QThread::usleep(.35);
 }
 
+
 /*********************************************************************
  * Takes a *.ltl file and returns a the same basename with a .mp4
  *  extension
@@ -162,6 +184,7 @@ string MainWindow::ltlToAVI(string leddarFile)
     QFileInfo file(QString::fromStdString(leddarFile));
     return (file.absolutePath() +"/"+ file.baseName() + ".avi").toStdString();
 }
+
 
 /*********************************************************************
  * Converts opencv Mat to QImage
@@ -173,20 +196,6 @@ QImage MainWindow::Mat2QImage(cv::Mat* img)
                 img->step, QImage::Format_RGB888).rgbSwapped();
 }
 
-/*********************************************************************
- * Function to run when the streamButton is clicked.
- *
- * Navigates to the Stream Page from the Home Page.
-***/
-void MainWindow::on_streamButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(0);
-
-    emit clickedButton();
-
-    this->updateSoundFiles();
-
-}
 
 /*********************************************************************
  * Changes the UserNotifier sound Mapping according to the ui
@@ -225,6 +234,27 @@ void MainWindow::updateSoundFiles()
 
 }
 
+
+/*********************************************************************
+ * Returns the time since epoch in milliseconds
+ */
+//
+long MainWindow::getCurrentTime()
+{
+    long ms = chrono::duration_cast< chrono::milliseconds> (
+                chrono::system_clock::now().time_since_epoch()).count();
+    return ms;
+}
+
+
+
+/*********************************************************************
+ *********************************************************************
+                           PRIVATE
+ *********************************************************************
+**********************************************************************/
+
+
 /*********************************************************************
  * Slot to catch leddar data.
  *
@@ -245,6 +275,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrie
         (labels[i])->setText(QString::number(dataPoints.at(i)));
     }
 }
+
 
 /*********************************************************************
  * Slot to catch the object detected.
@@ -267,8 +298,9 @@ void MainWindow::catchDetectedObject(int object) {
 
     }
 
-    ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));    
+    ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));
 }
+
 
 /*********************************************************************
  * Slot to catch the next frame of the webcam captured.
@@ -291,6 +323,72 @@ void MainWindow::frameCaptured(cv::Mat* frame)
     ui->cameraView->setPixmap(resize.scaled(ui->cameraView->size(), Qt::KeepAspectRatio));
 }
 
+
+/*********************************************************************
+ *********************************************************************
+                       Button/GUI functions
+ *********************************************************************
+ *********************************************************************/
+
+
+
+/*********************************************************************
+ *                      Home Page Buttons                            *
+ *********************************************************************/
+
+
+
+/*********************************************************************
+ * Function to run when the streamButton is clicked.
+ *
+ * Navigates to the Stream Page from the Home Page.
+***/
+void MainWindow::on_streamButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+
+    emit clickedButton();
+
+    this->updateSoundFiles();
+
+}
+
+
+/*********************************************************************
+ * Function to run when the streamPageButton is clicked.
+ *
+ * Navigates to the Settings Page from the Home Page.
+***/
+void MainWindow::on_settingsPageButton_clicked()
+{
+    emit clickedButton();
+    //if no notification was checked then default to beep notifiers
+    if((ui->speechCheckBox->isChecked() == false) && (ui->beepCheckBox->isChecked() == false)) {
+        ui->beepCheckBox->setChecked(true);
+    }
+    ui->stackedWidget->setCurrentIndex(2);
+
+}
+
+
+/*********************************************************************
+ * Function to run when the QuitButton is clicked.
+ *
+ * Emits a signal that closes out of the application.
+***/
+void MainWindow::on_QuitButton_clicked()
+{
+    emit clickedButton();
+}
+
+
+
+/*********************************************************************
+ *                     Stream/Go Page Buttons                        *
+ *********************************************************************/
+
+
+
 /*********************************************************************
  * Function to run when the back Button on the go page is clicked.
  *
@@ -303,112 +401,28 @@ void MainWindow::on_backButtonGo_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-//Switching between pages
-void MainWindow::on_settingsPageButton_clicked()
-{
-    emit clickedButton();
-    //if no notification was checked then default to beep notifiers
-    if((ui->speechCheckBox->isChecked() == false) && (ui->beepCheckBox->isChecked() == false)) {
-        ui->beepCheckBox->setChecked(true);
-    }
-    ui->stackedWidget->setCurrentIndex(2);
-
-}
-
-void MainWindow::on_actionMain_Menu_triggered()
-{
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
-void MainWindow::on_notificationsButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(3);
-}
-
-void MainWindow::on_backButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(2);
-
-}
-
-void MainWindow::on_backButtonSettings_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
-void MainWindow::on_changeOrient_clicked()
-{
-//    bool was_playing = stream->isrunning;
-//    bool was_recording = capture->isvideoWriter;
-//    bool was_replay = stream->isReplay;
-//    stopAll();
-
-    leddarOrientation = !leddarOrientation;
-
-    if (leddarOrientation == VERTICAL) {
-       ui->orientLabel->setText("Orientation: Vertical");
-    }
-    else { // HORIZONTAL
-        ui->orientLabel->setText("Orientation: Horizontal");
-    }
-
-    emit setLeddarOrientation(leddarOrientation);
-
-    QThread::usleep(.15);
-
-    // We cant stop then start a recording or reading from a file
-//    if (was_playing && !was_recording && !was_replay) {
-//       emit startCapture(cameraNumber);
-//       emit startStream();
-//       emit passNotifier(this->notifier.soundFiles);
-//    }
-}
-
-void MainWindow::on_QuitButton_clicked()
-{
-    emit clickedButton();
-}
 
 /*********************************************************************
- * Function to run when the Distance Slider is changed to a new value.
+ * Function to run when the Stream From Device Button is clicked.
  *
- * Takes the value input by the user and displays it in meters or feet
- * depending on the units setting.
- * The function will then convert the value to meters if it is in feet
- * and emit a signal to set sig_dist to the new value.
+ * We begin the threads to start webcam capture, stream in live data,
+ * and detect any objects found.
+ *
+ * If data is already streaming, this button does nothing.
 ***/
-void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
+void MainWindow::on_go_StreamFromDevice_button_clicked()
 {
-    if(value<=0) value = 1;
-    QString displayDist;
-    float metricDistance;
-    if(metricUnits){
-        metricDistance = value/2.0;
-        displayDist = QString::number(metricDistance);
-        ui->notifDistanceLabel->setText(displayDist + " m");
-    }
-    else if(!metricUnits) {
-        displayDist = QString::number((value), 'f', 0);
-        ui->notifDistanceLabel->setText(displayDist + " ft");
-        metricDistance = value*0.3048;
-    }
-    //qDebug() << "Metric value passed to sigDist: " << metricDistance;
-    emit setSigDist(metricDistance);
-}
+    //Testing signal
+    emit streamButtonClicked();
 
-void MainWindow::on_speechCheckBox_stateChanged()
-{
-    if(ui->beepCheckBox->isChecked()) {
-        ui->beepCheckBox->setChecked(false);
+    if (!this->stream->isrunning && this->stream->isstopped) {
+        updateSoundFiles();
+
+        emit StartCapture(videoStream);
+        emit startStream();
     }
 }
 
-void MainWindow::on_beepCheckBox_stateChanged()
-{
-    if(ui->speechCheckBox->isChecked()) {
-        ui->speechCheckBox->setChecked(false);
-    }
-}
 
 /*********************************************************************
  * Function to run when the Read From File button is clicked.
@@ -423,9 +437,6 @@ void MainWindow::on_go_ReadFromFile_button_clicked()
 {
 
     if (!this->stream->isrunning) {
-
-//        ui->cameraLabel->setHidden(true);
-//        ui->changeCamera->setEnabled(false);
 
         string leddarFileName = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
                                                         "../LeddarData", tr("Leddar files (*.ltl)")).toStdString();
@@ -447,30 +458,16 @@ void MainWindow::on_go_ReadFromFile_button_clicked()
     }
 }
 
+
 /*********************************************************************
- * Function to run when the Stream From Device Button is clicked.
+ * Function to run when the Record button is clicked.
  *
- * We begin the threads to start webcam capture, stream in live data,
- * and detect any objects found.
+ * Opens a gui file dialog to allow the user to create a name in leddar
+ * data for a file.  We then begin to save the leddar data produced as
+ * well as record video of the webcam as it should be lined up with the
+ * sensor.
  *
- * If data is already streaming, this button does nothing.
 ***/
-void MainWindow::on_go_StreamFromDevice_button_clicked()
-{
-    //Testing signal
-    emit streamButtonClicked();
-
-    // TODO: Add logic for ReadData
-    // Check that LeddarStream is stopped
-
-    if (!this->stream->isrunning && this->stream->isstopped) {
-        updateSoundFiles();
-
-        emit StartCapture(videoStream);
-        emit startStream();
-    }
-}
-
 void MainWindow::on_go_Record_button_clicked()
 {
     emit clickedButton();
@@ -521,12 +518,63 @@ void MainWindow::on_go_Record_button_clicked()
     } // if (!stream->isrunning && stream->isstopped) {
 }
 
+
+/*********************************************************************
+ * Function to run when the Stop Button on the go page is clicked.
+ *
+ * We stop all threads from executing processes, except the main thread.
+ *
+***/
 void MainWindow::on_go_StopAll_button_clicked()
 {
     emit clickedButton();
     stopAll();
 }
 
+
+/*********************************************************************
+ * Function to run when the Change Orientation Button on the go page
+ * is clicked.
+ *
+ *
+***/
+void MainWindow::on_changeOrient_clicked()
+{
+//    bool was_playing = stream->isrunning;
+//    bool was_recording = capture->isvideoWriter;
+//    bool was_replay = stream->isReplay;
+//    stopAll();
+
+    leddarOrientation = !leddarOrientation;
+
+    if (leddarOrientation == VERTICAL) {
+       ui->orientLabel->setText("Orientation: Vertical");
+    }
+    else { // HORIZONTAL
+        ui->orientLabel->setText("Orientation: Horizontal");
+    }
+
+    emit setLeddarOrientation(leddarOrientation);
+
+    QThread::usleep(.15);
+
+    // We cant stop then start a recording or reading from a file
+//    if (was_playing && !was_recording && !was_replay) {
+//       emit startCapture(cameraNumber);
+//       emit startStream();
+//       emit passNotifier(this->notifier.soundFiles);
+//    }
+}
+
+
+/*********************************************************************
+ * Function to run when the Camera ComboBox index changes on the go page
+ *
+ * This changes the web-camera to that of the webcam indexed at the selected
+ * spot in the combo box. We stop the threads when a camera is chosen and then
+ * restart them.
+ *
+***/
 void MainWindow::on_cameraComboBox_currentIndexChanged(int index)
 {
     bool was_playing = this->stream->isrunning;
@@ -549,17 +597,91 @@ void MainWindow::on_cameraComboBox_currentIndexChanged(int index)
     }
 }
 
+
+
 /*********************************************************************
- * Returns the time since epoch in milliseconds
- */
-//
-long MainWindow::getCurrentTime()
+ *                     Settings Page Buttons                         *
+ *********************************************************************/
+
+
+
+/*********************************************************************
+ * Function to run when the Back Button on the Settings Page
+ * is clicked.
+ *
+ * Navigates you back to the home page
+ *
+***/
+void MainWindow::on_backButtonSettings_clicked()
 {
-    long ms = chrono::duration_cast< chrono::milliseconds> (
-                chrono::system_clock::now().time_since_epoch()).count();
-    return ms;
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
+
+/*********************************************************************
+ * Function to run when the Distance Slider is changed to a new value.
+ *
+ * Takes the value input by the user and displays it in meters or feet
+ * depending on the units setting.
+ * The function will then convert the value to meters if it is in feet
+ * and emit a signal to set sig_dist to the new value.
+***/
+void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
+{
+    if(value<=0) value = 1;
+    QString displayDist;
+    float metricDistance;
+    if(metricUnits){
+        metricDistance = value/2.0;
+        displayDist = QString::number(metricDistance);
+        ui->notifDistanceLabel->setText(displayDist + " m");
+    }
+    else if(!metricUnits) {
+        displayDist = QString::number((value), 'f', 0);
+        ui->notifDistanceLabel->setText(displayDist + " ft");
+        metricDistance = value*0.3048;
+    }
+    //qDebug() << "Metric value passed to sigDist: " << metricDistance;
+    emit setSigDist(metricDistance);
+}
+
+
+/*********************************************************************
+ * Function to run when the state of the Speech CheckBox on the
+ * settings page is changed.
+ *
+***/
+void MainWindow::on_speechCheckBox_stateChanged()
+{
+    //if the beep checkbox is changed then uncheck it
+    if(ui->beepCheckBox->isChecked()) {
+        ui->beepCheckBox->setChecked(false);
+    }
+}
+
+
+/*********************************************************************
+ * Function to run when the state of the Beep CheckBox on the Settings
+ * page is changed.
+ *
+***/
+void MainWindow::on_beepCheckBox_stateChanged()
+{
+    //if the speech checkbox is changed then uncheck it
+    if(ui->speechCheckBox->isChecked()) {
+        ui->speechCheckBox->setChecked(false);
+    }
+}
+
+
+/*********************************************************************
+ * Function to run when the index of the ComboBox on the Settings page
+ * is changed.
+ *
+ * Converts the distance displayed on screen from metric to US customs
+ * measurements.
+ *
+***/
 void MainWindow::on_settingsComboBox_currentIndexChanged(int index)
 {
     //feet to meters
@@ -582,3 +704,34 @@ void MainWindow::on_settingsComboBox_currentIndexChanged(int index)
     }
 
 }
+
+
+/*********************************************************************
+ * Function to run when the Notifications Button on the Settings Page
+ * is clicked.
+ *
+ * Navigates you to the Notifications page
+ *
+***/
+void MainWindow::on_notificationsButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+}
+
+
+/*********************************************************************
+ * Function to run when the Back Button on the Notifications Page
+ * is clicked.
+ *
+ * Navigates you back to the home page
+ *
+***/
+void MainWindow::on_backButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+
+}
+
+
+// End of file mainwindow.cpp
+
