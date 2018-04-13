@@ -181,24 +181,6 @@ void objectDetector::doDetect(vector<float> distances, bool aOrientation) {
  *  0.0 - Indicates that the curve does not fit at all.
  *
  ********************************************************************
- * TODO: In Jonathan's old code (for linear curves), we throw out
- * the fit if any of the distances exceed tolerated measurement error.
- * Is this still neccessary / useful? @Jonathan
- *
- * Quote:
- *      // If any of the segments exceed tolerated measurement error -
- *      // A wall is not considered to exist across the field of vision
- *      bool wall = true;
- *      for ( unsigned int i = 0; i < distances.size(); i++ ){
- *          float errori = std::abs( (slope*int(i) + intercept) - distances.at(i) );
- *          if ( errori > measure_error )  {
- *              std::cout << "error: " << (slope*int(i)+intercept) - distances.at(i) << std::endl;
- *              std::cout << "Distance: " << distances.at(i) << std::endl;
- *              std::cout << "Slope: " << slope << std::endl;
- *              std::cout << "Intercept: " << intercept << std::endl;
- *              wall = false;
- *          }
- *      }
 ***/
 
 float objectDetector::detectWall(vector<float> distances) {
@@ -225,8 +207,8 @@ cout << "WALL DETECT FIT: " << fit << endl;
 
     // If the slope is too steep in either direction, then a wall is
     // not a good fit.
-    if (coefficients.at(1) > 0.1 ||
-        coefficients.at(1) < -0.1) {
+    if (coefficients.at(1) > 0.75 ||
+        coefficients.at(1) < -0.75) {
 
         return 0.0;
     }
@@ -299,7 +281,7 @@ float objectDetector::detectCorner(vector<float> distances) {
 
     // If the parabola is too flat, or not sharp enough, then a wall corner
     // is not a good fit.  Reject.
-    } else if (coefficients.at(coefficients.size() - 1) > -0.05 ||
+    } else if (coefficients.at(coefficients.size() - 1) > -0.1 ||
                coefficients.at(coefficients.size() - 1) < -1) {
         return 0.0;
     }
@@ -460,6 +442,7 @@ float objectDetector::fit_quality(vector<float> coefficients, int polynom_degree
 cout << "RSS: " << rss << "TSS " << tss << endl;
 
     r_squared = 1.0 - (float)(rss / tss);
+cout << "R^2: " << r_squared << endl;
 
     return r_squared;
 }
