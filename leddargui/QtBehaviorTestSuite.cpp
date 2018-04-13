@@ -8,20 +8,24 @@ QtBehaviorTestSuite::QtBehaviorTestSuite() {
 
 void QtBehaviorTestSuite::runTests() {
 
-    this->testStreamButtonClicked();
-    this->testReadFunction();
-    this->testButtonClickable();
-    this->testMainPage();
+    //this->testStreamButtonClicked();
+    //this->testReadFunction();
+    //this->testButtonClickable();
+    //this->testMainPage();
+    this->testOrientation();
+    this->testRecord();
 }
 
 // TODO: Make all outputs the same format, QCOMPARE(spy.count(), 1) would be great if it worked
 void QtBehaviorTestSuite::testStreamButtonClicked() {
     MainWindow window;
+   // QThread capture = MainWindow.captureThread;
 
     // Set up a spy to check whether the Stream Button has been clicked.
-    QSignalSpy spy(&window, SIGNAL(streamButtonClicked()));
+    //QSignalSpy spy(&window, SIGNAL(streamButtonClicked()));
     QSignalSpy clickedSpy(&window, SIGNAL(clickedButton()));
     QSignalSpy streamSpy(&window, SIGNAL(startStream()));
+    //QSignalSpy captureSpy(&window, SIGNAL(capture.isRunning());
 
     //Get the buttons
     QWidget *streamButton = window.findChild<QPushButton*>("streamButton");
@@ -38,20 +42,22 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
     QTest::mouseClick(stopButton, Qt::LeftButton, Qt::NoModifier);
     //QTest::mouseClick(backButton, Qt::LeftButton, Qt::NoModifier);
 
-    cout << "\ntestStreamButtonClicked:  ";
+    /*cout << "\ntestStreamButtonClicked:  ";
     if (spy.count() == 1) {
         cout << "SUCCESS\n";
     } else {
         cout << "FAILURE\n";
-    }
+    }*/
     cout << "testStartStream: ";
     if (streamSpy.count() == 1){
         cout << "SUCCESS\n";
     }
     else cout << "FAILUER\n";
-    cout << endl;
-    cout << "Spy count: " << clickedSpy.count() << endl;
+    cout << "\nSpy count: " << clickedSpy.count() << endl;
 
+    cout << "capture thread running: ";
+   // if(captureSpy()==1) cout << "SUCCESS";
+    //else cout << "FAILURE";
 
     // Can't get this to output to the console:
     //QCOMPARE(spy.count(), 1);
@@ -106,6 +112,9 @@ void QtBehaviorTestSuite::testButtonClickable(){
     else cout << "FAILURE" << endl;
 }
 
+/* Tests all buttons on the Home page. Returns SUCCESS if signal spy
+ * catches the clickedButton signal for all 3 buttons.
+ */
 void QtBehaviorTestSuite::testMainPage(){
     MainWindow window;
 
@@ -122,5 +131,43 @@ void QtBehaviorTestSuite::testMainPage(){
     qDebug() << "Main page click count: " << pagesSpy.count();
     cout << "testMainPage: ";
     if(pagesSpy.count()==3) cout << "SUCCESS" << endl;
+    else cout << "FAILURE" << endl;
+}
+
+/* Tests the Change Orientation button on the Stream page. If the setLeddarOrientation
+ * signal is sent, this is outputs SUCCESS.
+ */
+void QtBehaviorTestSuite::testOrientation() {
+    MainWindow window;
+
+    QSignalSpy orientSpy(&window, SIGNAL(setLeddarOrientation(bool)));
+
+    QWidget *orientButton = window.findChild<QPushButton*>("changeOrient");
+
+    QTest::mouseClick(orientButton, Qt::LeftButton, Qt::NoModifier);
+
+    cout << "testOrientation: ";
+    if(orientSpy.count()==1) cout << "SUCCESS" << endl;
+    else cout << "FAILURE" << endl;
+}
+
+/* Tests recording function. When the button press is simulated, user can choose a file
+ * name and the program will start recording. If no file name is selected this will
+ * return FAILURE. TODO: pass file name so no interaction required? how
+ */
+void QtBehaviorTestSuite::testRecord() {
+    MainWindow window;
+
+    QSignalSpy recordSpy(&window, SIGNAL(StartVideoRecord(string,string)));
+    //QSignalSpy timeSpy(&window,SIGNAL(clickedButton()));
+
+    QWidget *recordButton = window.findChild<QPushButton*>("go_Record_button");
+    QWidget *stopButton = window.findChild<QPushButton*>("go_StopAll_button");
+
+    QTest::mouseClick(recordButton, Qt::LeftButton, Qt::NoModifier);
+    QTest::mouseClick(stopButton, Qt::LeftButton, Qt::NoModifier);
+
+    cout << "testRecord: ";
+    if(recordSpy.count()==1) cout << "SUCCESS" << endl;
     else cout << "FAILURE" << endl;
 }

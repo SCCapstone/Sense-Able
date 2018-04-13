@@ -298,6 +298,7 @@ void CaptureThread::doCapture(string videoFileName)
 
                 // Draw the heatmap and distances on to the frame and emit
                 overlayDistance(frame);
+                // TODO:: Draw "Recording" and recording dot
                 emit(emitFrame(&frame));
 
                 // Get the current time and compare to the expected "next frame time"

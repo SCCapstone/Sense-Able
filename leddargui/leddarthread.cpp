@@ -708,5 +708,5 @@ cout << "LeddarStream::doStream -> Exiting doStream" << endl;
 }
 
 
-// End of file leddarthread.cpp
 
+// End of file leddarthread.cpp
