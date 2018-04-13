@@ -569,7 +569,7 @@ void objectDetector::doDetect(vector<float> distances, bool aOrientation) {
  * Returns:
  *  result - The result of plugging the 'x_value' into the polynomial.
 ***/
-float apply_polynomial(vector<float> coefficients, int degree, float x_value) {
+float objectDetector::apply_polynomial(vector<float> coefficients, int degree, float x_value) {
     float result = 0;
 
     for (int i = 0; i <= degree; i++) {
