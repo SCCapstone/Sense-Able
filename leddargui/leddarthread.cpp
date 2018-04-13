@@ -97,8 +97,6 @@ cout << "Entering ReadLiveData" << endl;
     unsigned int i, lCount;
     LdDetection lDetections[16];
 
-    LeddarChar recordingFileName[255];
-
     if (!isrunning || isstopped) return;
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
@@ -122,7 +120,7 @@ cout << "Entering ReadLiveData" << endl;
             continue;
         }
         if (lCount > ARRAY_LEN(lDetections)) {
-            cout << "ERROR: ReadLiveData - More points detected than expected!" << endl;
+            cout << "LeddarStream::ReadLiveData -> ERROR: ReadLiveData - More points detected than expected: " << lCount << endl;
             continue;
 
             // lCount = ARRAY_LEN( lDetections );
@@ -132,7 +130,7 @@ cout << "Entering ReadLiveData" << endl;
             // This can happen if the sensor is partially covered, or alternatively if the
             // sensor sees half of a wall.  Right now we 'continue' so that we don't get a
             // major crash.
-            cout << "ERROR: ReadLiveData - Fewer points detected than expected!" << endl;
+            cout << "LeddarStream::ReadLiveData -> ERROR: ReadLiveData - Fewer points detected than expected: " << lCount << endl;
             continue;
         } else {
             cout << "ReadLiveData has exactly as many points as expected.";
@@ -161,7 +159,7 @@ cout << "Entering ReadLiveData" << endl;
         QCoreApplication::processEvents();
     }
     // Emit all zeros
-    ClearData(lCount);
+//    ClearData(lCount);
 
     LeddarStopDataTransfer( this->gHandle );
     StopStream();
@@ -250,7 +248,7 @@ cout << "Entering ReplayData" << endl;
         QCoreApplication::processEvents();
     }
     // Emit zeros
-    ClearData();
+//    ClearData();
     cout << "Exiting ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
@@ -575,9 +573,9 @@ cout << "Entering StopStream" << endl;
 
     isReplay = false;
     isRecording = false;
-//    StopRecord();
+    StopRecord();
     emit stopped();
-    ClearData();
+//    ClearData();
 cout << "Exiting StopStream" << endl;
 }
 
@@ -633,6 +631,7 @@ cout << "LeddarStream::doStream -> Entering doStream" << endl;
     {
         cout << "LeddarStream::doStream -> LeddarConnection Successful" << endl;
         if (LeddarGetConnected(this->gHandle) == LD_SUCCESS && isrunning && !isstopped) {
+
             if ( isRecording ) {
                 cout << "LeddarStream::doStream -> We are Recording" << endl;
                 RecordLiveData(fileName);

@@ -8,6 +8,7 @@
 #include "capturethread.h"
 //#include "OLDobjdetect.h"
 #include "objectdetectthread.h"
+#include <chrono>
 
 namespace Ui {
 class MainWindow;
@@ -100,6 +101,8 @@ private:
     objectDetector* objdetector;
     QThread* objdetectThread;
 
+    long lastNotification = 0;
+
     vector<string> cameraFileNames;
     //TODO: FIND A BETTER DEFAULT
     string videoStream = "/dev/video0";
@@ -112,6 +115,7 @@ private:
     //Helper functions
     void stopAll();
     void updateSoundFiles();
+    long getCurrentTime();
     string ltlToAVI(string leddarFile);
     QImage Mat2QImage(cv::Mat* img);
 };

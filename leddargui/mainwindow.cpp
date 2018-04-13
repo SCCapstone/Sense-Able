@@ -171,37 +171,6 @@ QImage MainWindow::Mat2QImage(cv::Mat* img)
                 img->data, img->cols, img->rows,
                 img->step, QImage::Format_RGB888).rgbSwapped();
 }
-/*********************************************************************
- * Function to run when the readDataButton is clicked.
- *
- * Opens a gui file dialog to allow the user to read in leddar data from
- * a file.  We then begin the threads to stream the read data and detect
- * any objects found.
- *
- * If data is already streaming, this button does nothing.
-***/
-/*void MainWindow::on_readDataButton_clicked()
-{
-    if (!this->stream->isrunning) {
-        string leddarFileName = QFileDialog::getOpenFileName(this, tr("Select Leddar File"),
-                                                        "../LeddarData", tr("Leddar files (*.ltl)")).toStdString();
-        string videoFilename = ltlToAVI(leddarFileName);
-
-        cout << "Reading Leddar File: " << leddarFileName << endl;
-        cout << "Readnig Video File: " << videoFilename << endl;
-
-        this->updateSoundFiles();
-
-        // Given a filename, find the matching recording if there exists one start replay
-        QFileInfo check_file(QString::fromStdString(videoFilename));
-        if (check_file.exists() && check_file.isFile())
-        {
-//            emit startCapture(videoFilename);
-
-        }
-        emit startRead(leddarFileName);
-    }
-}*/
 
 /*********************************************************************
  * Function to run when the streamButton is clicked.
@@ -216,17 +185,9 @@ QImage MainWindow::Mat2QImage(cv::Mat* img)
 void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
-    //emit streamButtonClicked();
 
     this->updateSoundFiles();
 
-//    if (!this->stream->isrunning) {
-//        emit startCapture(cameraNumber);
-//        emit startStream();
-//        emit passNotifier(this->notifier.soundFiles);
-//        emit startDetect();  We should not start detecting until an object
-//                             is actually detected.
-//    }
 }
 /*********************************************************************
  * Changes the UserNotifier sound Mapping according to the ui
@@ -265,17 +226,6 @@ void MainWindow::updateSoundFiles()
 
 }
 
-/*********************************************************************
- * Additional function for the readDataButton.
- *
- * Required; won't go away.
-***/
-/*void MainWindow::on_readDataButton_clicked(bool checked)
-{
-    if(checked) {
-        // do nothing
-    }
-}*/
 
 /*********************************************************************
  * Slot to catch leddar data.
@@ -309,10 +259,14 @@ void MainWindow::catchDetectedObject(int object) {
     string objectName = "None";
 
     if ( object != NONE ) {
-        // Look up object name
-        objectName = OBJECT_MAP[object];
-        // Play Sound
-        notifier.playSound(object);
+        if ( getCurrentTime() - lastNotification > 1000 ){
+            lastNotification = getCurrentTime();
+            // Look up object name
+            objectName = OBJECT_MAP[object];
+            // Play Sound
+            notifier.playSound(object);
+        }
+
     }
 
     ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));    
@@ -560,4 +514,15 @@ void MainWindow::on_cameraComboBox_currentIndexChanged(int index)
        emit StartCapture(videoStream);
        emit startStream();
     }
+}
+
+/*********************************************************************
+ * Returns the time since epoch in milliseconds
+ */
+//
+long MainWindow::getCurrentTime()
+{
+    long ms = chrono::duration_cast< chrono::milliseconds> (
+                chrono::system_clock::now().time_since_epoch()).count();
+    return ms;
 }
