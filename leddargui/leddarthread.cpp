@@ -166,6 +166,61 @@ cout << "Entering ReadLiveData" << endl;
 cout << "Exiting ReadLiveData" << endl;
 }
 
+
+/*********************************************************************
+ * Function to record data captured by the Leddar into the given file
+ *
+ * input: fileName - Absolute filepath and name e.g. /home/x/y.ltl
+ *
+***/
+void LeddarStream::RecordLiveData(string fileName)
+{
+cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
+
+    // Redundant Code
+    if ( !isrunning || isstopped) {
+        cout << "LeddarStream::RecordLiveData -> Stopping Thread" << endl;
+        if ( LeddarGetRecording(this->gHandle) ) {
+            LeddarStopRecording(this->gHandle);
+        }
+        return;
+    }
+
+    // Get the index marking the end of the Path to the file
+    int last_slash = fileName.find_last_of('/');
+
+    // Get the path and convert to char array
+    char file_dir[fileName.length() + 1];
+    strcpy(file_dir, fileName.substr(0,last_slash).c_str());
+
+    // Set the save directory.
+    LeddarConfigureRecording(file_dir, 0, 0);
+
+    // Leddar recording does not allow us to specify the save file before hand
+    LeddarChar temp_file[255];
+
+//    cout << "LeddarStream::RecordLiveData -> Entering LeddarStartRecording" << endl;
+    CheckError( LeddarStartRecording( this->gHandle, temp_file ) );
+//    cout << "LeddarStream::RecordLiveData -> Exiting LeddarStartRecording" << endl;
+
+    // Throw the thread into a sleeping loop until leddar device fails
+    while ( isrunning && !isstopped
+                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
+        QThread::msleep(200);
+        QCoreApplication::processEvents();
+    }
+
+    //Stop The Recording
+    LeddarStopRecording(this->gHandle);
+
+    // Rename the file
+    QFile::rename(QString(temp_file), QString::fromStdString(fileName));
+
+
+cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
+}
+
+
 /*********************************************************************
  * Function to read Leddar data from a file.
  *
@@ -257,60 +312,7 @@ cout << "Entering ReplayData" << endl;
 cout << "Exiting ReplayData" << endl;
 }
 
-/*********************************************************************
- * Function to record data captured by the Leddar into the given file
- *
- * input: fileName - Absolute filepath and name e.g. /home/x/y.ltl
- *
-***/
-void LeddarStream::RecordLiveData(string fileName)
-{
-cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
 
-    // Redundant Code
-    if ( !isrunning || isstopped) {
-        cout << "LeddarStream::RecordLiveData -> Stopping Thread" << endl;
-        if ( LeddarGetRecording(this->gHandle) ) {
-            LeddarStopRecording(this->gHandle);
-        }
-        return;
-    }
-
-    // Get the index marking the end of the Path to the file
-    int last_slash = fileName.find_last_of('/');
-
-    // Get the path and convert to char array
-    char file_dir[fileName.length() + 1];
-    strcpy(file_dir, fileName.substr(0,last_slash).c_str());
-
-    // Set the save directory.
-    LeddarConfigureRecording(file_dir, 0, 0);
-
-    // Leddar recording does not allow us to specify the save file before hand
-    LeddarChar temp_file[255];
-
-//    cout << "LeddarStream::RecordLiveData -> Entering LeddarStartRecording" << endl;
-    CheckError( LeddarStartRecording( this->gHandle, temp_file ) );
-//    cout << "LeddarStream::RecordLiveData -> Exiting LeddarStartRecording" << endl;
-
-    // Throw the thread into a sleeping loop until leddar device fails
-    while ( isrunning && !isstopped
-                && LeddarGetRecording(this->gHandle) == LD_SUCCESS) {
-        QThread::msleep(200);
-        QCoreApplication::processEvents();
-    }
-
-    //Stop The Recording
-    LeddarStopRecording(this->gHandle);
-
-    // Rename the file
-    QFile::rename(QString(temp_file), QString::fromStdString(fileName));
-
-
-
-
-cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
-}
 
 /*********************************************************************
  * Function that issues a stop recording command
@@ -598,6 +600,48 @@ void LeddarStream::setOrientation(bool aOrientation)
 **********************************************************************/
 
 
+
+/*********************************************************************
+ * Function to replay a Leddar file.
+ *
+ * We create a leddar handle and try to connect to a Leddar record file.
+ * We close up by disconnecting and destroying our handle.
+***/
+void LeddarStream::doReplay(string fileName)
+{
+cout << "Entering doReplay" << endl;
+    if (!isrunning || isstopped) return;
+
+    cout << fileName<< endl;
+
+    char* lName = const_cast<char*>(fileName.c_str());
+
+    // Load the file record.
+    if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
+    {
+        // For a big file, especially if it is on a network drive, it may
+        // take a while before the replay is 100% ready. Note that you
+        // can still use the replay but it will not report the complete
+        // size until it is finished loading.
+        while( LeddarGetRecordLoading( this->gHandle ) )
+        {
+            LeddarSleep( 0.5 );
+        }
+
+        ReplayData();
+        LeddarDisconnect(this->gHandle);
+    }
+    else
+    {
+        cout << "Failed to load file!" << endl;
+    }
+
+    StopStream();
+
+cout << "Exiting doReplay" << endl;
+}
+
+
 /*********************************************************************
  * Function to stream from the LIDAR sensor.
  *
@@ -651,45 +695,6 @@ cout << "LeddarStream::doStream -> Entering doStream" << endl;
 cout << "LeddarStream::doStream -> Exiting doStream" << endl;
 }
 
-/*********************************************************************
- * Function to replay a Leddar file.
- *
- * We create a leddar handle and try to connect to a Leddar record file.
- * We close up by disconnecting and destroying our handle.
-***/
-void LeddarStream::doReplay(string fileName)
-{
-cout << "Entering doReplay" << endl;
-    if (!isrunning || isstopped) return;
-
-    cout << fileName<< endl;
-
-    char* lName = const_cast<char*>(fileName.c_str());
-
-    // Load the file record.
-    if ( LeddarLoadRecord( this->gHandle, lName ) == LD_SUCCESS )
-    {
-        // For a big file, especially if it is on a network drive, it may
-        // take a while before the replay is 100% ready. Note that you
-        // can still use the replay but it will not report the complete
-        // size until it is finished loading.
-        while( LeddarGetRecordLoading( this->gHandle ) )
-        {
-            LeddarSleep( 0.5 );
-        }
-
-        ReplayData();
-        LeddarDisconnect(this->gHandle);
-    }
-    else
-    {
-        cout << "Failed to load file!" << endl;
-    }
-
-    StopStream();
-
-cout << "Exiting doReplay" << endl;
-}
 
 // End of file leddarthread.cpp
 
