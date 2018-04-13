@@ -55,6 +55,8 @@ objectDetector::objectDetector()
     qRegisterMetaType<string>("string");
     isstopped = false;
     isrunning = false;
+
+    sig_dist = 25.0;
 }
 
 /*********************************************************************

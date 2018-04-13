@@ -141,6 +141,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->beepCheckBox->setChecked(true);
     // Set viewport to default image
     ui->cameraView->setPixmap(QPixmap::fromImage(Mat2QImage(&capture->defaultImage)));
+
 }
 
 
@@ -272,7 +273,7 @@ void MainWindow::catchDataPoints(int index, vector<float> dataPoints, bool aOrie
 
     // Update the labels with the values of the data points.
     for (int i = 0; i <= 15; i++) {
-        (labels[i])->setText(QString::number(dataPoints.at(i)));
+        (labels[i])->setText(QString::number(dataPoints.at(i)).mid(0, 4));
     }
 }
 
@@ -288,10 +289,12 @@ void MainWindow::catchDetectedObject(int object) {
     string objectName = "None";
 
     if ( object != NONE ) {
+
+        // Look up object name
+        objectName = OBJECT_MAP[object];
+
         if ( getCurrentTime() - lastNotification > 1000 ){
             lastNotification = getCurrentTime();
-            // Look up object name
-            objectName = OBJECT_MAP[object];
             // Play Sound
             notifier.playSound(object);
         }
