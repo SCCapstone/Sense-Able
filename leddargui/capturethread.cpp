@@ -339,3 +339,5 @@ void CaptureThread::catchDetections(int index, std::vector<float> points, bool a
     }
 }
 
+
+// End of file capturethread.cpp

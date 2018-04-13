@@ -39,11 +39,14 @@
 #define ARRAY_LEN( a )  (sizeof(a)/sizeof(a[0]))
 
 
+
 /*********************************************************************
  *********************************************************************
                            PUBLIC
  *********************************************************************
 **********************************************************************/
+
+
 
 /*********************************************************************
  * The usual constructor.
@@ -70,6 +73,7 @@ LeddarStream::LeddarStream() {
 //    LeddarSetProperty(this->gHandle, PID_OVERSAMPLING_EXPONENT, 0, 4);
 }
 
+
 /*********************************************************************
  * The usual destructor.
 ***/
@@ -79,6 +83,7 @@ LeddarStream::~LeddarStream() {
 
     return;
 }
+
 
 /*********************************************************************
  * Function to read live data from the sensor.
@@ -313,7 +318,6 @@ cout << "Exiting ReplayData" << endl;
 }
 
 
-
 /*********************************************************************
  * Function that issues a stop recording command
  *
@@ -336,6 +340,7 @@ void LeddarStream::StopRecord()
                            HELPER FUNCTIONS
  *********************************************************************
  *********************************************************************/
+
 
 
 /*********************************************************************
@@ -430,6 +435,7 @@ cout << "Entering ListSensors" << endl;
 cout << "Exiting ListSensors" << endl;
 }
 
+
 /*********************************************************************
  * Function to find an address by index.
  *
@@ -463,6 +469,7 @@ cout << "Entering FindAddressByIndex" << endl;
 cout << "Exiting FindAddressByIndex" << endl;
 }
 
+
 /**********************************************************************
  * Emits a vector of zeros through sendDataPoints so as to "clean up"
  * the read data page after data is collected.
@@ -494,6 +501,7 @@ long LeddarStream::getCurrentTime()
 **********************************************************************/
 
 
+
 /*********************************************************************
  * Slot to start streaming data from the LIDAR.
  *
@@ -515,6 +523,7 @@ cout << "Entering StartStream" << endl;
     doStream();
 cout << "Exiting StartStream" << endl;
 }
+
 
 /*********************************************************************
  * Slot to start replaying data from a file.
@@ -538,6 +547,7 @@ cout << "Entering StartReplay" << endl;
 cout << "Exiting StartReplay" << endl;
 }
 
+
 /*********************************************************************
  * Slot to start streaming data from the LIDAR.
  *
@@ -560,6 +570,7 @@ cout << "Entering StartRecord" << endl;
 cout << "Exiting StartRecord" << endl;
 }
 
+
 /*********************************************************************
  * Slot to stop streaming data from the LIDAR.
  *
@@ -580,6 +591,7 @@ cout << "Entering StopStream" << endl;
 //    ClearData();
 cout << "Exiting StopStream" << endl;
 }
+
 
 /**********************************************************************
  * Set the orientation of the Leddar. Default orientation is Vertical
@@ -697,6 +709,4 @@ cout << "LeddarStream::doStream -> Exiting doStream" << endl;
 
 
 // End of file leddarthread.cpp
-
-
 

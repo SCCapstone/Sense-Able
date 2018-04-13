@@ -23,51 +23,40 @@ public:
     ~MainWindow();
 
 private slots:
-    //void on_readDataButton_clicked();
-
-    //void on_readDataButton_clicked(bool checked);
 
     void catchDataPoints(int index, vector<float> dataPoints, bool aOrientation);
-
     void catchDetectedObject(int object);
-
-    void on_streamButton_clicked();
-
     void frameCaptured(cv::Mat* frame);
 
+    /**************************************************************************
+     *                         Button/GUI functions                           *
+     **************************************************************************/
+
+    //Home Page Buttons
+    void on_streamButton_clicked();
     void on_settingsPageButton_clicked();
-
-    void on_actionMain_Menu_triggered();
-
-    void on_notificationsButton_clicked();
-
-    void on_backButton_clicked();
-
-    void on_backButtonGo_clicked();
-
-    void on_backButtonSettings_clicked();
-
-    void on_changeOrient_clicked();
-
     void on_QuitButton_clicked();
 
-    void on_notificationDistanceSlider_valueChanged(int value);
-
-    void on_speechCheckBox_stateChanged();
-
-    void on_beepCheckBox_stateChanged();
-
-    void on_go_ReadFromFile_button_clicked();
-
+    //Stream/Go Page GUI
+    void on_backButtonGo_clicked();
     void on_go_StreamFromDevice_button_clicked();
-
+    void on_go_ReadFromFile_button_clicked();
     void on_go_Record_button_clicked();
-
     void on_go_StopAll_button_clicked();
-
+    void on_changeOrient_clicked();
     void on_cameraComboBox_currentIndexChanged(int index);
 
+    //Setting Page
+    void on_backButtonSettings_clicked();
+    void on_notificationDistanceSlider_valueChanged(int value);
+    void on_speechCheckBox_stateChanged();
+    void on_beepCheckBox_stateChanged();
     void on_settingsComboBox_currentIndexChanged(int index);
+    void on_notificationsButton_clicked();
+
+    //Notifications Page
+     void on_backButton_clicked();
+
 
 signals:
     // Signals to capturethread.cpp
