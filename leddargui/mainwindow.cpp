@@ -577,6 +577,8 @@ void MainWindow::on_changeOrient_clicked()
 ***/
 void MainWindow::on_cameraComboBox_currentIndexChanged(int index)
 {
+    emit clickedButton();
+
     bool was_playing = this->stream->isrunning;
     bool was_recording = this->capture->isRecording;
     QString currentCamera = ui->cameraComboBox->currentData().toString();
