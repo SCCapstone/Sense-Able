@@ -30,8 +30,8 @@ public:
     ~LeddarStream();
 
     void ReadLiveData( void );
-    void ReplayData(void);
     void RecordLiveData(string fileName);
+    void ReplayData(void);
     void StopRecord();
 
     // Helper functions
