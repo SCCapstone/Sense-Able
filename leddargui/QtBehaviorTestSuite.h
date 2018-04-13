@@ -17,15 +17,15 @@ public:
     //Runs all the tests in the test suite.
     void runTests();
 
+    //Main page tests
+    void testMainPage();
+
     //Go page tests
     void testStreamButtonClicked();
     void testReadFunction();
     void testButtonClickable();
     void testOrientation();
     void testRecord();
-
-    //Main page tests
-    void testMainPage();
 
 signals:
 

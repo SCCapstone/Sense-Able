@@ -8,12 +8,34 @@ QtBehaviorTestSuite::QtBehaviorTestSuite() {
 
 void QtBehaviorTestSuite::runTests() {
 
-    //this->testStreamButtonClicked();
-    //this->testReadFunction();
-    //this->testButtonClickable();
-    //this->testMainPage();
+    //this->testRecord();
+    this->testMainPage();
+    this->testStreamButtonClicked();
+    this->testReadFunction();
+    this->testButtonClickable();
     this->testOrientation();
-    this->testRecord();
+}
+
+/* Tests all buttons on the Home page. Returns SUCCESS if signal spy
+ * catches the clickedButton signal for all 3 buttons.
+ */
+void QtBehaviorTestSuite::testMainPage(){
+    MainWindow window;
+
+    QSignalSpy pagesSpy(&window, SIGNAL(clickedButton()));
+
+    QWidget *streamButton = window.findChild<QPushButton*>("streamButton");
+    QWidget *settingsButton = window.findChild<QPushButton*>("settingsPageButton");
+    QWidget *quitButton = window.findChild<QPushButton*>("QuitButton");
+
+    QTest::mouseClick(streamButton, Qt::LeftButton, Qt::NoModifier);
+    QTest::mouseClick(settingsButton, Qt::LeftButton, Qt::NoModifier);
+    QTest::mouseClick(quitButton, Qt::LeftButton, Qt::NoModifier);
+    //pagesSpy.wait(1000);
+    qDebug() << "Main page click count: " << pagesSpy.count();
+    cout << "testMainPage: ";
+    if(pagesSpy.count()==3) cout << "SUCCESS" << endl;
+    else cout << "FAILURE" << endl;
 }
 
 // TODO: Make all outputs the same format, QCOMPARE(spy.count(), 1) would be great if it worked
@@ -63,10 +85,13 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
     //QCOMPARE(spy.count(), 1);
 }
 
+/* Tests the Read From File function on the Stream page.
+ * Returns SUCCESS if start read function is initiated, even if
+ * no file name is provided.
+ */
 void QtBehaviorTestSuite::testReadFunction(){
     MainWindow window;
     QSignalSpy readSpy(&window, SIGNAL(startRead(string)));
-    QSignalSpy captureSpy(&window, SIGNAL(startCapture(string)));
 
     QWidget *readButton = window.findChild<QPushButton*>("go_ReadFromFile_button");
     QWidget *stopButton = window.findChild<QPushButton*>("go_StopAll_button");
@@ -109,28 +134,6 @@ void QtBehaviorTestSuite::testButtonClickable(){
     qDebug() << "Read started: " << bool(readSpy.count());
     cout << "testButtonsClickable: ";
     if(streamSpy.count() && !readSpy.count()) cout << "SUCCESS" << endl;
-    else cout << "FAILURE" << endl;
-}
-
-/* Tests all buttons on the Home page. Returns SUCCESS if signal spy
- * catches the clickedButton signal for all 3 buttons.
- */
-void QtBehaviorTestSuite::testMainPage(){
-    MainWindow window;
-
-    QSignalSpy pagesSpy(&window, SIGNAL(clickedButton()));
-
-    QWidget *streamButton = window.findChild<QPushButton*>("streamButton");
-    QWidget *settingsButton = window.findChild<QPushButton*>("settingsPageButton");
-    QWidget *quitButton = window.findChild<QPushButton*>("QuitButton");
-
-    QTest::mouseClick(streamButton, Qt::LeftButton, Qt::NoModifier);
-    QTest::mouseClick(settingsButton, Qt::LeftButton, Qt::NoModifier);
-    QTest::mouseClick(quitButton, Qt::LeftButton, Qt::NoModifier);
-    //pagesSpy.wait(1000);
-    qDebug() << "Main page click count: " << pagesSpy.count();
-    cout << "testMainPage: ";
-    if(pagesSpy.count()==3) cout << "SUCCESS" << endl;
     else cout << "FAILURE" << endl;
 }
 
