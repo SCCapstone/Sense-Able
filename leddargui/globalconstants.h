@@ -31,6 +31,8 @@ const static int PILLAR = 2;
 const static int TRIP_HAZARD = 3;
 const static int UNIDENTIFIED_OBSTACLE = 4;
 
+const static int FIT_THRESHOLD = 0.70;
+
 const static string OBJECT_MAP[] = {
     "Wall",
     "Wall Corner",

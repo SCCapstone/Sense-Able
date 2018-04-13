@@ -67,6 +67,8 @@ private slots:
 
     void on_cameraComboBox_currentIndexChanged(int index);
 
+    void on_settingsComboBox_currentIndexChanged(int index);
+
 signals:
     // Signals to capturethread.cpp
     void StartCapture(string);
@@ -87,9 +89,13 @@ signals:
     void setSigDist(float);
 
 
-    void clicked();
+//<<<<<<< HEAD
+//    void clicked();
 
-    //used for behavioral tests
+//    //used for behavioral tests
+//=======
+    // Used for behavioral tests
+    void clickedButton();
     void streamButtonClicked();
 
 private:
@@ -107,6 +113,7 @@ private:
     //TODO: FIND A BETTER DEFAULT
     string videoStream = "/dev/video0";
     int leddarOrientation = true;
+    bool metricUnits = true;
 
     QSignalMapper* signalMapper;
     UserNotifier notifier;

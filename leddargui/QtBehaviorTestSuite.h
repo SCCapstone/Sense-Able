@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QtTest/QtTest>
 #include <QSignalSpy>
+#include <mainwindow.h>
 
 class QtBehaviorTestSuite : public QObject
 {
@@ -15,6 +16,8 @@ public:
     void runTests();
     void testStreamButtonClicked();
     void testReadFunction();
+    void testButtonClickable();
+    void testMainPage();
 
 signals:
 

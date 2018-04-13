@@ -152,6 +152,7 @@ void MainWindow::stopAll()
     emit stopDetect();
     QThread::usleep(.35);
 }
+
 /*********************************************************************
  * Takes a *.ltl file and returns a the same basename with a .mp4
  *  extension
@@ -175,20 +176,18 @@ QImage MainWindow::Mat2QImage(cv::Mat* img)
 /*********************************************************************
  * Function to run when the streamButton is clicked.
  *
- * We begin the threads to start webcam capture, stream in live data,
- * and detect any objects found.
- *
- * If data is already streaming, this button does nothing.
+ * Navigates to the Stream Page from the Home Page.
 ***/
-//TODO: update documentation, this button is now the button on the home
-//      page that changes screens to the 'go' page
 void MainWindow::on_streamButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
 
+    emit clickedButton();
+
     this->updateSoundFiles();
 
 }
+
 /*********************************************************************
  * Changes the UserNotifier sound Mapping according to the ui
  *
@@ -225,7 +224,6 @@ void MainWindow::updateSoundFiles()
     }
 
 }
-
 
 /*********************************************************************
  * Slot to catch leddar data.
@@ -290,8 +288,7 @@ void MainWindow::frameCaptured(cv::Mat* frame)
                     frame->data, frame->cols, frame->rows,
                     frame->step, QImage::Format_RGB888).rgbSwapped()
                 );
-    ui->cameraView->setPixmap(resize.scaled(ui->cameraView->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
+    ui->cameraView->setPixmap(resize.scaled(ui->cameraView->size(), Qt::KeepAspectRatio));
 }
 
 /*********************************************************************
@@ -309,6 +306,7 @@ void MainWindow::on_backButtonGo_clicked()
 //Switching between pages
 void MainWindow::on_settingsPageButton_clicked()
 {
+    emit clickedButton();
     //if no notification was checked then default to beep notifiers
     if((ui->speechCheckBox->isChecked() == false) && (ui->beepCheckBox->isChecked() == false)) {
         ui->beepCheckBox->setChecked(true);
@@ -368,16 +366,34 @@ void MainWindow::on_changeOrient_clicked()
 
 void MainWindow::on_QuitButton_clicked()
 {
-    emit clicked();
+    emit clickedButton();
 }
 
-//Sets notification distance and sends value to objectdetectthead
+/*********************************************************************
+ * Function to run when the Distance Slider is changed to a new value.
+ *
+ * Takes the value input by the user and displays it in meters or feet
+ * depending on the units setting.
+ * The function will then convert the value to meters if it is in feet
+ * and emit a signal to set sig_dist to the new value.
+***/
 void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
 {
-    float newDistance = value/2.0;
-    QString displayDist = QString::number(newDistance);
-    ui->notifDistanceLabel->setText(displayDist + " m");
-    emit setSigDist(newDistance);
+    if(value<=0) value = 1;
+    QString displayDist;
+    float metricDistance;
+    if(metricUnits){
+        metricDistance = value/2.0;
+        displayDist = QString::number(metricDistance);
+        ui->notifDistanceLabel->setText(displayDist + " m");
+    }
+    else if(!metricUnits) {
+        displayDist = QString::number((value), 'f', 0);
+        ui->notifDistanceLabel->setText(displayDist + " ft");
+        metricDistance = value*0.3048;
+    }
+    //qDebug() << "Metric value passed to sigDist: " << metricDistance;
+    emit setSigDist(metricDistance);
 }
 
 void MainWindow::on_speechCheckBox_stateChanged()
@@ -394,6 +410,15 @@ void MainWindow::on_beepCheckBox_stateChanged()
     }
 }
 
+/*********************************************************************
+ * Function to run when the Read From File button is clicked.
+ *
+ * Opens a gui file dialog to allow the user to read in leddar data from
+ * a file.  We then begin the threads to stream the read data and detect
+ * any objects found.
+ *
+ * If data is already streaming, this button does nothing.
+***/
 void MainWindow::on_go_ReadFromFile_button_clicked()
 {
 
@@ -422,6 +447,14 @@ void MainWindow::on_go_ReadFromFile_button_clicked()
     }
 }
 
+/*********************************************************************
+ * Function to run when the Stream From Device Button is clicked.
+ *
+ * We begin the threads to start webcam capture, stream in live data,
+ * and detect any objects found.
+ *
+ * If data is already streaming, this button does nothing.
+***/
 void MainWindow::on_go_StreamFromDevice_button_clicked()
 {
     //Testing signal
@@ -440,7 +473,7 @@ void MainWindow::on_go_StreamFromDevice_button_clicked()
 
 void MainWindow::on_go_Record_button_clicked()
 {
-    emit clicked();
+    emit clickedButton();
     // Check that stream is stopped
     if (!stream->isrunning && stream->isstopped) {
 
@@ -490,7 +523,7 @@ void MainWindow::on_go_Record_button_clicked()
 
 void MainWindow::on_go_StopAll_button_clicked()
 {
-    emit clicked();
+    emit clickedButton();
     stopAll();
 }
 
@@ -525,4 +558,27 @@ long MainWindow::getCurrentTime()
     long ms = chrono::duration_cast< chrono::milliseconds> (
                 chrono::system_clock::now().time_since_epoch()).count();
     return ms;
+}
+
+void MainWindow::on_settingsComboBox_currentIndexChanged(int index)
+{
+    //feet to meters
+    if(index==0){
+        metricUnits = true;
+        int newValue = ui->notificationDistanceSlider->value()*.3048*2;
+        //Setting the range to 1-100 and dividing by 2 to in order to get .5 meter intervals
+        ui->notificationDistanceSlider->setRange(1, 100);
+        emit ui->notificationDistanceSlider->valueChanged(newValue);
+        ui->notificationDistanceSlider->setSliderPosition(newValue);
+    }
+    //meters to feet
+    else if(index==1){
+        metricUnits = false;
+        //Setting maximum to 164 feet to keep similar range as meters
+        ui->notificationDistanceSlider->setRange(1, 164);
+        int newValue = ui->notificationDistanceSlider->value()/(.3048*2);
+        emit ui->notificationDistanceSlider->valueChanged(newValue);
+        ui->notificationDistanceSlider->setSliderPosition(newValue);
+    }
+
 }
