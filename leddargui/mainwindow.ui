@@ -170,7 +170,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="Page_StreamData">
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2446,7 +2446,7 @@ border-color: rgb(46, 52, 54);</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QCheckBox" name="speechCheckBox">
+          <widget class="QRadioButton" name="speechRadioButton">
            <property name="font">
             <font>
              <pointsize>17</pointsize>
@@ -2458,13 +2458,10 @@ border-color: rgb(46, 52, 54);</string>
            <property name="text">
             <string>Speech                        </string>
            </property>
-           <property name="tristate">
-            <bool>false</bool>
-           </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="beepCheckBox">
+          <widget class="QRadioButton" name="beepRadioButton">
            <property name="font">
             <font>
              <pointsize>17</pointsize>

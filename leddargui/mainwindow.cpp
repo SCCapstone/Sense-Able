@@ -138,7 +138,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     // UI
-    ui->beepCheckBox->setChecked(true);
+    ui->beepRadioButton->setChecked(true);
     // Set viewport to default image
     ui->cameraView->setPixmap(QPixmap::fromImage(Mat2QImage(&capture->defaultImage)));
 
@@ -213,10 +213,10 @@ QImage MainWindow::Mat2QImage(cv::Mat* img)
 ***/
 void MainWindow::updateSoundFiles()
 {
-    if (ui->beepCheckBox->isChecked() ) {
+    if (ui->beepRadioButton->isChecked() ) {
         notifier.fileType = SOUNDFILES;
     }
-    else { // if (ui->speechCheckBox->isChecked())
+    else { // if (ui->speechRadioButton->isChecked())
         notifier.fileType = VOICEFILES;
     }
 
@@ -366,9 +366,9 @@ void MainWindow::on_settingsPageButton_clicked()
 {
     emit clickedButton();
     //if no notification was checked then default to beep notifiers
-    if((ui->speechCheckBox->isChecked() == false) && (ui->beepCheckBox->isChecked() == false)) {
+    /*if((ui->speechCheckBox->isChecked() == false) && (ui->beepCheckBox->isChecked() == false)) {
         ui->beepCheckBox->setChecked(true);
-    }
+    }*/
     ui->stackedWidget->setCurrentIndex(2);
 
 }
@@ -649,35 +649,6 @@ void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
     //qDebug() << "Metric value passed to sigDist: " << metricDistance;
     emit setSigDist(metricDistance);
 }
-
-
-/*********************************************************************
- * Function to run when the state of the Speech CheckBox on the
- * settings page is changed.
- *
-***/
-void MainWindow::on_speechCheckBox_stateChanged()
-{
-    //if the beep checkbox is changed then uncheck it
-    if(ui->beepCheckBox->isChecked()) {
-        ui->beepCheckBox->setChecked(false);
-    }
-}
-
-
-/*********************************************************************
- * Function to run when the state of the Beep CheckBox on the Settings
- * page is changed.
- *
-***/
-void MainWindow::on_beepCheckBox_stateChanged()
-{
-    //if the speech checkbox is changed then uncheck it
-    if(ui->speechCheckBox->isChecked()) {
-        ui->speechCheckBox->setChecked(false);
-    }
-}
-
 
 /*********************************************************************
  * Function to run when the index of the ComboBox on the Settings page
