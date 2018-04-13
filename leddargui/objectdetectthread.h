@@ -16,8 +16,6 @@ class objectDetector : public QObject
 public:
     objectDetector();
 
-    void detectObject(vector<float> distances);
-    int detect_wall(vector<float> v, float measure_error, float flat_error);
     vector<float> yaxis_projection(vector<float> distances);
     vector<float> xaxis_projection(vector<float> distances);
 
