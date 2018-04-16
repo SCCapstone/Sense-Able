@@ -3,6 +3,7 @@
 #include "usernotifier.h"
 #include "leddarthread.h"
 #include "mainwindow.h"
+#include "stdlib.h"
 
 #include <QObject>
 #include <dirent.h>
@@ -19,8 +20,19 @@
  *
  *  TEST (NameOfFunction, NameOfTest) {
  *      // Do stuff to come up with data to test.
- *
+ *      continues even if a test fails
  *      EXPECT_EQ(EXPECTED_VALUE, function(args, ...));
+ *
+ *      stops the tests after 1 fails
+ *      ASSERT_EQ(expected_value, function(args, ...));
+ *
+ *      for floating point comparisons
+ *      EXPECT_FLOAT_EQ(expected_value, function(args,...)); up to 4 decimal precision
+ *      EXPECT_DOUBLE_EQ(expected_value, function(args,...));
+ *
+ *      For higher precision
+ *      EXPECT_NEAR(expected_value, function(args,...), absolute_range or tolerance);
+ *
  *  }
  *
  *
@@ -105,31 +117,211 @@ TEST (DetectWallsTest, SimData) {
 
 }
 
-/*
+//Based on Caleby's 70% regression fit, a fit value of between 0.7 and 1.0 will
+//be considered successful
+//use EXPECT_NEAR(expected_value, actual_value, tolerance)
+//with expected being in the middle at 0.85 and tolerance at 0.15
 TEST (DetectWallTest, FlatDistribution) {
 
     vector<float> distances;
+    //angle of the left most distance in vector
+    //hypotenuse is the distance, we set y however necessary, theta is given
+    //d = y/sin(theta)
+    float leftMostTheta = 90 + (2.8 * 0.5 * int(distances.size()));//sensors at 2.8 deg apart
+    float thetaRadians = 0;
+    float random = 0.0; //simulate noise
 
-    // Check all 0's and simple cases
-    for (int j=0; j < 9; j++) {
+    // Check for walls at 0 degree at y (0 to 5) meters away from sensor
+    for (int y=0; y < 6; y++) {
         for (int i = 0; i < 16; i++) {
-            distances.push_back(1.0 * j);
+            random = (rand() % 6)/100; //adds between 0.00 to 0.05 m
+            thetaRadians = (leftMostTheta-2.8*i)*M_PI/180;//update the angle
+            distances.push_back((y + random)/sin(thetaRadians));
         }
-        EXPECT_EQ(1, detect.detect_wall(distances, 0.75, 100));
+
+        EXPECT_NEAR(0.85, detect.detectWall(distances), 0.15);
         distances.clear();
     }
-//    std::cout << "gey";
-//    vector<float> distances2;
-//    // Check variable length vectors
-//    for (int i=0; i<3; ) {
-//        distances2.push_back(0);
-//    }
-////    std::cout << distances.at(.5) << std::endl;
-//    EXPECT_EQ(1, detect.detect_wall(distances2, 0.75, 100));
+
+    //slanted walls to the right /
+    for(int y = 0; y < 6; y++) { //y for distance of the left most point
+        for (int m=0; m < 4; m++) { //use m for slope here; not too steep since the points go too far
+            for (int i = 0; i < 16; i++) {
+                //generate an int between 0 to 5 divided by 100
+                random = (rand() % 6)/100;
+                //adds between 0.00 to 0.05 m
+                thetaRadians = (leftMostTheta-2.8*i)*M_PI/180;//update the angle
+                distances.push_back((m*i*1.0 + y + random)/sin(thetaRadians));
+            }
+
+            EXPECT_NEAR(0.85, detect.detectWall(distances), 0.15);
+            distances.clear();
+        }
+    }
+
+    //slanted walls to the left \
+
+    for(int y = 0; y < 6; y++) { //y for y-projected distance from the left most point
+        for (int m=0; m < 4; m++) { //use m for slope here; not too steep since the points go too far
+            for (int i = 15; i >= 0; i--) {
+                //generate an int between 0 to 5 divided by 100
+                random = (rand() % 6)/100;
+                //adds between 0.00 to 0.05 m
+                thetaRadians = (leftMostTheta-2.8*i)*M_PI/180;//update the angle
+                distances.push_back((m*i*1.0 + y + random)/sin(thetaRadians));
+            }
+
+            EXPECT_NEAR(0.85, detect.detectWall(distances), 0.15);
+            distances.clear();
+        }
+    }
+    vector<float> distances2;
+    // Check variable length vectors
+    for(int i=0; i<10; i++) {
+        //set y to 1 aka wall 1 meter away
+        thetaRadians = (leftMostTheta-2.8*i)*M_PI/180;//update the angle
+        distances.push_back(1.0/sin(thetaRadians));
+    }
+    //less than 16 points
+    EXPECT_NEAR(0.85, detect.detectWall(distances2), 0.15);
+
+    for(int i = 11; i < 20; i++){
+        //put a 10 more points in distance2
+        thetaRadians = (leftMostTheta-2.8*i)*M_PI/180;//update the angle
+        distances.push_back(1.0/sin(thetaRadians));
+    }
+    //more than 16 points
+    EXPECT_NEAR(0.85, detect.detectWall(distances2), 0.15);
+
 }
 
-UserNotifier notifier;
-*/
+
+TEST (DetectWallCorner, ParabolaCurveFitting) {
+    vector<float> distances;
+    //angle of the left most distance in vector
+    //hypotenuse is the distance, we set y-projection however necessary, theta is set through hardware
+    //d = y/sin(theta)
+    float leftMostTheta = 90 + (2.8 * 0.5 * int(distances.size()));//sensors at 2.8 deg apart
+    float thetaRadians = 0;
+    //float random = 0.0; //simulate noise
+
+
+    //simplest case is a 90 degree corner directly facing the sensor
+    //k is which beam has the corner
+    //k offset by 3 from each side to avoid being detected as slanted wall
+
+    for(int k = 3; k < 13; k++){
+        //y for y-axis projection or how far straight up the left most point is
+        //started at 2 to avoid being too close and mistake for a wall
+        for(int y = 2; y < 6; y++){
+            //use m for slope of the corner
+            //it's m to the left of k and -1/m to the right of k to make the
+            //2 lines perpendicular (90%)
+            //made m not too steep at either 1 and 2 y meters for every meter increase in x
+            for (int m=1; m < 3; m++) {
+
+                float y_proj = y;//temp variable to track where project y distance is from sensor
+
+                for (int i = 0; i < 16; i++) {
+                    thetaRadians = (leftMostTheta-2.8*i)*M_PI/180;//update the angle
+
+                    //generate an int between 0 to 5 and divided by 100
+                    //random = (rand() % 6)/100;
+
+                    //corner left of sensor
+                    if(k < 8){
+                        if(i <= k){
+                            //positive slope of m, going up until k
+                            y_proj += m*i*1.0;
+                        }
+                        else{
+                            //negative slope -1/m, offset by k
+                            y_proj += -1.0/m*(i-k);
+                        }
+                    }
+                    //corner right of sensor
+                    if(k >= 8){
+                        if(i <= k){
+                            //positive slope of 1/m, going up until k
+                            y_proj += 1.0/m*i;
+                        }
+                        else{
+                            //negative slope -m, offset by k
+                            y_proj += -m*(i-k)*1.0;
+                        }
+                    }
+                    distances.push_back(y_proj/sin(thetaRadians));
+                }
+                //Do the test
+                EXPECT_NEAR(0.85, detect.detectCorner(distances),0.15);
+                distances.clear();
+            }
+        }
+    }
+
+
+    //detectCorner rejects too steep or too flat curves /\ or ~~ with a 0.0
+    //for ease of testing right now, set corner k directly in the middle between beam 7 and 8
+    for(int m = 3; m < 10; m++){
+        //
+        int k = 8; //corner is at around 8
+        for(int y = 2; y < 6; y++){
+
+            float y_proj = 0.0;
+
+            for(int i = 0; i < 16; i++){
+                if(i < k){
+
+                    //positive slope of m, going up until k
+                    y_proj += m*i*1.0;
+                }
+                else{
+                //negative slope -m, offset by k
+                    y_proj += -m*(i-k)*1.0;
+
+                }
+                thetaRadians = (leftMostTheta-2.8*i)*M_PI/180;//update the angle
+                distances.push_back(y_proj/sin(thetaRadians));
+            }
+            //test very steep corners, expect a float of 0.0
+            EXPECT_FLOAT_EQ(0.0, detect.detectCorner(distances));
+            distances.clear();
+        }
+
+    }
+
+    for(int m = 3; m < 10; m++){
+        //
+        int k = 8; //corner is at around 8
+        for(int y = 2; y < 6; y++){
+
+            float y_proj = 0.0;
+
+            for(int i = 0; i < 16; i++){
+                if(i < k){
+
+                    //positive slope of 1/m, going up until k
+                    y_proj += 1.0/m*i;
+                }
+                else{
+                //negative slope -1/m, offset by k
+                    y_proj += -1.0/m*(i-k);
+
+                }
+                thetaRadians = (leftMostTheta-2.8*i)*M_PI/180;//update the angle
+                distances.push_back(y_proj/sin(thetaRadians));
+            }
+            //test very flat corners, expect a float of 0.0
+            EXPECT_FLOAT_EQ(0.0, detect.detectCorner(distances));
+            distances.clear();
+        }
+
+    }
+}
+
+/*
+ UserNotifier notifier;
+/
 
 /*
 TEST (UserNotifyTest, SoundCheck) {
@@ -145,6 +337,14 @@ TEST (UserNotifyTest, SoundCheck) {
 // I for one take by faith that Google's code always works. ;)
 
 /** Functions to Test:
+*   DetectWall
+*   DetectCorner
+*
+*   Not yet implemented
+*   DetectPillar
+*   DetectTripHazard
+*
+*
 *
 *    FlatDistribution:
 *        - All 0's
