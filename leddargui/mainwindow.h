@@ -4,9 +4,9 @@
 #include <QMainWindow>
 #include <QThread>
 #include <QSignalMapper>
+#include <QtWidgets>
 #include "leddarthread.h"
 #include "capturethread.h"
-//#include "OLDobjdetect.h"
 #include "objectdetectthread.h"
 #include <chrono>
 
@@ -56,7 +56,6 @@ private slots:
 
     //Notifications Page
      void on_backButton_clicked();
-
 
 signals:
     // Signals to capturethread.cpp
@@ -110,4 +109,16 @@ private:
     QImage Mat2QImage(cv::Mat* img);
 };
 
+// Extending QSlider
+class clickSliderStyle : public QProxyStyle{
+
+public:
+    using QProxyStyle::QProxyStyle;
+    int styleHint(QStyle::StyleHint hint,
+                  const QStyleOption* option = 0,
+                  const QWidget* widget = 0,
+                  QStyleHintReturn* returnData = 0) const;
+};
+
 #endif // MAINWINDOW_H
+

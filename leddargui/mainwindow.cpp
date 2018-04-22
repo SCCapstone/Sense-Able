@@ -47,9 +47,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //Index starts on the Landing page
     ui->stackedWidget->setCurrentIndex(1);
-    //Set distance slider default. The value is divided
-    //by 2 to get fractions of meters from 1.0m to 50.0m.
+    // Setting up the distance setting slider. The value is divided
+    // by 2 to get fractions of meters from 1.0m to 50.0m.
+    // A slider style is used to make clicking more responsive and
+    // tracking is enabled so the updated value is always displayed.
     ui->notificationDistanceSlider->setValue(50.0);
+    ui->notificationDistanceSlider->setStyle(new clickSliderStyle(ui->notificationDistanceSlider->style()));
+    ui->notificationDistanceSlider->setTracking(true);
 
     this->leddarThread = new QThread();
     this->stream = new LeddarStream;
@@ -708,6 +712,22 @@ void MainWindow::on_backButton_clicked()
 
 }
 
+/*********************************************************************
+ * Modifies the standard QSlider class.
+ *
+ * Improves upon the default behavior by allowing the slider to jump
+ * directly to the mouse position where it is clicked.
+ *
+***/
+int clickSliderStyle::styleHint(QStyle::StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData) const
+{
+    if (hint == QStyle::SH_Slider_AbsoluteSetButtons)
+        return (Qt::LeftButton | Qt::RightButton);
+    return QProxyStyle::styleHint(hint, option, widget, returnData);
+}
+
 
 // End of file mainwindow.cpp
+
+
 
