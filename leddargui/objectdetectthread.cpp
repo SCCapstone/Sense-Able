@@ -320,9 +320,6 @@ cout << "WALL DETECT FIT: " << fit << endl;
  * or points upward (the a2 coefficient is negative),
  * then it does not model a wall corner, so we reject the fit value.
  *
- * Finally, if the quadratic is too flat, or not sharp enough,
- * then we determine that it is not a wall corner at all, and reject the fit value.
- *
  * We return the quality of the fit.
  *
  * Parameters:
@@ -353,6 +350,7 @@ float objectDetector::detectCorner(vector<float> distances) {
     // Fit a degree 2 parabola to the distances.
     coefficients = polynomial_fit(2, yvalues, xvalues);
     fit = fit_quality(coefficients, 2, yvalues, xvalues);
+
 /*
     cout << "CORNER FIT: " << fit << endl;
 
@@ -361,15 +359,10 @@ float objectDetector::detectCorner(vector<float> distances) {
         }
         cout << endl << endl;
 */
+
     // If the best fit degree parabola is actually a degree 1 parabola,
     // or points up, reject.
     if (coefficients.at(coefficients.size() - 1) >= 0) {
-        return 0.0;
-
-    // If the parabola is too flat, or not sharp enough, then a wall corner
-    // is not a good fit.  Reject.
-    } else if (coefficients.at(coefficients.size() - 1) > -0.1 ||
-               coefficients.at(coefficients.size() - 1) < -1) {
         return 0.0;
     }
 
@@ -526,12 +519,17 @@ void objectDetector::doDetect(vector<float> distances, bool aOrientation) {
             return;
         }
 
+        cout << "WALL DETECT FIT: " << obstacle_fits.at(WALL) << endl;
+        cout << "CORNER DETECT FIT: " << obstacle_fits.at(WALL_CORNER) << endl;
+
         // Determine the obstacle type with the maximum fit value.
         running_fit = 0;
         for (map<int, float>::iterator it = obstacle_fits.begin();
              it != obstacle_fits.end(); ++it) {
 
-            if (it->second >= running_fit) {
+            // Note that we do not consider the obstacle unless its fit value
+            // exceeds FIT_THRESHOLD.
+            if (it->second >= running_fit && it->second >= FIT_THRESHOLD) {
                 obstacle_type = it->first;
                 running_fit = it->second;
             }

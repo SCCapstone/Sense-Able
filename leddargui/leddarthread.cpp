@@ -69,6 +69,8 @@ LeddarStream::LeddarStream() {
     // Initialize the Leddar Handle.
     this->gHandle = LeddarCreate();
 
+    orientation = HORIZONTAL;
+
 //    LeddarSetProperty( this->gHandle, PID_ACCUMULATION_EXPONENT, 0, 128 );
 //    LeddarSetProperty(this->gHandle, PID_OVERSAMPLING_EXPONENT, 0, 4);
 }
