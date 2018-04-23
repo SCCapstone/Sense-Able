@@ -1,4 +1,4 @@
-## About Us
+# About Us
 
 ### What is Sense-Able?
 Goals of the app, capabilities, future directions.
