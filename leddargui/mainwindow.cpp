@@ -228,8 +228,7 @@ void MainWindow::updateSoundFiles()
     vector<int> newSoundFiles = {
         ui->obj1_notif_choice->currentIndex(), ui->obj2_notif_choice->currentIndex(),
         ui->obj3_notif_choice->currentIndex(), ui->obj4_notif_choice->currentIndex(),
-        ui->obj5_notif_choice->currentIndex(), ui->obj6_notif_choice->currentIndex(),
-        ui->obj7_notif_choice->currentIndex(), ui->obj8_notif_choice->currentIndex()
+        ui->obj5_notif_choice->currentIndex()
     };
 
     // TODO:: Explain this code
@@ -256,7 +255,7 @@ long MainWindow::getCurrentTime()
 /*********************************************************************
  *********************************************************************
                            PRIVATE
- *********************************************************************
+**********************************************************************
 **********************************************************************/
 
 
@@ -654,6 +653,37 @@ void MainWindow::on_notificationDistanceSlider_valueChanged(int value)
     emit setSigDist(metricDistance);
 }
 
+
+/*********************************************************************
+ * Function to run when the speech radio button is clicked on the
+ * settings page.
+ *
+ * It disables the notifications page to be accessible so that you can
+ * not change the speech notifiers which are pre-set.
+ *
+***/
+void MainWindow::on_speechRadioButton_clicked()
+{
+    ui->notificationsButton->setEnabled(false);
+    ui->notificationsButtonLabel->setText("Speech notifications are \npreset "
+                                          "and cannot be changed.");
+}
+
+
+/*********************************************************************
+ * Function to run when the beep radio button is clicked on the
+ * settings page.
+ *
+ * It enables the notifications page to be accessible.
+ *
+***/
+void MainWindow::on_beepRadioButton_clicked()
+{
+    ui->notificationsButton->setEnabled(true);
+    ui->notificationsButtonLabel->setText("");
+}
+
+
 /*********************************************************************
  * Function to run when the index of the ComboBox on the Settings page
  * is changed.
@@ -728,6 +758,3 @@ int clickSliderStyle::styleHint(QStyle::StyleHint hint, const QStyleOption* opti
 
 
 // End of file mainwindow.cpp
-
-
-

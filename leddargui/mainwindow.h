@@ -49,8 +49,8 @@ private slots:
     //Setting Page
     void on_backButtonSettings_clicked();
     void on_notificationDistanceSlider_valueChanged(int value);
-    //void on_speechCheckBox_stateChanged();
-    //void on_beepCheckBox_stateChanged();
+    void on_speechRadioButton_clicked();
+    void on_beepRadioButton_clicked();
     void on_settingsComboBox_currentIndexChanged(int index);
     void on_notificationsButton_clicked();
 
