@@ -250,7 +250,7 @@ cout << "Entering ReplayData" << endl;
     int currentRecordIndex;
     vector<float> dataPoints;
     unsigned int i, lCount;
-    LdDetection lDetections[50];
+    LdDetection lDetections[16];
 
     CheckError( LeddarStartDataTransfer( this->gHandle, LDDL_DETECTIONS ) );
 
@@ -273,10 +273,43 @@ cout << "Entering ReplayData" << endl;
     while (LeddarStepForward(this->gHandle) != LD_END_OF_FILE && isrunning && !isstopped)
     {
         lCount = LeddarGetDetectionCount( this->gHandle );
-        if ( lCount > ARRAY_LEN( lDetections ) )
-        {
-            lCount = ARRAY_LEN( lDetections );
+
+        /******************************
+         * Run some edge-case tests.
+        ***/
+        if (lCount == 0) {
+            cout << "ERROR: ReadLiveData - NO POINTS DETECTED!" << endl;
+
+            // The official Leddar documentation suggests sending LeddarGetDetections to
+            // a callback function.  Otherwise, the documentation suggests that we are
+            // "not guranteed to get coherent data."  We could not get the callback working
+            // with our Qt object-oriented structure.  Instead, I have determined that the
+            // only likely data incoherence involves receiving random 0 vectors of points.
+            // We 'continue' in case this is the case, so that we can later get actual data.
+            continue;
         }
+        if (lCount > ARRAY_LEN(lDetections)) {
+            cout << "LeddarStream::ReadLiveData -> ERROR: ReadLiveData - More points detected than expected: " << lCount << endl;
+//            continue;
+            /***************
+             * HOT FIX: At Distances > 10 meter > 16 points are always detected! I just shrink lCount to 16
+             */
+            lCount = 16;
+
+            // lCount = ARRAY_LEN( lDetections );
+            // This was Leddar's default behavior.  I guess they're really bad testers, eh?
+        } else if (lCount < ARRAY_LEN(lDetections)) {
+            // TODO: What do we do in the situation where we get fewer points than expected?
+            // This can happen if the sensor is partially covered, or alternatively if the
+            // sensor sees half of a wall.  Right now we 'continue' so that we don't get a
+            // major crash.
+            cout << "LeddarStream::ReadLiveData -> ERROR: ReadLiveData - Fewer points detected than expected: " << lCount << endl;
+            continue;
+        } else {
+            cout << "ReadLiveData has exactly as many points as expected.";
+        }
+        /******************************/
+
 
         CheckError(LeddarGetDetections( this->gHandle, lDetections, ARRAY_LEN( lDetections ) ));
 
