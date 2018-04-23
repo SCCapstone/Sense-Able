@@ -1,4 +1,5 @@
-## HELLO AUSTO
+## Sense-Able
+### The sensible obstacle sensor.
 
 Check it out!  I did a thing!
 
