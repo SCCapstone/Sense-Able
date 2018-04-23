@@ -1,6 +1,19 @@
+```scss
 ---
 ---
+
+$header-bg-color: #1e6bb8;
+$header-bg-color-secondary: #7EA7D3;
 
 $section-headings-color: #ff3030;
 
+$body-link-color: #7EA7D3;
+$blockquote-text-color: #819198;
+
+/*
+$code-bg-color: #494D4E;
+$code-text-color: #494D4E;
+*/
+
 @import "{{ site.theme }}";
+```
