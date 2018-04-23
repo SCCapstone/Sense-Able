@@ -1,8 +1,5 @@
-## Welcome to GitHub Pages
+## HELLO AUSTO
 
-You can use the [editor on
-Github](https://github.com/jldec/new-pages-site/edit/master/README.md)
-to edit your website in Markdown files.
+Check it out!  I did a thing!
 
-d;jfal;dfjlasjfda;lkdf
-
+Click [here](https://sccapstone.github.io/Sense-Able/) to go [here](https://sccapstone.github.io/Sense-Able/).
