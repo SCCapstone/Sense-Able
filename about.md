@@ -16,5 +16,10 @@ Caleb obviously does nothing for this class.
 Carries the whole team.
 
 ## Meet the ~~Parents~~ Clients
-Links to Peter's company, USC Capstone project, USC Computer Science department
+
+### Peter Mumola
+Peter knows what's up
+
+### Joel ~~I forget his last name~~
+Joel needs more ~~cowbell~~ obstacles
 
