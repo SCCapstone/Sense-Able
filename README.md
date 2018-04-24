@@ -17,6 +17,3 @@ To find out more about the app development team and the clients, please visit th
 ## WARNING
 The Sense-Able app is currently a research demo, intended for demonstration only.  We strongly advise against using Sense-Able, in its current state, to avoid contact with any of the obstacles supported or unsupported.  By using this app, you agree to the condition that the SCCapstone group, and all members within, are not responsible or liable for any injury that resulted from use of this app.
 
-Check it out!  I did a thing!
-
-Click [here](https://sccapstone.github.io/Sense-Able/) to go [here](https://sccapstone.github.io/Sense-Able/).
