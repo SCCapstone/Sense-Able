@@ -5,6 +5,8 @@ Sense-Able uses the LeddarTech® LIDAR sensor and a [pile of linear algebra](htt
 
 \*(disclaimer: no machines learn in this app)
 
+<img src="https://user-images.githubusercontent.com/31483647/39219219-1f692c72-47f7-11e8-92bb-0aecd317d640.jpg" width="500" height="300"/>
+
 ### Live Stream
 Sense-Able allows you to stream and detect obstacles in real-time, so that you can navigate the world.  A live camera feed is also provided for the researcher's convenience.  Obstacles can be detected from any user-set distance.  Sense-Able will also emit customizable audio notifications to let you know when it has found an obstacle.
 
@@ -16,4 +18,5 @@ Sense-Able allows researchers to test obstacle detection using pre-recorded file
 
 ### Record Your Own Tests
 You can record your own test data and camera feed, in order to excercise the capabilities of Sense-Able obstacle detection.
-
+<img src="https://user-images.githubusercontent.com/31483647/39219220-1f7c0496-47f7-11e8-8d3f-d7db8a466ebf.jpeg" width="500" height="300"/>
+<img src="https://user-images.githubusercontent.com/31483647/39219348-d86b1ed8-47f7-11e8-9afe-8aa00408377b.jpg" width="500" height="300"/>
