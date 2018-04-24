@@ -14,7 +14,7 @@ Sense-Able allows you to stream and detect obstacles in real-time, so that you c
 Sense-Able allows researchers to test obstacle detection using pre-recorded files!  You can also see the camera feed that was recorded alongside the data, so that you can check that the output makes sense.
 
 <img src="https://user-images.githubusercontent.com/31483647/39216015-1b56c310-47e8-11e8-8f17-9eb46a9c747c.jpeg" width="500" height="300"/>
-<img src="https://user-images.githubusercontent.com/31483647/39216024-20b6ee2a-47e8-11e8-97e0-cdfc2399981d.jpg" width="500" height="300"/>
+<img src="https://user-images.githubusercontent.com/31483647/39216024-20b6ee2a-47e8-11e8-97e0-cdfc2399981d.jpg" />
 
 ### Record Your Own Tests
 You can record your own test data and camera feed, in order to excercise the capabilities of Sense-Able obstacle detection.
