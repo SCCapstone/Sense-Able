@@ -116,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(objdetector, SIGNAL(emitDetectedObject(int)),
                     this, SLOT(catchDetectedObject(int)),
                     Qt::QueuedConnection);
+    connect(stream, SIGNAL(stopped()), this, SLOT(resetDetectedObject()), Qt::QueuedConnection);
 
 
 
@@ -303,6 +304,18 @@ void MainWindow::catchDetectedObject(int object) {
         }
 
     }
+
+    ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));
+}
+
+/*********************************************************************
+ * Slot to reset the object detected.
+ *
+ * This function resets the name of the object detected to 'NONE'.
+ *
+***/
+void MainWindow::resetDetectedObject() {
+    string objectName = "None";
 
     ui->objectLabel->setText(QString::fromStdString("Object: " + objectName));
 }

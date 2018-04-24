@@ -227,7 +227,7 @@ cout << "LeddarStream::RecordLiveData -> Entering RecordLiveData" << endl;
     // Rename the file
     QFile::rename(QString(temp_file), QString::fromStdString(fileName));
 
-
+    StopStream();
 cout << "LeddarStream::RecordLiveData -> Exiting RecordLiveData" << endl;
 }
 
@@ -351,6 +351,7 @@ cout << "Entering ReplayData" << endl;
     cout << "Exiting ReplayData" << endl;
 
     LeddarStopDataTransfer(this->gHandle);
+    StopStream();
 
     return;
 cout << "Exiting ReplayData" << endl;
