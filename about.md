@@ -1,9 +1,20 @@
-### What is Sense-Able?
-Goals of the app, capabilities, future directions.
+## Meet The Developers
 
-### Who are we?
-Description of each of us, along with a link to a website/LinkedIn if we feel like it.
+### Jonathan
+Jonathan is an Fboi
 
-### More Information
+### Kathryn
+Kathryn is our true team captain.
+
+### Austin
+Austo is gr8
+
+### Caleb
+Caleb obviously does nothing for this class.
+
+### Jinyu
+Carries the whole team.
+
+## Meet the ~~Parents~~ Clients
 Links to Peter's company, USC Capstone project, USC Computer Science department
 
