@@ -4,7 +4,6 @@
 
 $medium-breakpoint: 100em
 
-$text-color: #ff3030;
 $header-bg-color: #ff3030;
 $header-bg-color-secondary: #ff3030;
 
@@ -19,6 +18,8 @@ $blockquote-text-color: #ff8e8e;
 $code-bg-color: #494D4E;
 $code-text-color: #494D4E;
 */
+
+$font-size-h3: floor(($font-size-base * 2.6)) !default; // ~36px
 
 @import "{{ site.theme }}";
 ```
