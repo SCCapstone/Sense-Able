@@ -1,27 +1,27 @@
 # About Us
 
-## Meet The Developers
+# Meet The Developers
 
-### Jonathan
+# Jonathan
 Jonathan is an Fboi
 
-### Kathryn
+# Kathryn
 Kathryn is our true team captain.
 
-### Austin
+# Austin
 Austo is gr8
 
-### Caleb
+# Caleb
 Caleb obviously does nothing for this class.
 
-### Jinyu
+# Jinyu
 Carries the whole team.
 
-## Meet the ~~Parents~~ Clients
+# Meet the ~~Parents~~ Clients
 
-### Peter Mumola
+# Peter Mumola
 Peter knows what's up
 
-### Joel ~~I forget his last name~~
+# Joel ~~I forget his last name~~
 Joel needs more ~~cowbell~~ obstacles
 
