@@ -1,4 +1,4 @@
-# Sense-Able
+# Home
 
 # What is Sense-Able?
 It is sensible to use Sense-Able! (Well, you asked...)
