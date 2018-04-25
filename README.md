@@ -7,11 +7,12 @@ Sense-Able is the sensible choice app to help those with visual impairments expl
 
 Currently, Sense-Able is a research demo, intended to demonstrate the concept (**See the warning below**).  With Sense-Able, you can detect obstacles using a real-time stream, detect obstacles from recorded sample files, or record your own files for testing.
 
-# Explore Features
-To discover what you can do with Sense-Able, please visit the [features](https://sccapstone.github.io/Sense-Able/features) page.
-
 # Demonstration
 To see how easy it is to use Sense-Able, please watch this brief video demonstration:
+[![Link to the Sense-Able Tutorial](https://youtu.be/I3KSW96VbEU)](https://youtu.be/I3KSW96VbEU "Sense-Able Tutorial")
+
+# Explore Features
+To discover what you can do with Sense-Able, please visit the [features](https://sccapstone.github.io/Sense-Able/features) page.
 
 # About
 To find out more about the app development team and the clients, please visit the [about us](https://sccapstone.github.io/Sense-Able/about) page.
