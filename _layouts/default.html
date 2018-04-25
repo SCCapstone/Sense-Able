@@ -20,15 +20,15 @@ src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
       <div class="inner">
 
         <header>
-	 <div class="btn-group">
-  		<button>Home</button>
-  		<button>Features</button>
-  		<button>About</button>
-	</div> 
           <h1>{{ page.title | default: site.title | default:
 site.github.repository_name }}</h1>
           <h2>{{ page.description | default: site.description |
 default: site.github.project_tagline }}</h2>
+	<div style="border: 1px; color: #ff3030; padding: 10px 24px" >
+  		<button>Home</button>
+  		<button>Features</button>
+  		<button>About</button>
+	</div> 
         </header>
         <section id="downloads" class="clearfix">
           {% if site.show_downloads %}
