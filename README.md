@@ -9,7 +9,7 @@ Currently, Sense-Able is a research demo, intended to demonstrate the concept (*
 
 # Demonstration
 To see how easy it is to use Sense-Able, please watch this brief video demonstration:
-[![Link to the Sense-Able Tutorial](https://user-images.githubusercontent.com/31483647/39219219-1f692c72-47f7-11e8-92bb-0aecd317d640.jpg)](https://youtu.be/I3KSW96VbEU "Sense-Able Tutorial")
+[![Link to the Sense-Able Tutorial](https://user-images.githubusercontent.com/31460278/39223618-0ac9d446-4811-11e8-9f74-4ad2ffee8463.png)](https://youtu.be/I3KSW96VbEU "Sense-Able Tutorial")
 
 # Explore Features
 To discover what you can do with Sense-Able, please visit the [features](https://sccapstone.github.io/Sense-Able/features) page.
