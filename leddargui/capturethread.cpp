@@ -296,8 +296,11 @@ void CaptureThread::doCapture(string videoFileName)
 
     //            int a = imagedetect(hog, frame);
 
-                // Draw the heatmap and distances on to the frame and emit
-                overlayDistance(frame);
+                if ( !isRecording ) {
+                    // Draw the heatmap and distances on to the frame and emit
+                    overlayDistance(frame);
+                }
+
                 // TODO:: Draw "Recording" and recording dot
                 emit(emitFrame(&frame));
 
