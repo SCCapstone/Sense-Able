@@ -7,6 +7,15 @@ Sense-Able is the sensible choice app to help those with visual impairments expl
 
 Currently, Sense-Able is a research demo, intended to demonstrate the concept (**See the warning below**).  With Sense-Able, you can detect obstacles using a real-time stream, detect obstacles from recorded sample files, or record your own files for testing.
 
+### Setup Instructions
+First, download and install the latest release [here!](https://github.com/SCCapstone/Sense-Able/releases)
+
+Run the installation script from the terminal
+    > $/release sudo ./install-senseable
+ 
+Then run the program via the wrapper script from the build directory:
+    > $/release/build/ ./runSenseAbleGui
+
 ### Demonstration
 To see how easy it is to use Sense-Able, please watch this brief video demonstration:
 [![Link to the Sense-Able Tutorial](https://user-images.githubusercontent.com/31460278/39223618-0ac9d446-4811-11e8-9f74-4ad2ffee8463.png)](https://youtu.be/I3KSW96VbEU "Sense-Able Tutorial")
