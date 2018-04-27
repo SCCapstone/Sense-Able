@@ -30,7 +30,7 @@ CaptureThread::CaptureThread()
     isstopped = true;
     isrunning = false;
 
-    defaultImageFile = "../LeddarData/default.png";
+    defaultImageFile = "../media/default.png";
     defaultImage = cv::imread(defaultImageFile);
 }
 /*********************************************************************

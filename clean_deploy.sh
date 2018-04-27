@@ -26,6 +26,16 @@ echo "Type y if you want to tar and feather your AppImage"
 read do_tar
 
 if [[ $do_tar == y* ]]; then
-    tar -zcvf sense-able-deploy.tar.gz build_deploy/
+    mkdir release
+    cp -r LeddarLibs release/
+    cp -r media/sounds release/media/
+    cp media/default.png release/media/
+    cp -r LeddarData release/
+    cp -r docs release/
+    cp build_deploy release/
+
+    tar -zcvf sense-able-deploy.tar.gz release/
+
+    rm -r release/
 fi
 
