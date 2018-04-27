@@ -11,6 +11,7 @@ Currently, Sense-Able is a research demo, intended to demonstrate the concept (*
 First, download and install the latest release [here!](https://github.com/SCCapstone/Sense-Able/releases)
 
 Run the installation script from the terminal:
+
 	sudo ./install-senseable
  
 Then run the program via the wrapper script from the build directory:
