@@ -166,7 +166,7 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="currentIndex">
@@ -189,7 +189,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>65</height>
+                <height>45</height>
                </size>
               </property>
               <property name="maximumSize">
@@ -264,7 +264,8 @@
               </property>
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <family>Ubuntu</family>
+                <pointsize>17</pointsize>
                </font>
               </property>
               <property name="text">
@@ -295,7 +296,7 @@
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>50</height>
+                <height>55</height>
                </size>
               </property>
              </spacer>
@@ -311,7 +312,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>65</height>
+                <height>45</height>
                </size>
               </property>
               <property name="palette">
@@ -377,6 +378,11 @@
                  </colorrole>
                 </disabled>
                </palette>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>17</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>Stream From Device</string>
@@ -394,7 +400,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>65</height>
+                <height>45</height>
                </size>
               </property>
               <property name="palette">
@@ -460,6 +466,11 @@
                  </colorrole>
                 </disabled>
                </palette>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>17</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>Read From File</string>
@@ -477,7 +488,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>65</height>
+                <height>45</height>
                </size>
               </property>
               <property name="palette">
@@ -597,6 +608,11 @@
                  </colorrole>
                 </disabled>
                </palette>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>17</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>Record</string>
@@ -639,7 +655,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>65</height>
+                <height>45</height>
                </size>
               </property>
               <property name="palette">
@@ -705,6 +721,11 @@
                  </colorrole>
                 </disabled>
                </palette>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>17</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>Stop</string>
@@ -910,6 +931,11 @@
                 </disabled>
                </palette>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="styleSheet">
                <string notr="true">color: rgb(0, 0, 0);</string>
               </property>
@@ -929,7 +955,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>65</height>
+                <height>45</height>
                </size>
               </property>
               <property name="palette">
@@ -998,7 +1024,7 @@
               </property>
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>17</pointsize>
                </font>
               </property>
               <property name="text">
@@ -1017,7 +1043,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>65</height>
+                <height>45</height>
                </size>
               </property>
               <property name="palette">
@@ -1138,6 +1164,11 @@
                 </disabled>
                </palette>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>17</pointsize>
+               </font>
+              </property>
               <property name="toolTip">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a camera&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
@@ -1199,7 +1230,7 @@ border-color: rgb(46, 52, 54);</string>
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
           <item>
            <widget class="QLabel" name="distancesHelperLabel">
             <property name="sizePolicy">
@@ -1207,6 +1238,11 @@ border-color: rgb(46, 52, 54);</string>
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Detected distances:</string>
@@ -1226,7 +1262,7 @@ border-color: rgb(46, 52, 54);</string>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>75</width>
+              <width>138</width>
               <height>17</height>
              </size>
             </property>
@@ -1248,6 +1284,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1266,6 +1307,11 @@ border-color: rgb(46, 52, 54);</string>
                 <width>16777215</width>
                 <height>23</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>0</string>
@@ -1286,6 +1332,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1304,6 +1355,11 @@ border-color: rgb(46, 52, 54);</string>
                 <width>16777215</width>
                 <height>23</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>0</string>
@@ -1324,6 +1380,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1342,6 +1403,11 @@ border-color: rgb(46, 52, 54);</string>
                 <width>16777215</width>
                 <height>23</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>0</string>
@@ -1362,6 +1428,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1380,6 +1451,11 @@ border-color: rgb(46, 52, 54);</string>
                 <width>16777215</width>
                 <height>23</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>0</string>
@@ -1400,6 +1476,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1418,6 +1499,11 @@ border-color: rgb(46, 52, 54);</string>
                 <width>16777215</width>
                 <height>23</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>0</string>
@@ -1438,6 +1524,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1456,6 +1547,11 @@ border-color: rgb(46, 52, 54);</string>
                 <width>16777215</width>
                 <height>23</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>0</string>
@@ -1476,6 +1572,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1494,6 +1595,11 @@ border-color: rgb(46, 52, 54);</string>
                 <width>16777215</width>
                 <height>23</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>0</string>
@@ -1514,6 +1620,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1533,6 +1644,11 @@ border-color: rgb(46, 52, 54);</string>
                 <height>23</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>0</string>
               </property>
@@ -1543,7 +1659,7 @@ border-color: rgb(46, 52, 54);</string>
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <spacer name="horizontalSpacer_7">
             <property name="orientation">
@@ -1554,7 +1670,7 @@ border-color: rgb(46, 52, 54);</string>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>268</width>
+              <width>348</width>
               <height>20</height>
              </size>
             </property>
@@ -1734,6 +1850,11 @@ border-color: rgb(46, 52, 54);</string>
               </disabled>
              </palette>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true">color: rgb(0, 0, 0);</string>
             </property>
@@ -1844,6 +1965,7 @@ border-color: rgb(46, 52, 54);</string>
                 </property>
                 <property name="font">
                  <font>
+                  <family>Ubuntu</family>
                   <pointsize>45</pointsize>
                  </font>
                 </property>
@@ -2552,7 +2674,7 @@ border-color: rgb(46, 52, 54);</string>
          <rect>
           <x>350</x>
           <y>540</y>
-          <width>181</width>
+          <width>201</width>
           <height>51</height>
          </rect>
         </property>
@@ -2620,6 +2742,11 @@ border-color: rgb(46, 52, 54);</string>
           </disabled>
          </palette>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>17</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>Notifications</string>
         </property>
@@ -2647,9 +2774,14 @@ border-color: rgb(46, 52, 54);</string>
          <rect>
           <x>350</x>
           <y>440</y>
-          <width>181</width>
+          <width>301</width>
           <height>41</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
         </property>
         <item>
          <property name="text">
@@ -2841,6 +2973,11 @@ border-color: rgb(46, 52, 54);</string>
              <height>23</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string> 1 m</string>
            </property>
@@ -2853,7 +2990,7 @@ border-color: rgb(46, 52, 54);</string>
          <rect>
           <x>557</x>
           <y>546</y>
-          <width>231</width>
+          <width>291</width>
           <height>41</height>
          </rect>
         </property>
@@ -3641,6 +3778,11 @@ border-color: rgb(46, 52, 54);</string>
           <height>41</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
         <property name="currentIndex">
          <number>0</number>
         </property>
@@ -3774,6 +3916,11 @@ border-color: rgb(46, 52, 54);</string>
           <height>41</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
         <property name="currentIndex">
          <number>1</number>
         </property>
@@ -3821,6 +3968,11 @@ border-color: rgb(46, 52, 54);</string>
           <width>181</width>
           <height>41</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
         </property>
         <property name="currentIndex">
          <number>2</number>
@@ -3870,6 +4022,11 @@ border-color: rgb(46, 52, 54);</string>
           <height>41</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
         <property name="currentIndex">
          <number>3</number>
         </property>
@@ -3917,6 +4074,11 @@ border-color: rgb(46, 52, 54);</string>
           <width>181</width>
           <height>41</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
         </property>
         <property name="currentIndex">
          <number>4</number>
