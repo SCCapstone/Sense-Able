@@ -14,7 +14,7 @@ if [[ $do_appimage == y* ]]; then
 
     # Remove old AppImage and move new one to directory
     rm build_deploy/SenseableGui-x86_64.AppImage
-    mv SenseableGui-x86_64.AppImage build_deploy/
+    mv Application-x86_64.AppImage build_deploy/SenseableGui-x86_64.AppImage
 
 fi
 
@@ -32,7 +32,7 @@ if [[ $do_tar == y* ]]; then
     cp media/default.png release/media/
     cp -r LeddarData release/
     cp -r docs release/
-    cp build_deploy release/
+    cp -r build_deploy release/build
 
     tar -zcvf sense-able-deploy.tar.gz release/
 
