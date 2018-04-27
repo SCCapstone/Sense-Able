@@ -28,31 +28,33 @@ using namespace std;
 ***/
 UserNotifier::UserNotifier() {
 
+    soundsDirectory = "../media/sounds/";
+
     // Objects Map to the index of the vector via the integer defined in globalconstants.h
 
     // Populate vectors with default values
     defaultSoundFiles = {
-        "../Sounds/short.wav",
-        "../Sounds/long.wav",
-        "../Sounds/short-long.wav",
-        "../Sounds/long-short.wav",
-        "../Sounds/short-short.wav",
-        "../Sounds/short-short-long.wav",
-        "../Sounds/long-short-short.wav",
-        "../Sounds/blaster-firing.wav"
+        "short.wav",
+        "long.wav",
+        "short-long.wav",
+        "long-short.wav",
+        "short-short.wav",
+        "short-short-long.wav",
+        "long-short-short.wav",
+        "blaster-firing.wav"
     };
 
     soundFiles = defaultSoundFiles;
 
     voiceFiles = {
-        "../Sounds/Wall_Voice.wav",
-        "../Sounds/Wall_Corner_Voice.wav",
-        "../Sounds/Pillar_Voice.wav",
-        "../Sounds/Trip_Hazard_Voice.wav",
-        "../Sounds/Other_Voice.wav",
-        "../Sounds/Stairs_Voice.wav",
-        "../Sounds/Other_Voice.wav",
-        "../Sounds/Other_Voice.wav"
+        "Wall_Voice.wav",
+        "Wall_Corner_Voice.wav",
+        "Pillar_Voice.wav",
+        "Trip_Hazard_Voice.wav",
+        "Other_Voice.wav",
+        "Stairs_Voice.wav",
+        "Other_Voice.wav",
+        "Other_Voice.wav"
     };
 
 }
@@ -82,11 +84,11 @@ void UserNotifier::playSound(int object) {
     if ( object != NONE && object < soundFiles.size() - 1) {
 
         if (fileType == SOUNDFILES) {
-            QSound::play(QString::fromStdString(soundFiles.at(object)));
+            QSound::play(QString::fromStdString(soundsDirectory + soundFiles.at(object)));
         }
 
         else { // fileType == VOICEFILES
-            QSound::play(QString::fromStdString(voiceFiles.at(object)));
+            QSound::play(QString::fromStdString(soundsDirectory + voiceFiles.at(object)));
 
         }
     }

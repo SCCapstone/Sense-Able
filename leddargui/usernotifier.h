@@ -20,6 +20,8 @@ public:
     vector<string> voiceFiles;
     vector<string> defaultSoundFiles;
 
+    string soundsDirectory;
+
 };
 
 #endif // USERNOTIFIER_H
