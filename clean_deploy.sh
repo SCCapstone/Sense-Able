@@ -27,9 +27,12 @@ read do_tar
 
 if [[ $do_tar == y* ]]; then
     mkdir release
+    mkdir release/media
+
     cp -r LeddarLibs release/
-    cp -r media/sounds release/media/
     cp media/default.png release/media/
+    cp -r media/sounds release/media/
+    cp install-senseable release/
     cp -r LeddarData release/
     cp -r docs release/
     cp -r build_deploy release/build
