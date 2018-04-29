@@ -110,9 +110,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setSigDist(float)), objdetector, SLOT(SetSignalDist(float)));
     connect(ui->QuitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 
-//    connect(this, SIGNAL(passNotifier(vector<string>)),
-//                    objdetector, SLOT(getCurrentNotifier(vector<string>)),
-//                    Qt::QueuedConnection);
     connect(objdetector, SIGNAL(emitDetectedObject(int)),
                     this, SLOT(catchDetectedObject(int)),
                     Qt::QueuedConnection);
