@@ -510,17 +510,22 @@ void objectDetector::doDetect(vector<float> distances, bool aOrientation) {
             obstacle_fits.emplace(PILLAR, detectPillar(distances));
             obstacle_fits.emplace(UNIDENTIFIED_OBSTACLE, FIT_THRESHOLD);
 
+            cout << "WALL DETECT FIT: " << obstacle_fits.at(WALL) << endl;
+            cout << "CORNER DETECT FIT: " << obstacle_fits.at(WALL_CORNER) << endl;
+
         } else if (aOrientation == VERTICAL) {
             obstacle_fits.emplace(WALL, detectWall(distances));
             obstacle_fits.emplace(TRIP_HAZARD, detectTripHazard(distances));
             obstacle_fits.emplace(UNIDENTIFIED_OBSTACLE, FIT_THRESHOLD);
+
+            cout << "WALL DETECT FIT: " << obstacle_fits.at(WALL) << endl;
+            cout << "TRIP HAZARD DETECT FIT: " << obstacle_fits.at(TRIP_HAZARD) << endl;
         } else {
             cout << "ERROR: Orientation hasn't been set." << endl;
             return;
         }
 
-        cout << "WALL DETECT FIT: " << obstacle_fits.at(WALL) << endl;
-        cout << "CORNER DETECT FIT: " << obstacle_fits.at(WALL_CORNER) << endl;
+
 
         // Determine the obstacle type with the maximum fit value.
         running_fit = 0;
