@@ -45,7 +45,7 @@ public:
     LeddarHandle gHandle;
     bool isrunning, isstopped;
     bool isReplay, isRecording;
-    bool orientation = VERTICAL;
+    bool orientation = HORIZONTAL;
 
 public slots:
     void StartStream();

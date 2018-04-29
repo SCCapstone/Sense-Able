@@ -8,7 +8,7 @@ QtBehaviorTestSuite::QtBehaviorTestSuite() {
 
 void QtBehaviorTestSuite::runTests() {
 
-    //this->testRecord();
+    this->testRecord();
     this->testMainPage();
     this->testStreamButtonClicked();
     this->testReadFunction();
@@ -31,29 +31,27 @@ void QtBehaviorTestSuite::testMainPage(){
     QTest::mouseClick(streamButton, Qt::LeftButton, Qt::NoModifier);
     QTest::mouseClick(settingsButton, Qt::LeftButton, Qt::NoModifier);
     QTest::mouseClick(quitButton, Qt::LeftButton, Qt::NoModifier);
-    //pagesSpy.wait(1000);
-    qDebug() << "Main page click count: " << pagesSpy.count();
+
     cout << "testMainPage: ";
     if(pagesSpy.count()==3) cout << "SUCCESS" << endl;
     else cout << "FAILURE" << endl;
 }
 
-// TODO: Make all outputs the same format, QCOMPARE(spy.count(), 1) would be great if it worked
+/* Tests the stream from device button on the Stream page.
+ * Returns SUCCESS if stream button clicked. Stops the stream
+ * so other tests can be performed without interference.
+ */
 void QtBehaviorTestSuite::testStreamButtonClicked() {
     MainWindow window;
-   // QThread capture = MainWindow.captureThread;
 
     // Set up a spy to check whether the Stream Button has been clicked.
-    //QSignalSpy spy(&window, SIGNAL(streamButtonClicked()));
     QSignalSpy clickedSpy(&window, SIGNAL(clickedButton()));
-    QSignalSpy streamSpy(&window, SIGNAL(startStream()));
-    //QSignalSpy captureSpy(&window, SIGNAL(capture.isRunning());
+    QSignalSpy streamSpy(&window, SIGNAL(startStream()));    
 
     //Get the buttons
     QWidget *streamButton = window.findChild<QPushButton*>("streamButton");
     QWidget *fromDeviceButton = window.findChild<QPushButton*>("go_StreamFromDevice_button");
     QWidget *stopButton = window.findChild<QPushButton*>("go_StopAll_button");
-    //QWidget *backButton = window.findChild<QPushButton*>("backButtonGo");
 
     //Display incoming & outgoing signals
     //window.dumpObjectInfo();
@@ -62,24 +60,12 @@ void QtBehaviorTestSuite::testStreamButtonClicked() {
     QTest::mouseClick(streamButton, Qt::LeftButton, Qt::NoModifier);
     QTest::mouseClick(fromDeviceButton, Qt::LeftButton, Qt::NoModifier);
     QTest::mouseClick(stopButton, Qt::LeftButton, Qt::NoModifier);
-    //QTest::mouseClick(backButton, Qt::LeftButton, Qt::NoModifier);
 
-    /*cout << "\ntestStreamButtonClicked:  ";
-    if (spy.count() == 1) {
-        cout << "SUCCESS\n";
-    } else {
-        cout << "FAILURE\n";
-    }*/
-    cout << "testStartStream: ";
+    cout << "\ntestStreamButtonClicked:  ";
     if (streamSpy.count() == 1){
         cout << "SUCCESS\n";
     }
-    else cout << "FAILUER\n";
-    cout << "\nSpy count: " << clickedSpy.count() << endl;
-
-    cout << "capture thread running: ";
-   // if(captureSpy()==1) cout << "SUCCESS";
-    //else cout << "FAILURE";
+    else cout << "FAILURE";
 
     // Can't get this to output to the console:
     //QCOMPARE(spy.count(), 1);
@@ -108,8 +94,8 @@ void QtBehaviorTestSuite::testReadFunction(){
 }
 
 /* Tests whether buttons are "clickable" after other buttons pressed,
- * i.e. run their own functions if other threads are already running
- * (They shouldn't do that)
+ * i.e. run their own functions if other threads are already running.
+ * Returns SUCCESS if stream button clicked and read from file does *not* run.
  */
 void QtBehaviorTestSuite::testButtonClickable(){
     MainWindow window;
@@ -126,14 +112,12 @@ void QtBehaviorTestSuite::testButtonClickable(){
     QTest::mouseClick(readButton, Qt::LeftButton, Qt::NoModifier);
     QTest::mouseClick(stopButton, Qt::LeftButton, Qt::NoModifier);
 
-
-    //QCOMPARE(streamSpy.count(),1);
-    //QCOMPARE(readSpy.count(),0);
-    //readSpy.wait(1000);
     qDebug() << "Stream clicked: " << bool(streamSpy.count());
     qDebug() << "Read started: " << bool(readSpy.count());
     cout << "testButtonsClickable: ";
-    if(streamSpy.count() && !readSpy.count()) cout << "SUCCESS" << endl;
+    if(streamSpy.count() && !readSpy.count()) {
+        cout << "SUCCESS" << endl;
+    }
     else cout << "FAILURE" << endl;
 }
 
@@ -150,19 +134,21 @@ void QtBehaviorTestSuite::testOrientation() {
     QTest::mouseClick(orientButton, Qt::LeftButton, Qt::NoModifier);
 
     cout << "testOrientation: ";
-    if(orientSpy.count()==1) cout << "SUCCESS" << endl;
+    if(orientSpy.count()==1) {
+        cout << "SUCCESS" << endl;
+    }
     else cout << "FAILURE" << endl;
 }
 
 /* Tests recording function. When the button press is simulated, user can choose a file
- * name and the program will start recording. If no file name is selected this will
- * return FAILURE. TODO: pass file name so no interaction required? how
+ * name and the program will start recording. Outputs SUCCESS if both record button
+ * and stop button clicked.
  */
 void QtBehaviorTestSuite::testRecord() {
     MainWindow window;
 
     QSignalSpy recordSpy(&window, SIGNAL(StartVideoRecord(string,string)));
-    //QSignalSpy timeSpy(&window,SIGNAL(clickedButton()));
+    QSignalSpy clickedSpy(&window,SIGNAL(clickedButton()));
 
     QWidget *recordButton = window.findChild<QPushButton*>("go_Record_button");
     QWidget *stopButton = window.findChild<QPushButton*>("go_StopAll_button");
@@ -171,6 +157,12 @@ void QtBehaviorTestSuite::testRecord() {
     QTest::mouseClick(stopButton, Qt::LeftButton, Qt::NoModifier);
 
     cout << "testRecord: ";
-    if(recordSpy.count()==1) cout << "SUCCESS" << endl;
+    if(clickedSpy.count() == 2) {
+        cout << "SUCCESS" << endl;
+    }
     else cout << "FAILURE" << endl;
+
+    if(recordSpy.count() == 1) {
+        cout << "testRecord: video record started succesfully";
+    }
 }
