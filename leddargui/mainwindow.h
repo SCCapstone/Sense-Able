@@ -95,7 +95,7 @@ private:
     vector<string> cameraFileNames;
     //TODO: FIND A BETTER DEFAULT
     string videoStream = "/dev/video0";
-    int leddarOrientation = true;
+    int leddarOrientation = false;
     bool metricUnits = true;
 
     QSignalMapper* signalMapper;

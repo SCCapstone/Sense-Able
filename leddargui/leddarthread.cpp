@@ -634,7 +634,7 @@ cout << "Exiting StopStream" << endl;
 
 
 /**********************************************************************
- * Set the orientation of the Leddar. Default orientation is Vertical
+ * Set the orientation of the Leddar. Default orientation is Horizontal.
  *
 ***/
 void LeddarStream::setOrientation(bool aOrientation)
