@@ -63,7 +63,7 @@ using namespace cv;
 ***/
 objectDetector::objectDetector()
 {
-//cout << "Entering objectDetector" << endl;
+////cout << "Entering objectDetector" << endl;
     qRegisterMetaType<string>("string");
     isstopped = false;
     isrunning = false;
@@ -87,7 +87,7 @@ objectDetector::objectDetector()
  *   projected - the points projected onto the y-axis.
 ***/
 vector<float> objectDetector::yaxis_projection(vector<float> distances){
-cout << "Entering yaxis_projection" << endl;
+////cout << "Entering yaxis_projection" << endl;
     vector<float> projected;
     // Theta is the angle between the x-axis and the right most segment.
     // The angle between segments is 2.8 degrees
@@ -98,8 +98,8 @@ cout << "Entering yaxis_projection" << endl;
         float theta_radians = theta*M_PI/180;
         float y = distances.at(i) * sin(theta_radians);
         projected.push_back(y);
-//        std::cout << "THETA: " << theta << " SIN THETA: " << sin(theta_radians) << std::endl;
-//        std::cout << "Value: " << distances.at(i) << " Projection: " << y << std::endl;
+//        std:://cout << "THETA: " << theta << " SIN THETA: " << sin(theta_radians) << std::endl;
+//        std:://cout << "Value: " << distances.at(i) << " Projection: " << y << std::endl;
 
         // Increment theta for the next segment
         theta -= 2.8;
@@ -111,7 +111,7 @@ cout << "Entering yaxis_projection" << endl;
 
 // CALAAABS CODE
 vector<float> objectDetector::xaxis_projection(vector<float> distances) {
-cout << "Entering xaxis_projection" << endl;
+//cout << "Entering xaxis_projection" << endl;
     vector<float> projected;
 
     float theta = 90 + (2.8 * 0.5 * int(distances.size()));
@@ -234,10 +234,10 @@ float objectDetector::fit_quality(vector<float> coefficients, int polynom_degree
 
     // Note that for non-linear fitting, sometimes the r_squared value can be negative!
     // How do we interpret this?
-cout << "RSS: " << rss << "TSS " << tss << endl;
+////cout << "RSS: " << rss << "TSS " << tss << endl;
 
     r_squared = 1.0 - (float)(rss / tss);
-cout << "R^2: " << r_squared << endl;
+////cout << "R^2: " << r_squared << endl;
     return r_squared;
 }
 
@@ -283,12 +283,12 @@ float objectDetector::detectWall(vector<float> distances) {
     fit = fit_quality(coefficients, 1, yvalues, xvalues);
 
 /*
-cout << "WALL DETECT FIT: " << fit << endl;
+////cout << "WALL DETECT FIT: " << fit << endl;
 
     for (int i = 0; i < coefficients.size(); i++) {
-        cout << "WALL DETECT COEFFICIENTS: " << coefficients.at(i) << " ";
+        //cout << "WALL DETECT COEFFICIENTS: " << coefficients.at(i) << " ";
     }
-    cout << endl << endl;
+    //cout << endl << endl;
 */
 
     // If the slope is too steep in either direction, then a wall is
@@ -352,12 +352,12 @@ float objectDetector::detectCorner(vector<float> distances) {
     fit = fit_quality(coefficients, 2, yvalues, xvalues);
 
 /*
-    cout << "CORNER FIT: " << fit << endl;
+    //cout << "CORNER FIT: " << fit << endl;
 
         for (int i = 0; i < coefficients.size(); i++) {
-            cout << "CORNER COEFFICIENTS: " << coefficients.at(i) << " ";
+            //cout << "CORNER COEFFICIENTS: " << coefficients.at(i) << " ";
         }
-        cout << endl << endl;
+        //cout << endl << endl;
 */
 
     // If the best fit degree parabola is actually a degree 1 parabola,
@@ -396,13 +396,13 @@ float objectDetector::detectTripHazard(vector<float> distances) {
  * objects among the 'dataPoints' caught by the slot.
 ***/
 void objectDetector::StartDetect(int index, vector<float> dataPoints, bool aOrientation) {
-//cout << "Entering StartDetect" << endl;
+////cout << "Entering StartDetect" << endl;
     if (isrunning) return;
     isstopped = false;
     isrunning = true;
     emit running();
     doDetect(dataPoints, aOrientation);
-//cout << "Exiting StartDetect" << endl;
+////cout << "Exiting StartDetect" << endl;
 }
 
 
@@ -413,13 +413,13 @@ void objectDetector::StartDetect(int index, vector<float> dataPoints, bool aOrie
  * and emit that this thread has stopped.
 ***/
 void objectDetector::StopDetect() {
-//cout << "Entering StopDetect" << endl;
+////cout << "Entering StopDetect" << endl;
     if (!isrunning || isstopped) return;
 
     isstopped = true;
     isrunning = false;
     emit stopped();
-//cout << "Exiting StopDetect" << endl;
+////cout << "Exiting StopDetect" << endl;
 }
 
 
@@ -429,7 +429,7 @@ void objectDetector::StopDetect() {
  * Overwrite whatever the previous signal distance
 ***/
 void objectDetector::SetSignalDist(float new_dist) {
-//cout << "Entering SetsignalDist" << endl;
+////cout << "Entering SetsignalDist" << endl;
     sig_dist = new_dist;
 }
 
@@ -485,7 +485,7 @@ void objectDetector::SetSignalDist(float new_dist) {
  *
 ***/
 void objectDetector::doDetect(vector<float> distances, bool aOrientation) {
-//cout << "Entering doDetect" << endl;
+////cout << "Entering doDetect" << endl;
     map<int, float> obstacle_fits;
     int obstacle_type = NONE;
     float running_fit = 0.0;
@@ -510,18 +510,18 @@ void objectDetector::doDetect(vector<float> distances, bool aOrientation) {
             obstacle_fits.emplace(PILLAR, detectPillar(distances));
             obstacle_fits.emplace(UNIDENTIFIED_OBSTACLE, FIT_THRESHOLD);
 
-            cout << "WALL DETECT FIT: " << obstacle_fits.at(WALL) << endl;
-            cout << "CORNER DETECT FIT: " << obstacle_fits.at(WALL_CORNER) << endl;
+            //cout << "WALL DETECT FIT: " << obstacle_fits.at(WALL) << endl;
+            //cout << "CORNER DETECT FIT: " << obstacle_fits.at(WALL_CORNER) << endl;
 
         } else if (aOrientation == VERTICAL) {
             obstacle_fits.emplace(WALL, detectWall(distances));
             obstacle_fits.emplace(TRIP_HAZARD, detectTripHazard(distances));
             obstacle_fits.emplace(UNIDENTIFIED_OBSTACLE, FIT_THRESHOLD);
 
-            cout << "WALL DETECT FIT: " << obstacle_fits.at(WALL) << endl;
-            cout << "TRIP HAZARD DETECT FIT: " << obstacle_fits.at(TRIP_HAZARD) << endl;
+            //cout << "WALL DETECT FIT: " << obstacle_fits.at(WALL) << endl;
+            //cout << "TRIP HAZARD DETECT FIT: " << obstacle_fits.at(TRIP_HAZARD) << endl;
         } else {
-            cout << "ERROR: Orientation hasn't been set." << endl;
+            //cout << "ERROR: Orientation hasn't been set." << endl;
             return;
         }
 
@@ -549,7 +549,7 @@ void objectDetector::doDetect(vector<float> distances, bool aOrientation) {
     emit emitDetectedObject(obstacle_type);
 
     StopDetect();
-//cout << "Exiting doDetect" << endl;
+////cout << "Exiting doDetect" << endl;
 }
 
 

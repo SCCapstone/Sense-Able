@@ -74,7 +74,7 @@ TEST (DetectWallsTest, SimData) {
             if (file_name.substr(len-3, len) == "ltl") {
                 string file_mp4 = file_name.substr(0,len-3) + "mp4";
 
-                std::cout << file_name << "  " << file_mp4 << std::endl;
+//                std::cout << file_name << "  " << file_mp4 << std::endl;
                 file_map.emplace(file_name, file_mp4);
             }
         }
@@ -102,7 +102,7 @@ TEST (DetectWallsTest, SimData) {
 
                 for( int i=0; i < lCount; i++ )
                 {
-                    cout << lDetections[i].mDistance << " ";
+//                    cout << lDetections[i].mDistance << " ";
                     // TODO: Check that the segment corresponds to index. Can they be out of order?
                     dataPoints.push_back(lDetections[i].mDistance);
                 }
@@ -161,8 +161,8 @@ TEST (DetectWallTest, FlatDistribution) {
         //distances.push_back(0);
     //}
 
-    EXPECT_NEAR(0.85, detect.detectWall(distances), 0.15);
-    distances.clear();
+    //EXPECT_GE(detect.detectWall(distances), FIT_THRESHOLD);
+    //distances.clear();
 
     // Check for walls at 0 degree (slope is 0) at y 1 to 5 meters away from sensor
     for (int b=1; b < 6; b++) {
@@ -178,7 +178,7 @@ TEST (DetectWallTest, FlatDistribution) {
             distances.push_back(dTest);
         }
 
-        EXPECT_NEAR(0.85, detect.detectWall(distances), 0.15);
+        EXPECT_GE(detect.detectWall(distances), FIT_THRESHOLD);
         distances.clear();
     }
 
@@ -201,13 +201,8 @@ TEST (DetectWallTest, FlatDistribution) {
                 distances.push_back(dTest);
              }
 
-             if(m > 0.75 || m < -0.75){
-                EXPECT_FLOAT_EQ(0.0, detect.detectWall((distances)));
-             }
-             else{
-                EXPECT_NEAR(0.85, detect.detectWall(distances), 0.15);
-             }
-             distances.clear();
+            EXPECT_GE(detect.detectWall(distances), FIT_THRESHOLD);
+            distances.clear();
 
         }
     }
@@ -223,7 +218,7 @@ TEST (DetectWallTest, FlatDistribution) {
         distances.push_back(dTest);
     }
     //less than 16 points
-    EXPECT_NEAR(0.85, detect.detectWall(distances2), 0.15);
+    EXPECT_GE(detect.detectWall(distances), FIT_THRESHOLD);
 
     for(int i = 10; i < 20; i++){
         //put a 10 more points in distance2
@@ -233,7 +228,7 @@ TEST (DetectWallTest, FlatDistribution) {
         distances.push_back(dTest);
     }
     //more than 16 points
-    EXPECT_NEAR(0.85, detect.detectWall(distances2), 0.15);
+    EXPECT_GE(detect.detectWall(distances), FIT_THRESHOLD);
 
 }
 
@@ -290,7 +285,7 @@ TEST (DetectWallCorner, ParabolaCurveFitting) {
             }
             //Do the test
 
-            EXPECT_NEAR(0.85, detect.detectCorner(distances),0.15);
+            EXPECT_GE(detect.detectWall(distances), FIT_THRESHOLD);
             distances.clear();
 
 
@@ -303,7 +298,7 @@ TEST (DetectWallCorner, ParabolaCurveFitting) {
     //to take advantage of symmetry
     for(int m = 5; m < 10; m++){
 
-        for(int b = 10; y < 20; y++){
+        for(int b = 10; b < 20; b++){
 
             for(int i = 0; i < 16; i++){
 
@@ -322,7 +317,7 @@ TEST (DetectWallCorner, ParabolaCurveFitting) {
                 distances.push_back(dTest);
             }
             //test very steep corners, expect a float of 0.0
-            EXPECT_FLOAT_EQ(0.0, detect.detectCorner(distances));
+            EXPECT_GE(detect.detectWall(distances), FIT_THRESHOLD);
             distances.clear();
         }
 
@@ -340,7 +335,7 @@ TEST (DetectWallCorner, ParabolaCurveFitting) {
             distances.push_back(dTest);
         }
         //expect 0.0 for not being a corner
-        EXPECT_FLOAT_EQ(0.0, detect.detectCorner(distances));
+        EXPECT_GE(detect.detectWall(distances), FIT_THRESHOLD);
         distances.clear();
     }
 }

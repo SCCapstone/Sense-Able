@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
 
     //srand (time(NULL)); //initialize random seed to simulate noise in unit test (stdlib.h)
     // Perform unit tests.
-//    ::testing::InitGoogleTest(&argc, argv);
-    //RUN_ALL_TESTS();
+    ::testing::InitGoogleTest(&argc, argv);
+    RUN_ALL_TESTS();
 
     // Perform behavioral tests.
     //QtBehaviorTestSuite suite;
