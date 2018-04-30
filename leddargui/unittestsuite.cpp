@@ -352,20 +352,51 @@ TEST (PolyFitTest, regression) {
     vector<float> x;
     vector<float> y;
     vector<float> expected;
+    float m;
 
     //linear polynomials y = mx + b;
-    for(int b = 0; b < 6; b++){
-        expected.push_back(b);
-        for(int m = 0; m < 6; m++){
+    for(int b = 1; b < 6; b++){
+
+        for(int k = 0; k < 10; k++){
+            m = k/10.0;
+            expected.push_back(b*1.0);
             expected.push_back(m);
             // i will be the x values
-            for(int i = -10; i <= 10; i+=2) {
+            for(int i = -5; i <= 5; i++) {
                 x.push_back(i*1.0);
-                y.push_back(i*m*1.0 + b);
+                y.push_back(i*m + b*1.0);
             }
             //should consider comparing values individually
-            //EXPECT_EQ(expected,detect.polynomial_fit(1,y,x));
+            for(int i = 0; i < 2; i++)
+            EXPECT_FLOAT_EQ(expected[i],detect.polynomial_fit(1,y,x)[i]);
+            x.clear();
+            y.clear();
+            expected.clear();
+        }
+    }
 
+    //parabola y = ax*x + bx + c
+    for(int c = 1; c < 6; c++){
+
+        for(int b = 0; b < 10; b++){
+
+            for(int a = 0; a < 10; a++){
+                expected.push_back(c*1.0);
+                expected.push_back(b*1.0);
+                expected.push_back(a*1.0);
+                // i will be the x values
+                for(int i = -5; i <= 5; i++) {
+                   x.push_back(i*1.0);
+                   y.push_back(a*i*i*1.0 + b*i*1.0 + c*1.0);
+                }
+                //should consider comparing values individually
+                for(int i = 0; i < 3; i++){
+                    EXPECT_NEAR(expected[i],detect.polynomial_fit(2,y,x)[i], 0.01);
+                }
+                x.clear();
+                y.clear();
+                expected.clear();
+            }
         }
     }
 
